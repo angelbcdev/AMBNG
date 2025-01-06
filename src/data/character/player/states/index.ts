@@ -1,0 +1,249 @@
+import Player, { playerAllAttacks } from "../player";
+
+const moves = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+
+export class PlayerState {
+  name: string;
+  player: Player;
+  constructor(name: string, player: Player) {
+    this.name = name;
+    this.player = player;
+  }
+  enter() {}
+  update(_: CanvasRenderingContext2D, __: number) {}
+  onCollision(_: any) {}
+  exit() {}
+  acctionKeyDown(key: string) {
+    if (
+      this.player.frameY == this.player.states.hit ||
+      this.player.game.gameIsPaused
+    ) {
+      return;
+    }
+
+    let nwMatrixY = this.player.matrixY;
+    let nwMatrixX = this.player.matrixX;
+
+    let { newMatrixY, newMatrixX } = this.whichtKeyDown(
+      key,
+      nwMatrixY,
+      nwMatrixX
+    );
+
+    try {
+      if (this.player.game.matrix[newMatrixY][newMatrixX]?.ocupated) {
+        return;
+      }
+    } catch (error) {}
+
+    // Verificar los límites y ocupación
+    if (
+      newMatrixY < 0 ||
+      newMatrixY >= this.player.game.matrix.length ||
+      newMatrixX < 0 ||
+      newMatrixX >= this.player.game.matrix[0].length ||
+      this.player.game.matrix[newMatrixY][newMatrixX].side !== this.player.side
+    ) {
+      return; // Salir si hay un movimiento no válido
+    }
+
+    // Marcar la posición actual como no ocupada
+    this.player.game.matrix[this.player.matrixY][this.player.matrixX].ocupated =
+      false;
+
+    // Actualizar las coordenadas
+    this.player.matrixY = newMatrixY;
+    this.player.matrixX = newMatrixX;
+
+    // Marcar la nueva posición como ocupada
+
+    this.player.game.matrix[this.player.matrixY][this.player.matrixX].ocupated =
+      true;
+  }
+  acctionKeyUp(key: string) {
+    const handleEvents = {
+      f: () => {
+        if (!this.player.canShoot) {
+          this.player.canShoot = true;
+        }
+      },
+      g: () => {
+        console.log("relsea g");
+      },
+    };
+    if (handleEvents[key]) {
+      handleEvents[key]();
+    }
+  }
+  whichtKeyDown(key: string, newMatrixY: number, newMatrixX: number) {
+    if (moves.includes(key)) {
+      this.player.changeState(this.player.stateReference.MOVE);
+    }
+    const handleEvents = {
+      ArrowUp: () => {
+        newMatrixY -= 1;
+      },
+      ArrowDown: () => {
+        newMatrixY += 1;
+      },
+      ArrowLeft: () => {
+        newMatrixX -= 1;
+      },
+      ArrowRight: () => {
+        newMatrixX += 1;
+      },
+      f: () => {
+        if (this.player.canShoot) {
+          this.player.changeState(this.player.stateReference.SHOOT);
+          setTimeout(() => {
+            this.player.makeAttack(playerAllAttacks.BASIC);
+          }, 200);
+        }
+      },
+
+      g: () => {
+        if (this.player.canShoot) {
+          this.useShip();
+        }
+      },
+    };
+
+    if (handleEvents[key]) {
+      handleEvents[key]();
+    }
+
+    return { newMatrixY, newMatrixX };
+  }
+
+  useShip() {
+    let chip = this.player.allChips.shift();
+    if (!chip) {
+      return;
+    }
+
+    if (chip.userMakeAttack) {
+      chip.userMakeAttack(this.player);
+      return;
+    }
+
+    // const chipsFuntion = {
+    //   [BattleShip.title.maze]: () => {
+    //     this.player.spriteToShip = this.player.states.maze;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       this.player.makeAttack("dash");
+    //     }, 300);
+    //   },
+    //   [IChips.bomb]: () => {
+    //     this.player.spriteToShip = this.player.states.bomb;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       this.player.makeAttack(playerAllAttacks.BOMB);
+    //     }, 100);
+    //   },
+    //   [IChips.cannons]: () => {
+    //     this.player.spriteToShip = this.player.states.cannon1;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       this.player.makeAttack(playerAllAttacks.CANNON);
+    //     }, 500);
+    //   },
+    //   [IChips.swords]: () => {
+    //     this.player.spriteToShip = this.player.states.swords;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       this.player.makeAttack(playerAllAttacks.SWORD);
+    //     }, 300);
+    //   },
+    //   [IChips.shield]: () => {
+    //     this.player.spriteToShip = this.player.states.shield;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       // this.player.makeDashAttack();
+    //     }, 300);
+    //   },
+    //   [IChips.punsh]: () => {
+    //     this.player.spriteToShip = this.player.states.punsh;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       this.player.makeAttack(playerAllAttacks.PUNSH_BASIC);
+    //     }, 300);
+    //   },
+    //   [IChips.block]: () => {
+    //     this.player.spriteToShip = this.player.states.shoot;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       // this.player.makeDashAttack();
+    //     }, 300);
+    //   },
+    //   [IChips.breackPanel]: () => {
+    //     this.player.spriteToShip = this.player.states.maze;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       this.player.game.brackAllFloor(this.player.side);
+    //     }, 600);
+    //   },
+    //   [IChips.dash]: () => {
+    //     this.player.spriteToShip = this.player.states.dash;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       this.player.makeAttack(playerAllAttacks.DASH);
+    //     }, 200);
+    //   },
+    //   [IChips.pannel1]: () => {
+    //     this.player.spriteToShip = this.player.states.maze;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       this.player.game.destroyEspecificFloor({
+    //         side: this.player.side,
+    //         matrixX: this.player.matrixX,
+    //         matrixY: this.player.matrixY,
+    //         tipe: 1,
+    //       });
+    //     }, 600);
+    //   },
+    //   [IChips.pannel3]: () => {
+    //     this.player.spriteToShip = this.player.states.maze;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       this.player.game.destroyEspecificFloor({
+    //         side: this.player.side,
+    //         matrixX: this.player.matrixX,
+    //         matrixY: this.player.matrixY,
+    //         tipe: 3,
+    //       });
+    //     }, 600);
+    //   },
+    //   [IChips.addlinePanel]: () => {
+    //     this.player.spriteToShip = this.player.states.maze;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       this.player.game.addNewLineFloor({
+    //         side: this.player.side,
+    //         matrixX: this.player.matrixX,
+    //         matrixY: this.player.matrixY,
+    //       });
+    //     }, 600);
+    //   },
+    //   [IChips.randomeFloor]: () => {
+    //     this.player.spriteToShip = this.player.states.maze;
+    //     this.player.changeState(this.player.stateReference.USESHIP);
+    //     setTimeout(() => {
+    //       this.player.game.destroyRandomFloor({
+    //         side: this.player.side,
+    //       });
+    //     }, 600);
+    //   },
+    //   [IChips.healt80]: () => {
+    //     this.player.live += 80;
+    //   },
+    // };
+
+    //healt80
+    // if (chipsFuntion[chip?.name]) {
+    //   chipsFuntion[chip?.name]();
+    // } else {
+    //   this.player.allChips.push(chip);
+    // }
+  }
+}
