@@ -8,7 +8,7 @@ import { Game } from './data/game'
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 const c = canvas.getContext('2d')!
 canvas.width = 430
-canvas.height = 400
+canvas.height = 430
 
 
 c.fillStyle = 'black'
@@ -29,7 +29,7 @@ const animage = (timeStap: number) => {
   // c.fillStyle = 'black'
   // c.fillRect(x, 0, canvas.width, canvas.height)
   game.draw(c, deltaTime)
-  // game.update(c, deltaTime)
+  game.update(c, deltaTime)
 
 
 
@@ -41,5 +41,15 @@ const animage = (timeStap: number) => {
 }
 
 animage(0)
+
+document.getElementById("canvas").addEventListener("click", (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = (e.clientX - rect.left) * scaleX;
+  const y = (e.clientY - rect.top) * scaleY;
+  game.checkClick(x, y);
+
+})
 
 

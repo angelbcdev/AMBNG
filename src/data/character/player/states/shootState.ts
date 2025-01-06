@@ -1,5 +1,5 @@
 import { PlayerState } from ".";
-import Player from "../player";
+import { Player } from "../player";
 
 export class ShootState extends PlayerState {
   timeForCharge = 2000;

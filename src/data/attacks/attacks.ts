@@ -1,4 +1,4 @@
-import { Nodo } from "../master";
+import { Entity } from "../character/entity";
 
 export interface TCreateAttack {
   possition: { x: number; y: number };
@@ -11,7 +11,7 @@ export interface TCreateAttack {
   Attack?: any;
 }
 
-class Attack extends Nodo {
+class Attack extends Entity {
   isToLeft: string;
   ajustY: number;
   drawX: number;
@@ -20,7 +20,7 @@ class Attack extends Nodo {
   heightSprite: number;
   frameAjustY = 10;
   frameAjustX = 0;
-  attackOuwner: Nodo;
+  attackOuwner: Entity;
   initialMatrixY: number;
   isDev: boolean;
   canMakeDamage = true;
@@ -139,7 +139,7 @@ class Attack extends Nodo {
     let matrixY;
 
     // Definimos los valores de gap para cada fila
-    let gap = 100;
+    const gap = 100;
 
     // Comprobamos el rango de yPos considerando los diferentes valores de gap
     if (yPos >= gap && yPos < gap + jump) {
@@ -165,11 +165,11 @@ class Attack extends Nodo {
       this.game.matrix[matrixY][matrixX]?.side == 1
     );
   };
-  attackCollision(_: Nodo) {
+  attackCollision(_: Entity) {
     this.delete = true;
   }
   attackFloorEfect(_: number, __: number) {}
-  attackEnemyEfect(_: Nodo) {}
+  attackEnemyEfect(_: Entity) {}
 }
 
 export default Attack;

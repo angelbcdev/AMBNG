@@ -1,9 +1,8 @@
-// import Attack from "../attacks/attacks.ts";
-// import {
-//   BasicPunsh,
-//   MegamanAttackBasic,
-//   MegamanAttackDash,
-// } from "../attacks/basicAttack.ts";
+import {
+  BasicPunsh,
+  MegamanAttackBasic,
+  MegamanAttackDash,
+} from "../../attacks/basicAttack.ts";
 
 import { Entity } from "../entity";
 
@@ -19,10 +18,10 @@ import { ShieldState } from "./states/shieldState.ts";
 import { ShootState } from "./states/shootState.ts";
 import { UseShip } from "./states/useShip.ts";
 
-class Player extends Entity {
+export class Player extends Entity {
   state: number;
   defense: number;
-  allChips: []; // BattleShip[] = [];
+
   states = {
     idle: 0,
     shoot: 2,
@@ -84,12 +83,13 @@ class Player extends Entity {
   spriteToShip: number = 0;
   effectChargeMaxFrame = 6;
   canShowEffect = false;
+  allChips: BattleShip[] = [];
 
   constructor({ possition: { x, y }, sideToPlay }) {
     super({ x, y, sideToPlay });
     this.height = 35;
     this.handleInput();
-    this.allChips = [];
+
     //   allChipsA.map(
     //   (chip) => new BattleShip({ title: chip.title })
     // );
@@ -226,51 +226,51 @@ class Player extends Entity {
     this.damageExtra = 0;
   }
   allAttack(type = "basic") {
-    // const allAttackAvailable = {
-    //   [playerAllAttacks.BASIC]: () => {
-    //     const damage = this.damage + this.damageExtra;
-    //     this.addAttack({
-    //       typeElemetns: MegamanAttackBasic,
-    //       damage,
-    //     });
-    //   },
-    //   [playerAllAttacks.BASIC_CHARGE]: () => {
-    //     const damage = this.damage + this.damageExtra;
-    //     this.addAttack({
-    //       typeElemetns: MegamanAttackBasic,
-    //       damage,
-    //       type: MegamanAttackBasic.type.CHARGE,
-    //     });
-    //   },
-    //   [playerAllAttacks.BASIC_MAX]: () => {
-    //     const damage = this.damage + this.damageExtra;
-    //     this.addAttack({
-    //       typeElemetns: MegamanAttackBasic,
-    //       damage,
-    //       type: MegamanAttackBasic.type.MAX_CHARGE,
-    //     });
-    //   },
-    //   [playerAllAttacks.DASH]: () => {
-    //     const damage = this.damage * 10;
-    //     this.addAttack({
-    //       typeElemetns: MegamanAttackDash,
-    //       damage,
-    //     });
-    //   },
-    //   [playerAllAttacks.PUNSH_BASIC]: () => {
-    //     this.damageExtra = 50;
-    //     const damage = this.damage + this.damageExtra;
-    //     this.addAttack({
-    //       typeElemetns: BasicPunsh,
-    //       damage,
-    //       type: this.chipType,
-    //     });
-    //     //BasicSword  SWORD
-    //   },
-    // };
-    // if (allAttackAvailable[type]) {
-    //   allAttackAvailable[type]();
-    // }
+    const allAttackAvailable = {
+      [playerAllAttacks.BASIC]: () => {
+        const damage = this.damage + this.damageExtra;
+        this.addAttack({
+          typeElemetns: MegamanAttackBasic,
+          damage,
+        });
+      },
+      [playerAllAttacks.BASIC_CHARGE]: () => {
+        const damage = this.damage + this.damageExtra;
+        this.addAttack({
+          typeElemetns: MegamanAttackBasic,
+          damage,
+          type: MegamanAttackBasic.type.CHARGE,
+        });
+      },
+      [playerAllAttacks.BASIC_MAX]: () => {
+        const damage = this.damage + this.damageExtra;
+        this.addAttack({
+          typeElemetns: MegamanAttackBasic,
+          damage,
+          type: MegamanAttackBasic.type.MAX_CHARGE,
+        });
+      },
+      [playerAllAttacks.DASH]: () => {
+        const damage = this.damage * 10;
+        this.addAttack({
+          typeElemetns: MegamanAttackDash,
+          damage,
+        });
+      },
+      [playerAllAttacks.PUNSH_BASIC]: () => {
+        this.damageExtra = 50;
+        const damage = this.damage + this.damageExtra;
+        this.addAttack({
+          typeElemetns: BasicPunsh,
+          damage,
+          type: this.chipType,
+        });
+        //BasicSword  SWORD
+      },
+    };
+    if (allAttackAvailable[type]) {
+      allAttackAvailable[type]();
+    }
   }
 
   changeState(state: number) {
@@ -297,10 +297,10 @@ class Player extends Entity {
       }
     }
   }
-  addShip(title: string) {
-    // if (this.allChips.length <= 13) {
-    //   this.allChips.push(new BattleShip({ title }));
-    // }
+  addChip(chips: BattleShip[]) {
+    console.log("chips", chips);
+
+    this.allChips = chips;
   }
   clearShips() {
     this.allChips = [];

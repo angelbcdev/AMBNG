@@ -1,11 +1,12 @@
 import Attack from "../../../attacks/attacks";
 import { BasicBomb } from "../../../attacks/basicAttack";
 import { StaticAttack } from "../../../attacks/statickAttack";
-import PlayerBlue from "../../../player/playerBlue";
+import PlayerBlue from "../../../character/player/Player";
+
 import Enemy from "../../enemys";
 import { Idle, MoveDown, MoveUp, AttackS } from "./state";
 
-let enemyLevel = {
+const enemyLevel = {
   1: {
     img: "assects/enemy/boomtank1.png",
     speed: 0.06,

@@ -1,12 +1,19 @@
-import { Nodo } from "../master.js";
+import { Entity } from "../character/entity";
 
-class Enemy extends Nodo {
+class Enemy extends Entity {
   canAttack = true;
   timeForAttack = 500;
   possitionXAreaRango = 0;
 
   possitionShowLiveX = 0;
   possitionShowLiveY: number;
+  states = {
+    idle: 0,
+    moveDown: 0,
+    moveUp: 0,
+    attack: 1,
+    hit: 0,
+  };
 
   constructor({
     possition,

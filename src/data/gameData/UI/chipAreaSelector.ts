@@ -1,17 +1,15 @@
-import { BattleShip } from "../player/chips";
-import { allChipsA } from "../player/chips/chipData";
-import { TestGame } from "../textGame";
+import { GameUI } from ".";
+import { BattleShip } from "../../character/player/chips";
+import { allChipsA } from "../../character/player/chips/chipData";
 
 class ShowChipArea {
   mainImage = new Image();
-  position = { x: -320, y: 8 };
-
+  showChipArea = false;
   mainImageWidth = 320;
   mainImageHeight = 420;
-  game: TestGame;
+  position = { x: this.showChipArea ? 0 : -320, y: 8 };
   logoImage = new Image();
-  logoImageX = this.position.x + 248;
-  logoImageY = this.position.y + 4;
+
   logoImageWidth = 47;
   logoImageHeight = 69;
   logoImageMaxFrame = 2;
@@ -19,8 +17,7 @@ class ShowChipArea {
   logoImageFrameInterval = 1000 / 6;
   logoImageFrameX = 0;
   addButon = new Image();
-  addButonX = this.position.x + 225;
-  addButonY = this.position.y + 345;
+
   addButonWidth = 65;
   addButonHeight = 62;
   addButonMaxFrame = 2;
@@ -30,11 +27,12 @@ class ShowChipArea {
   addNewChip = false;
   showADDButon = true;
 
-  showChipArea = false;
   speed = 0.5;
 
-  constructor(game: TestGame) {
-    this.game = game;
+  gameUI: GameUI;
+
+  constructor(gameUI: GameUI) {
+    this.gameUI = gameUI;
     this.mainImage.src = "assects/selectedchip/chipSelector.png";
     this.logoImage.src = "assects/selectedchip/logoRoll.png";
     this.addButon.src = "assects/selectedchip/addButon.png";
@@ -47,12 +45,12 @@ class ShowChipArea {
     if (this.showChipArea) {
       if (this.position.x < 0) {
         this.position.x += this.speed * deltaTime;
-        this.game.gameUI.position.x += this.speed * deltaTime;
+        this.gameUI.position.x += this.speed * deltaTime;
       }
     } else {
       if (this.position.x > -320) {
         this.position.x -= this.speed * deltaTime;
-        this.game.gameUI.position.x -= this.speed * deltaTime;
+        this.gameUI.position.x -= this.speed * deltaTime;
       }
     }
   }
@@ -71,8 +69,8 @@ class ShowChipArea {
     }
     c.drawImage(
       this.addButon,
-      this.addButonX,
-      this.addButonY,
+      this.position.x + 225,
+      this.position.y + 345,
       this.addButonWidth,
       this.addButonHeight
     );
@@ -100,17 +98,22 @@ class ShowChipArea {
       0,
       this.logoImageWidth,
       this.logoImageHeight,
-      this.logoImageX,
-      this.logoImageY,
+      this.position.x + 248,
+      this.position.y + 4,
       this.logoImageWidth - 6,
       this.logoImageHeight - 10
     );
   }
   showArea() {
     this.showChipArea = true;
+    this.gameUI.game.gameIsPaused = true;
   }
   hiddenArea() {
     this.showChipArea = false;
+    this.gameUI.game.gameIsPaused = false;
+    this.gameUI.game.isCompletedBarShip = false;
+
+    this.gameUI.game.currentTimeForSelectShip = 0;
   }
 }
 
@@ -118,8 +121,7 @@ export class ShowChipAreaWithChip extends ShowChipArea {
   chipArea: BattleShip[][];
   chipSelected: BattleShip[];
   chipSelector = new Image();
-  chipSelectorX = this.position.x + 23;
-  chipSelectorY = this.position.y + 275;
+
   chipSelectorWidth = 46;
   chipSelectorHeight = 46;
   maxFrame = 1;
@@ -128,14 +130,13 @@ export class ShowChipAreaWithChip extends ShowChipArea {
   chipSelectorFrameX = 0;
   chipInView = { viewX: 0, viewY: 0 };
   addSelectorImage = new Image();
-  addSelectorImageX = this.position.x + 227;
-  addSelectorImageY = this.position.y + 300;
+
   addSelectorImageWidth = 53;
   addSelectorImageHeight = 53;
-  showAddChip = false;
+  showAddChip = true;
 
-  constructor(game: TestGame) {
-    super(game);
+  constructor(gameUI) {
+    super(gameUI);
 
     this.chipArea = [
       allChipsA
@@ -155,11 +156,6 @@ export class ShowChipAreaWithChip extends ShowChipArea {
     this.drawChipSelected(c);
     this.showSelectorButtons(c);
     this.drawChipBigImage(c);
-    // if (this.chipSelected.length > 0) {
-    //   this.showADDButon = false;
-    // } else {
-    //   this.showADDButon = true;
-    // }
   }
   drawChipBigImage(c: CanvasRenderingContext2D) {
     if (this.chipInView.viewX < 5) {
@@ -173,28 +169,28 @@ export class ShowChipAreaWithChip extends ShowChipArea {
     }
   }
   showSelectorButtons(c: CanvasRenderingContext2D) {
-    if (this.chipInView.viewX == 5 && !this.showAddChip) {
+    if (this.chipInView.viewX == 5 && this.showAddChip) {
       c.drawImage(
         this.addSelectorImage,
         this.chipSelectorFrameX * this.addSelectorImageWidth,
         0,
         this.addSelectorImageWidth,
         this.addSelectorImageHeight,
-        this.addSelectorImageX,
-        this.addSelectorImageY, //
+        this.position.x + 227,
+        this.position.y + 300, //, //
         this.addSelectorImageWidth + 8,
         this.addSelectorImageHeight
       );
     }
-    if (this.showAddChip && this.chipInView.viewX == 5 && this.showADDButon) {
+    if (!this.showAddChip && this.chipInView.viewX == 5 && this.showADDButon) {
       c.drawImage(
         this.addSelectorImage,
         this.chipSelectorFrameX * this.addSelectorImageWidth,
         0,
         this.addSelectorImageWidth,
         this.addSelectorImageHeight,
-        this.addSelectorImageX,
-        this.addSelectorImageY + 50, //
+        this.position.x + 227,
+        this.position.y + 300 + 50, //
         this.addSelectorImageWidth + 8,
         this.addSelectorImageHeight
       );
@@ -228,15 +224,15 @@ export class ShowChipAreaWithChip extends ShowChipArea {
     }
 
     c.fillStyle = "#8A2BE2";
-    c.fillRect(22, 70, 164, 150);
+    c.fillRect(this.position.x + 26, 70, 164, 150);
     c.fillStyle = "#ffffff";
-    c.fillText(currentMSJ.titleA, 92, 96);
-    c.fillText(currentMSJ.titleB, 108, 126);
+    c.fillText(currentMSJ.titleA, this.position.x + 92, 96);
+    c.fillText(currentMSJ.titleB, this.position.x + 108, 126);
     c.strokeStyle = "#ffff";
-    c.strokeRect(26, 74, 156, 80);
+    c.strokeRect(this.position.x + 26, 74, 156, 80);
     c.font = "12px Mega-Man-Battle-Network-Regular";
-    c.fillText(currentMSJ.parrA, 102, 176);
-    c.fillText(currentMSJ.parrB, 108, 206);
+    c.fillText(currentMSJ.parrA, this.position.x + 102, 176);
+    c.fillText(currentMSJ.parrB, this.position.x + 108, 206);
   }
   updateFrame(deltaTime: number) {
     if (this.frameTime > this.frameInterval) {
@@ -253,8 +249,8 @@ export class ShowChipAreaWithChip extends ShowChipArea {
   drawChipArea(c: CanvasRenderingContext2D) {
     this.chipArea.forEach((row, y) => {
       row.forEach((chip, x) => {
-        let squareX = this.position.x + 26 + x * 40;
-        let squareY = this.position.y + 278 + y * 40;
+        const squareX = this.position.x + 26 + x * 40;
+        const squareY = this.position.y + 278 + y * 40;
         //
         c.save();
 
@@ -303,8 +299,8 @@ export class ShowChipAreaWithChip extends ShowChipArea {
           break;
       }
 
-      let squareX = this.position.x + 250;
-      let squareY = this.position.y + gap;
+      const squareX = this.position.x + 250;
+      const squareY = this.position.y + gap;
       chip.drawIcon(c as CanvasRenderingContext2D, squareX, squareY);
       if (chip == this.chipArea[this.chipInView.viewY][this.chipInView.viewX]) {
         c.drawImage(
@@ -322,24 +318,29 @@ export class ShowChipAreaWithChip extends ShowChipArea {
     });
   }
   moveChipSelector() {
+    if (this.showChipArea) {
+      return;
+    }
     document.addEventListener("keydown", (event) => {
       switch (event.key) {
         case "ArrowLeft":
           if (this.chipInView.viewX > 0) {
             this.chipInView.viewX--;
           }
+          if (!this.showAddChip) this.showAddChip = true;
           break;
         case "ArrowRight":
           if (this.chipInView.viewX < 5) {
             this.chipInView.viewX++;
           }
+
           break;
         case "ArrowUp":
           if (this.chipInView.viewY > 0) {
             this.chipInView.viewY--;
           }
-          if (this.chipInView.viewX == 5 && this.showAddChip) {
-            this.showAddChip = false;
+          if (this.chipInView.viewX == 5 && !this.showAddChip) {
+            this.showAddChip = true;
           }
           break;
         case "ArrowDown":
@@ -351,10 +352,10 @@ export class ShowChipAreaWithChip extends ShowChipArea {
           }
           if (
             this.chipInView.viewX == 5 &&
-            !this.showAddChip &&
+            this.showAddChip &&
             this.showADDButon
           ) {
-            this.showAddChip = true;
+            this.showAddChip = false;
           }
           break;
         case "g":
@@ -363,13 +364,32 @@ export class ShowChipAreaWithChip extends ShowChipArea {
           break;
         case "f":
           this.chipSelected.pop();
+          this.validateAddButton();
           break;
       }
     });
   }
+  validateAddButton() {
+    if (this.chipSelected.length > 0) {
+      this.showADDButon = false;
+    } else {
+      this.showADDButon = true;
+    }
+  }
+  sendChipToPlayer() {
+    if (this.chipSelected.length > 0) {
+      this.gameUI.game.players[0].addChip(this.chipSelected);
+    }
+    this.chipInView = { viewX: 0, viewY: 0 };
+    this.chipSelected = [];
+    this.hiddenArea();
+  }
   addChip() {
-    if (this.chipSelected.length < 5 && this.chipInView.viewX < 5) {
-      let chip = this.chipArea[this.chipInView.viewY][this.chipInView.viewX];
+    if (this.chipInView.viewX < 5) {
+      if (this.chipSelected.length > 5) {
+        return;
+      }
+      const chip = this.chipArea[this.chipInView.viewY][this.chipInView.viewX];
 
       if (!this.chipSelected.includes(chip)) {
         this.chipSelected.push(
@@ -380,6 +400,9 @@ export class ShowChipAreaWithChip extends ShowChipArea {
           this.addNewChip = false;
         }, 750);
       }
+      this.validateAddButton();
+    } else {
+      this.sendChipToPlayer();
     }
   }
 }

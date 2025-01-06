@@ -1,8 +1,14 @@
-import { TestGame } from "../textGame";
+import BeeTank from "../../enemys/Character/beeTank/beetank";
+import { Mettols } from "../../enemys/Character/mettol/mettol";
+import { Game } from "../../game";
+
 import { BottonCanvas } from "./botonCanvas";
+import { ShowChipAreaWithChip } from "./chipAreaSelector";
+
+const allEnemies = [Mettols, BeeTank];
 
 export class GameUI {
-  game: TestGame;
+  game: Game;
   img = new Image();
   frameX = 0;
   frameY = 0;
@@ -26,8 +32,9 @@ export class GameUI {
     }),
   ];
   toCheckDev: any[] = [];
+  chipSelected = new ShowChipAreaWithChip(this);
 
-  constructor(game: TestGame) {
+  constructor(game: Game) {
     this.img.src = "assects/UI/barWait.png";
     this.game = game;
     this.position = {
@@ -51,6 +58,7 @@ export class GameUI {
     if (this.game.isDev) {
       this.showDetails(c);
     }
+    this.chipSelected.draw(c, deltaTime);
   }
   setDevData() {
     this.toCheckDev = [
@@ -146,14 +154,14 @@ export class GameUI {
         switch (result) {
           case "Chips":
             // this.game.showAreaSelecteShip();
-            this.game.chipSelected.showArea();
+            this.chipSelected.showArea();
 
             break;
           case "ADD Enemy":
             isPress = true;
-            const arrayEnemy = Object.values(allEnemies);
+
             const randomeEnemy =
-              arrayEnemy[Math.floor(Math.random() * arrayEnemy.length)];
+              allEnemies[Math.floor(Math.random() * allEnemies.length)];
             const randomPosition = {
               x: Math.floor(Math.random() * 2),
               y: Math.floor(Math.random() * 2),

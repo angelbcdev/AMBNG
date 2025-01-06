@@ -1,5 +1,6 @@
 import { DashShoot } from "../../../attacks/dashShoot";
-import { Nodo } from "../../../master";
+import { Entity } from "../../../character/entity";
+
 import Enemy from "../../enemys";
 import {
   Mettolstates,
@@ -50,7 +51,7 @@ export class Mettols extends Enemy {
     attack: 2,
     hit: 3,
   };
-
+  states = {};
   constructor({ possition, sideToPlay, level = 1 }) {
     super({ possition, sideToPlay });
     this.image.src = levelsInfo[level].img;
@@ -125,7 +126,7 @@ export class Mettols extends Enemy {
 
   acctionKeyDown(key: string) {
     let newMatrixY = this.matrixY;
-    let newMatrixX = this.matrixX;
+    const newMatrixX = this.matrixX;
 
     const handleEvents = {
       ArrowUp: () => {
@@ -186,7 +187,7 @@ export class Mettols extends Enemy {
       this.currentState.onCollision(player);
     }
   }
-  resiveDamage(attack: Nodo) {
+  resiveDamage(attack: Entity) {
     if (this.live <= 0) {
       return;
     }

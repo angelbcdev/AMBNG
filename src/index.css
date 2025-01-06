@@ -4,3 +4,9 @@ canvas {
 body {
   background-color: black;
 }
+@font-face {
+  font-family: "Mega-Man-Battle-Network-Regular";
+  src: url("/font/webfonts_Mega-Man-Battle-Network-Regular/Mega-Man-Battle-Network-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}

@@ -31,7 +31,7 @@ export class Entity {
   side: number;
   drawxStings: { ll: number; rl: number; xl: number };
   goingToShoot: boolean;
-  AllattackToShow: Nodo[] = [];
+  AllattackToShow: Entity[] = [];
   canShoot: boolean;
 
   explosion: null; // ExplotionsEffect |
@@ -170,7 +170,7 @@ export class Entity {
     }
   }
 
-  validCollision(attack: Nodo) {
+  validCollision(attack: Entity) {
     if (
       attack.possition.x + attack.width >= this.possition.x &&
       attack.possition.x <= this.possition.x + this.width &&
@@ -220,8 +220,8 @@ export class Entity {
   }
 
   makeAttack(_?: string) {}
-  collisionArea(_: Nodo) {}
-  onCollision(_: Nodo) {}
+  collisionArea(_: Entity) {}
+  onCollision(_: Entity) {}
 
   resiveDamage(attack: any) {
     attack.canMakeDamage = false;

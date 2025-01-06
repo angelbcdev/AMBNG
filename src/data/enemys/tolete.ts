@@ -4,7 +4,7 @@ export class ToleteEnemy extends Enemy {
   speedFall: number;
   constructor({ possition, sideToPlay }) {
     super({ possition, sideToPlay });
-    this.image.src = `../../assects/enemy/tolete.png`;
+    this.image.src = `assects/enemy/tolete.png`;
     this.frameWidth = 179;
     this.frameHeight = 181;
 
@@ -20,13 +20,9 @@ export class ToleteEnemy extends Enemy {
     this.frameAjustX = 20;
 
     this.states = {
-      shoot: 0,
-      open: 1,
-      close: 2,
-      idle: 3,
-      hit: 3,
-      death: 99,
-      move: 98,
+      idle: 0,
+      attack: 1,
+      hit: 2,
     };
     this.timeForShoot = 4000;
     this.frameY = this.states.idle;

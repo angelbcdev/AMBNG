@@ -1,7 +1,6 @@
-import { Nodo } from "../master";
 import Attack from "./attacks";
 import { ExplotionsBombs } from "../../Ts/StaticAnimations.js";
-import Player from "../player/player.js";
+
 import { DashShoot } from "./dashShoot.js";
 import BeeTank from "../enemys/Character/beeTank/beetank.js";
 
@@ -92,7 +91,7 @@ export class BasicPunsh extends Attack {
     }
   }
   limitByMatrix(_: number) {}
-  attackEnemyEfect(character: Nodo) {
+  attackEnemyEfect(character: Entity) {
     if (character.side === 1) {
       character.matrixX += this.backMove;
     } else {
@@ -140,7 +139,7 @@ export class BasicSword extends Attack {
     //   this.possition.x += this.speed * deltaTime;
     // }
   }
-  attackEnemyEfect(_: Nodo) {
+  attackEnemyEfect(_: Entity) {
     // if (character.side === 1) {
     //   character.matrixX += this.backMove;
     // } else {
@@ -233,7 +232,7 @@ export class BasicMovedAttack extends Attack {
     //   this.possition.x += this.speed * deltaTime;
     // }
   }
-  attackEnemyEfect(_: Nodo) {
+  attackEnemyEfect(_: Entity) {
     // if (character.side === 1) {
     //   character.matrixX += this.backMove;
     // } else {
@@ -322,7 +321,7 @@ export class BasicGiraMove extends Attack {
     c.fillRect(this.possition.x, this.possition.y, this.width, this.height);
   }
 
-  attackEnemyEfect(_: Nodo) {
+  attackEnemyEfect(_: Entity) {
     // if (character.side === 1) {
     //   character.matrixX += this.backMove;
     // } else {
@@ -484,7 +483,7 @@ export class BasicBomb extends Attack {
       super.drawSprite(c);
     }
   }
-  attackCollision(character: Nodo) {
+  attackCollision(character: Entity) {
     if (this.explosion != null) {
       if (this.initialMatrixY == character.matrixY) this.isCollition = true;
 
@@ -496,7 +495,7 @@ export class BasicBomb extends Attack {
     }
   }
 
-  attackEnemyEfect(_: Nodo) {}
+  attackEnemyEfect(_: Entity) {}
   limitByMatrix(_: number) {}
 }
 
@@ -568,12 +567,12 @@ export class MegamanAttackBasic extends Attack {
       this.possition.x += this.speed * deltaTime;
     }
   }
-  attackCollision(_: Nodo) {
+  attackCollision(_: Entity) {
     if (!this.isVisible) {
       this.isVisible = true;
     }
   }
-  // attackCollision(_: Nodo) {
+  // attackCollision(_: Entity) {
   //   this.delete = true;
   // }
 }
@@ -620,7 +619,7 @@ export class MegamanAttackDash extends Attack {
       // this.delete = true;
     }
   }
-  attackCollision(character: Nodo) {
+  attackCollision(character: Entity) {
     if (!this.attackOuwner.isVisible) {
       if (this.attackOuwner instanceof Player) {
         this.attackOuwner.changeState(this.attackOuwner.states.idle);
@@ -686,7 +685,7 @@ export class MegamanAttackDashShoot extends Attack {
       // this.delete = true;
     }
   }
-  attackCollision(_: Nodo) {
+  attackCollision(_: Entity) {
     // if (!this.attackOuwner.isVisible) {
     //   this.attackOuwner.isVisible = true;
     //   this.isVisible = false;

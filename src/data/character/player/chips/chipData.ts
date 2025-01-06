@@ -5,8 +5,8 @@ import {
   MegamanAttackBasic,
   MegamanAttackDash,
   MegamanAttackDashShoot,
-} from "../../attacks/basicAttack";
-import { StaticBlocks } from "../../enemys/elements/block";
+} from "../../../attacks/basicAttack";
+import { StaticBlocks } from "../../../enemys/elements/block";
 
 type ActionForChip = "attack" | "fieldChange" | "heal" | "other" | "addElement";
 type SpriteState =
