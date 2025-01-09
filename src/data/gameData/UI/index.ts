@@ -4,6 +4,7 @@ import { Game } from "../../game";
 
 import { BottonCanvas } from "./botonCanvas";
 import { ShowChipAreaWithChip } from "./chipAreaSelector";
+import { Dialogue } from "./dialoque";
 
 const allEnemies = [Mettols, BeeTank];
 
@@ -31,6 +32,7 @@ export class GameUI {
       isAviable: true,
     }),
   ];
+  dialogue = new Dialogue("adioss");
   toCheckDev: any[] = [];
   chipSelected = new ShowChipAreaWithChip(this);
 
@@ -59,6 +61,7 @@ export class GameUI {
       this.showDetails(c);
     }
     this.chipSelected.draw(c, deltaTime);
+    this.dialogue.draw(c, deltaTime);
   }
   setDevData() {
     this.toCheckDev = [

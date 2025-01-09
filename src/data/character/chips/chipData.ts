@@ -1,10 +1,12 @@
-import { BasicBomb } from "../../../attacks/megamanAttack/basicBomp";
-import { BasicPunch } from "../../../attacks/megamanAttack/basicPunch";
-import { BasicSword } from "../../../attacks/megamanAttack/basicSword";
-import { MegamanAttackBasic } from "../../../attacks/megamanAttack/MegamanAttackBasic";
-import { MegamanAttackDash } from "../../../attacks/megamanAttack/MegamanAttackDash";
-import { MegamanAttackDashShoot } from "../../../attacks/megamanAttack/MegamanAttackDashShoot";
-import { StaticBlocks } from "../../../enemys/elements/block";
+import {
+  BasicBomb,
+  BasicPunsh,
+  BasicSword,
+  MegamanAttackBasic,
+  MegamanAttackDash,
+  MegamanAttackDashShoot,
+} from "../../attacks/basicSecondAttack";
+import { StaticBlocks } from "../../enemys/elements/block";
 
 type ActionForChip = "attack" | "fieldChange" | "heal" | "other" | "addElement";
 type SpriteState =
@@ -28,7 +30,7 @@ type GameChange =
 type ElementToAdd =
   | StaticBlocks
   | BasicBomb
-  | BasicPunch
+  | BasicPunsh
   | BasicSword
   | MegamanAttackBasic
   | MegamanAttackDash
@@ -101,7 +103,7 @@ const allChipsData: ChipData[] = [
     actionForChip: "attack",
     spriteState: "punsh",
     finiteMachine: "USESHIP",
-    chipProyectile: BasicPunch,
+    chipProyectile: BasicPunsh,
     timeForAttack: 300,
   },
   {

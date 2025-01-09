@@ -1,4 +1,5 @@
 import { Entity } from "../character/entity";
+import { Game } from "../game";
 
 export interface TCreateAttack {
   possition: { x: number; y: number };
@@ -6,9 +7,9 @@ export interface TCreateAttack {
   color: string;
   damage: number;
   origin: string;
-  game: any;
+  game: Game;
   faceToLeft?: boolean;
-  Attack?: any;
+  Attack?: Attack;
 }
 
 class Attack extends Entity {

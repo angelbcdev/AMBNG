@@ -1,5 +1,6 @@
 import Attack from "../../../attacks/attacks";
-import { BasicBomb } from "../../../attacks/basicAttack";
+import { BasicBomb } from "../../../attacks/megamanAttack/basicBomp";
+
 import { StaticAttack } from "../../../attacks/statickAttack";
 import PlayerBlue from "../../../character/player/Player";
 
@@ -160,7 +161,7 @@ export default class BeeTank extends Enemy {
 
           this.buttomFloor = this.game.matrix.length * 97;
           this.possition = {
-            x: x * this.jump + this.blockSize.w / 2 - this.width,
+            x: x * this.jump + this.blockSize.w / 2 - this.width + 12,
             y: y * this.jump + gap + 15,
           };
         }
@@ -207,7 +208,7 @@ export default class BeeTank extends Enemy {
     try {
       isAvailable =
         this.game.matrix[this.matrixY][this.matrixX]?.side == this.side;
-    } catch (error) {
+    } catch (_) {
       this.matrixX = 0;
     }
 

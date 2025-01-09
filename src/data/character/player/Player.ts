@@ -1,9 +1,8 @@
-import {
-  BasicPunsh,
-  MegamanAttackBasic,
-  MegamanAttackDash,
-} from "../../attacks/basicAttack.ts";
+import Attack from "../../attacks/attacks.ts";
 
+import { BasicPunch } from "../../attacks/megamanAttack/basicPunch.ts";
+import { MegamanAttackBasic } from "../../attacks/megamanAttack/MegamanAttackBasic.ts";
+import { MegamanAttackDash } from "../../attacks/megamanAttack/MegamanAttackDash.ts";
 import { Entity } from "../entity";
 
 import { BattleShip } from "./chips/index.ts";
@@ -126,7 +125,7 @@ export class Player extends Entity {
     this.showAnimation(c, deltaTime);
   }
 
-  onCollision(attack: any) {
+  onCollision(attack: Attack) {
     super.onCollision(attack);
     const defefense = attack.damage * (this.defense / 100);
 
@@ -261,7 +260,7 @@ export class Player extends Entity {
         this.damageExtra = 50;
         const damage = this.damage + this.damageExtra;
         this.addAttack({
-          typeElemetns: BasicPunsh,
+          typeElemetns: BasicPunch,
           damage,
           type: this.chipType,
         });
@@ -279,7 +278,7 @@ export class Player extends Entity {
     this.currentState.enter();
   }
 
-  resiveDamage(attack: any) {
+  resiveDamage(attack: Attack) {
     attack.canMakeDamage = false;
 
     if (this.currentState.name === "Shield") {

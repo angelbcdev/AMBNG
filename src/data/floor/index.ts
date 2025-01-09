@@ -1,3 +1,6 @@
+import Attack from "../attacks/attacks";
+import { Entity } from "../character/entity";
+
 const visualFloor = {
   0: {
     normal: 0,
@@ -76,12 +79,12 @@ export class FloorBase {
   game: any;
   floorToChange: null | number = null;
   isVisible: boolean = true;
-  timerForAppear: number = 10000;
+  timerForAppear: number = 5000;
   timeStartForBlink: number = this.timerForAppear - 1500;
   timerBlink: number = 0;
   blink: boolean = false;
   showImagen: boolean = true;
-  characterFloor: null | any = null;
+  characterFloor: null | Entity = null;
   nameFloor: string = "";
   isChangeFloor: boolean = false;
   timeToChangeFloor: number = 5000;
@@ -154,13 +157,9 @@ export class FloorBase {
     if (!this.isVisible) {
       if (this.timerBlink > this.timeStartForBlink) {
         this.blink = true;
-        this.timerBlink = 0;
       } else {
         this.timerBlink += deltaTime;
       }
-    } else {
-      this.blink = false;
-      this.timerBlink = 0;
     }
 
     this.paintMakeChangeFloor(c, deltaTime);
@@ -298,7 +297,7 @@ export class FloorBase {
       c.restore();
     }
   }
-  validateCharacter(characters: any[]) {
+  validateCharacter(characters: Entity[]) {
     for (const character of characters) {
       const isCharacterInZone =
         character.possition.x + character.width >= this.x &&
@@ -313,34 +312,24 @@ export class FloorBase {
       }
     }
   }
-  pressCharacterFloor(character: any) {
+  pressCharacterFloor(character: Entity) {
     // Si el personaje entra en la zona, solo cambiar el estado si no está en proceso de cambio
     if (
-      this.floorToChange === null &&
+      this.isChangeFloor === false &&
       this.floorState === floorStatus.GRIETA &&
       this.characterFloor === null
     ) {
       this.characterFloor = character;
-      // this.floorToChange = testgame.floors.findIndex(
-      //   (floor) =>
-      //     floor.matrixX === this.matrixX && floor.matrixY === this.matrixY
-      // );
-    }
-    if (this.floorState === floorStatus.GRIETA && this.floorToChange === null) {
-      this.game.matrix[this.matrixY][this.matrixX].side = 3;
-      this.isVisible = false;
-      this.frameX = visualFloor[3][floorStatus.NORMAL];
-      this.timerBlink = 0;
-      this.blink = false;
+      this.isChangeFloor = true;
     }
   }
-  releaseCharacterFloor(character: any) {
+  releaseCharacterFloor(character: Entity) {
     // Si el personaje sale de la zona, restauramos el estado a NORMAL si estaba en GRIETA
     if (
-      this.floorToChange !== null &&
       this.floorState === floorStatus.GRIETA &&
       this.characterFloor == character
     ) {
+      console.log("character", character);
       this.unAvailableFloor();
     }
   }
@@ -379,7 +368,7 @@ export class FloorBase {
     // }
   }
 
-  validateAttack(attacks: any[]) {
+  validateAttack(attacks: Attack[]) {
     for (const attack of attacks) {
       if (attack.initialMatrixY !== this.matrixY) return;
       if (
@@ -409,12 +398,11 @@ export class FloorBase {
     this.isVisible = false;
     this.frameX = visualFloor[3][floorStatus.NORMAL];
     this.floorToChange = null;
-    this.timerBlink = 0;
-    this.blink = false;
 
     setTimeout(() => {
       this.floorState = floorStatus.NORMAL;
       this.isVisible = true;
+      this.isChangeFloor = true;
       this.characterFloor = null;
       this.game.matrix[this.matrixY][this.matrixX].side = this.side;
       this.frameX = visualFloor[this.side][this.floorState];

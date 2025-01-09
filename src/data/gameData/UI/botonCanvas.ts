@@ -35,9 +35,9 @@ export class BottonCanvas {
   }
   checkClick(x: number, y: number): string {
     if (
-      x + 50 > this.position.x &&
+      x + 16 > this.position.x &&
       x < this.position.x + this.width &&
-      y + 50 > this.position.y &&
+      y + 16 > this.position.y &&
       y < this.position.y + this.height
     ) {
       return this.title;

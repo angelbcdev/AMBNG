@@ -168,7 +168,7 @@ export class Game {
       level: level,
     });
 
-    if (this.npc.length < 2) {
+    if (this.npc.length < 3) {
       enemy.game = this;
 
       this.npc.push(enemy);

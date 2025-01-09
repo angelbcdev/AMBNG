@@ -53,11 +53,13 @@ export class BattleShip {
   finiteMachine: string;
   spriteState: string;
   elementToAdd: string;
+  id: string;
 
   constructor({ title }: { title: string }) {
     const currentChip = allChipsA.find(
       (chip) => chip.title === title
     ) as ChipData;
+    this.id = currentChip.id;
     this.image.src = currentChip.image;
     this.name = currentChip.title;
     this.chipType = currentChip.chipType;
@@ -74,12 +76,12 @@ export class BattleShip {
     this.elementToAdd = currentChip.elementToAdd;
   }
   draw(c: CanvasRenderingContext2D, x: number, _: number) {
-    let realX =
+    const realX =
       x < 7
         ? (x * this.with) / this.size + x + 7
         : ((x - 7) * this.with) / this.size + x;
 
-    let realY = x < 7 ? 50 : 90 + 3;
+    const realY = x < 7 ? 50 : 90 + 3;
     try {
       c.fillStyle = x == 0 ? "red" : "blue";
       c.fillRect(realX - 3, realY - 3, this.with / 1.9, this.height / 1.9);
@@ -101,7 +103,7 @@ export class BattleShip {
 
     c.fillStyle = "white";
 
-    let live = this.damage > 0 ? `${this.damage}` : "";
+    const live = this.damage > 0 ? `${this.damage}` : "";
     c.fillText(live, realX + 8, realY + 6);
   }
   userMakeAttack(player: PlayerBlue) {

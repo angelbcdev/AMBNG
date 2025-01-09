@@ -1,3 +1,5 @@
+import Attack from "../attacks/attacks.js";
+import { ExplotionsBombs } from "../extra/StaticAnimations.js";
 export class Entity {
   matrixX: number;
   matrixY: number;
@@ -34,8 +36,8 @@ export class Entity {
   AllattackToShow: Entity[] = [];
   canShoot: boolean;
 
-  explosion: null; // ExplotionsEffect |
-  proyoectile: any;
+  explosion: ExplotionsBombs; // ExplotionsEffect |
+  proyoectile: Attack;
   width: number;
   height: number;
   frameWidth = 70;
@@ -120,7 +122,7 @@ export class Entity {
       } else {
         this.game.matrix[this.matrixY][this.matrixX].ocupated = false;
       }
-    } catch (error) {}
+    } catch (_) {}
   }
 
   update(_: CanvasRenderingContext2D, __: number) {
@@ -170,19 +172,19 @@ export class Entity {
     }
   }
 
-  validCollision(attack: Entity) {
+  validCollision(attack: Attack) {
     if (
       attack.possition.x + attack.width >= this.possition.x &&
       attack.possition.x <= this.possition.x + this.width &&
       attack.possition.y + attack.height >= this.possition.y &&
       attack.possition.y <= this.possition.y + this.height
     ) {
-      this.beforeDamage(attack as any);
+      this.beforeDamage(attack);
     }
   }
 
   checkCollision() {
-    this.collisionAttacks.forEach((attack: any) => {
+    this.collisionAttacks.forEach((attack: Attack) => {
       if (
         attack.attackOuwner === this &&
         attack.attackOuwner.matrixY === this.matrixY
@@ -223,7 +225,7 @@ export class Entity {
   collisionArea(_: Entity) {}
   onCollision(_: Entity) {}
 
-  resiveDamage(attack: any) {
+  resiveDamage(attack: Attack) {
     attack.canMakeDamage = false;
     this.live -= attack.damage;
 
@@ -243,7 +245,7 @@ export class Entity {
       this.makeDeath();
     }
   }
-  beforeDamage(attack: any) {
+  beforeDamage(attack: Attack) {
     if (this.live <= 0) {
       return;
     }
