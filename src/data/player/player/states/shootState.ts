@@ -1,5 +1,5 @@
 import { PlayerState } from ".";
-import { Player } from "../player";
+import { Player } from "../Player";
 
 export class ShootState extends PlayerState {
   timeForCharge = 2000;
@@ -7,7 +7,7 @@ export class ShootState extends PlayerState {
   canCountTimer = false;
 
   constructor(player: Player) {
-    super("shoot", player);
+    super("shoot2", player);
   }
   enter(): void {
     super.enter();
@@ -23,11 +23,11 @@ export class ShootState extends PlayerState {
       this.player.frameY == this.player.states.shoot &&
       this.player.frameX == this.player.maxFrame
     ) {
-      this.player.frameY = this.player.states.idle;
+      // this.player.frameY = this.player.states.idle;
     }
 
     if (this.canCountTimer) {
-      this.player.frameY = this.player.states.idle;
+      // this.player.frameY = this.player.states.idle;
 
       if (this.timer >= this.timeForCharge) {
         this.timer = 0;

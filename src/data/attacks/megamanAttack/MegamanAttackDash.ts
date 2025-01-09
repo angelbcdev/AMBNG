@@ -1,5 +1,5 @@
-import { Entity } from "../../character/entity";
-import { Player } from "../../character/player/Player";
+import { Entity } from "../../player/entity";
+import { Player } from "../../player/player/Player";
 import Attack from "../attacks";
 import { DashShoot } from "../dashShoot";
 

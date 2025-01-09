@@ -1,4 +1,4 @@
-import { Entity } from "../character/entity";
+import { Entity } from "../player/entity";
 import { Game } from "../game";
 
 export interface TCreateAttack {

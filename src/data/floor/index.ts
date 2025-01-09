@@ -1,5 +1,5 @@
 import Attack from "../attacks/attacks";
-import { Entity } from "../character/entity";
+import { Entity } from "../player/entity";
 
 const visualFloor = {
   0: {

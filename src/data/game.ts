@@ -1,6 +1,6 @@
 import { BackGround } from "./backGround";
-import { Entity } from "./character/entity";
-import PlayerBlue from "./character/player/Player";
+import { Entity } from "./player/entity";
+import PlayerBlue from "./player/player/Player";
 
 import { FloorBase } from "./floor";
 import { matrix } from "./gameData/matrix";

@@ -2,8 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { Game } from './data/game'
-import { Dialogue } from './data/gameData/UI/dialoque'
+
 import { DevFucntions } from './components/DevFucntions'
+import Joystick from './components/joystick'
 // import { TestGame } from './Ts/textGame'
 
 
@@ -40,10 +41,12 @@ document.getElementById("canvas").addEventListener("click", (e) => {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <main>
+    <main className="bg-blue-200 w-[430px] h-screen">
       <DevFucntions />
+
+      <Joystick game={game} />
     </main>
-    <h1>hello from react</h1>
+
   </StrictMode>
 )
 

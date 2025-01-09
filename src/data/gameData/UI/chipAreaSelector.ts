@@ -1,6 +1,6 @@
 import { GameUI } from ".";
-import { BattleShip } from "../../character/player/chips";
-import { allChipsA } from "../../character/player/chips/chipData";
+import { BattleShip } from "../../player/player/chips";
+import { allChipsA } from "../../player/player/chips/chipData";
 
 export class ShowChipAreaWithChip {
   mainImage = new Image();
@@ -317,7 +317,7 @@ export class ShowChipAreaWithChip {
       this.gameUI.game.players[0].addChip(this.chipSelected);
       this.currentRawChip = 1;
     }
-    this.chipInView = { viewX: 0, viewY: 0 };
+
     this.chipSelected = [];
 
     this.hiddenArea();
@@ -404,6 +404,7 @@ export class ShowChipAreaWithChip {
     );
   }
   showArea() {
+    this.chipInView = { viewX: 0, viewY: 0 };
     this.showChipArea = true;
     this.gameUI.game.gameIsPaused = true;
     this.prepareChipArea();
@@ -433,6 +434,5 @@ export class ShowChipAreaWithChip {
     }
 
     this.chipArea = chipToPlay.slice(0, this.currentRawChip);
-    console.log("this.chipUsed---->>", availableChips);
   }
 }

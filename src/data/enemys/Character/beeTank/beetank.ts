@@ -2,7 +2,7 @@ import Attack from "../../../attacks/attacks";
 import { BasicBomb } from "../../../attacks/megamanAttack/basicBomp";
 
 import { StaticAttack } from "../../../attacks/statickAttack";
-import PlayerBlue from "../../../character/player/Player";
+import PlayerBlue from "../../../player/player/Player";
 
 import Enemy from "../../enemys";
 import { Idle, MoveDown, MoveUp, AttackS } from "./state";

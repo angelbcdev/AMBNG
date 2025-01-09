@@ -6,11 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React + TS</title>
   </head>
-  <body class="bg-black flex justify-center items-center">
+  <body id="game" class="bg-black flex justify-center items-center">
     <div class="w-[430px] relative">
       <canvas id="canvas"></canvas>
       <div id="root"></div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      document.getElementById("game").addEventListener("touchmove", (e) => {
+        e.preventDefault();
+      });
+    </script>
   </body>
 </html>

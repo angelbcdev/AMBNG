@@ -1,5 +1,5 @@
 import { DashShoot } from "../../../attacks/dashShoot";
-import { Entity } from "../../../character/entity";
+import { Entity } from "../../../player/entity";
 
 import Enemy from "../../enemys";
 import {
