@@ -1,3 +1,4 @@
+import { GAME_IN_BATTLE } from "../../../game_STATE.ts";
 import Attack from "../../attacks/attacks.ts";
 
 import { BasicPunch } from "../../attacks/megamanAttack/basicPunch.ts";
@@ -211,6 +212,7 @@ export class Player extends Entity {
   }
 
   handleInput() {
+    if (GAME_IN_BATTLE) return;
     document.addEventListener("keydown", (event) => {
       this.currentState.acctionKeyDown(event.key);
     });
@@ -297,8 +299,6 @@ export class Player extends Entity {
     }
   }
   addChip(chips: BattleShip[]) {
-    console.log("chips", chips);
-
     this.allChips = chips;
   }
   clearShips() {

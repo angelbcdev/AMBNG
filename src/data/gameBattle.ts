@@ -8,7 +8,10 @@ import { GameUI } from "./gameData/UI";
 import { ToleteEnemy } from "./enemys/tolete";
 import { GAMEBATTLEOFF } from "../game_STATE";
 import { CannonDumb } from "./enemys/Character/cannon/cannonDumb";
+import { Mettols } from "./enemys/Character/mettol/mettol";
+import BeeTank from "./enemys/Character/beeTank/beetank";
 
+const allEnemies = [Mettols, BeeTank, CannonDumb, ToleteEnemy];
 export class BatleGame {
   floors: FloorBase[] = [];
   gameIsPaused = true;
@@ -32,11 +35,23 @@ export class BatleGame {
   canvasTime = 0;
   currentMove = 50;
   hasEnemys = false;
+  timeInBattle = 0;
+  totalTimeInBattle = 0;
   constructor() {
     this.floors = ubicateFloors({ array: matrix, blockSize: 64, gapX: 6.5 });
     this.initGame();
   }
-  startNewBattle({ backGround = 0, allEnemies = [], floorImage = 0 }) {
+  startNewBattle({ backGround = 0, allEnemiesS = [], floorImage = 0 }) {
+    this.gameUI.chipSelected.chipUsed = [];
+    this.npc = [];
+
+    this.players[0].live = 100;
+    this.gameUI.clearImagePosition = {
+      x: -this.gameUI.clearImageViewPort,
+      y: this.gameUI.clearImagePosition.y,
+    };
+    this.timeInBattle = 0;
+    this.totalTimeInBattle = 0;
     this.currentTimeForSelectShip = 0;
     this.canvasTime = 0;
     this.gameIsPaused = true;
@@ -50,10 +65,18 @@ export class BatleGame {
       floor.updateImageFloor(floorImage);
     });
 
+    const randomeEnemy =
+      allEnemies[Math.floor(Math.random() * allEnemies.length)];
+    const randomPosition = {
+      x: Math.floor(Math.random() * 2),
+      y: Math.floor(Math.random() * 2),
+    };
+    const randomLevel = Math.floor(Math.random() * 3 + 1);
+
     this.addNewEnemy({
-      newEnemy: CannonDumb,
-      position: { x: 1, y: 1 },
-      level: 1,
+      newEnemy: randomeEnemy,
+      position: randomPosition,
+      level: randomLevel,
     });
   }
   initGame() {
@@ -103,11 +126,23 @@ export class BatleGame {
   }
   update(c: CanvasRenderingContext2D, deltaTime: number) {
     if (this.gameIsPaused) return;
+
     this.hasEnemys = this.npc.length > 0;
     if (!this.hasEnemys) {
+      this.gameUI.clearStateImg(c, deltaTime, this.totalTimeInBattle);
       setTimeout(() => {
         GAMEBATTLEOFF();
       }, 2000);
+    } else {
+      if (this.timeInBattle > 1000) {
+        this.timeInBattle = 0;
+        this.totalTimeInBattle++;
+      } else {
+        this.timeInBattle += deltaTime;
+      }
+      if (this.players[0].live <= 0) {
+        GAMEBATTLEOFF();
+      }
     }
 
     this.npc = this.npc.filter((enemy: Entity) => {

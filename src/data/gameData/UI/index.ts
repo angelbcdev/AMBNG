@@ -35,6 +35,12 @@ export class GameUI {
   dialogue = new Dialogue("adioss");
   toCheckDev: any[] = [];
   chipSelected = new ShowChipAreaWithChip(this);
+  clearImage = new Image();
+  clearImageViewPort = 420;
+  clearImageWidth = 1029;
+  clearImageHeight = 710;
+  clearImageisVisible = true;
+  clearImagePosition = { x: 5, y: 50 };
 
   constructor(game: Game) {
     this.img.src = "assects/UI/barWait.png";
@@ -43,6 +49,44 @@ export class GameUI {
       x: 90,
       y: -10,
     };
+    this.clearImage.src = "/assects/clearBattleImg.png";
+    this.clearImagePosition = { x: -this.clearImageViewPort, y: 50 };
+  }
+  clearStateImg(
+    c: CanvasRenderingContext2D,
+    deltaTime: number,
+    totalTimeInBattle: number
+  ) {
+    if (this.clearImagePosition.x < 5) {
+      this.clearImagePosition = {
+        ...{
+          y: this.clearImagePosition.y,
+          x: (this.clearImagePosition.x += 0.8 * deltaTime),
+        },
+      };
+    }
+
+    c.drawImage(
+      this.clearImage,
+      0,
+      0,
+      this.clearImageWidth,
+      this.clearImageHeight,
+      this.clearImagePosition.x,
+      this.clearImagePosition.y,
+      this.clearImageViewPort,
+      280
+    );
+    this.showText(c, "Stage Clears", {
+      x: this.clearImagePosition.x + 200,
+      y: this.clearImagePosition.y + 64,
+    });
+    const minutes = Math.floor(totalTimeInBattle / 60);
+    const seconds = totalTimeInBattle % 60;
+    this.showText(c, `Time    M${minutes}  S${seconds}`, {
+      x: this.clearImagePosition.x + 200,
+      y: this.clearImagePosition.y + 116,
+    });
   }
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
     this.paintBarContainer(c);

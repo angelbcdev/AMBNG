@@ -5,7 +5,6 @@ export class CannonDumpAttack extends Attack {
   constructor(data) {
     super(data);
     this.game = data.game;
-    console.log("attackOuwner", data.attackOuwner);
 
     this.color = "#ff0070" + "80";
     this.width = 30;

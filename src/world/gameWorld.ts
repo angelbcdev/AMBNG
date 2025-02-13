@@ -104,7 +104,7 @@ class WordPlayer {
   };
   keyPress = [""];
   savePosition = { x: 0, y: 0 };
-  speed = 1;
+  speed = 2.5;
 
   constructor() {
     this.image.src = "/assects/world/megaman176_x_162.png";
@@ -219,10 +219,14 @@ class WordPlayer {
           this.playerMove = { ...this.playerMove, up: false };
           this.y = floor.y + (floor.height + gap);
         }
+        return;
       } else {
-        floor.isDelete = true;
-        GAMEBATTLE();
-        game.startNewBattle({ backGround: 3, allEnemies: [], floorImage: 2 });
+        if (!floor.isDelete && !GAME_IN_BATTLE) {
+          floor.isDelete = true;
+          GAMEBATTLE();
+          game.startNewBattle({ backGround: 3, allEnemies: [], floorImage: 2 });
+          return;
+        }
       }
     }
   }
@@ -236,7 +240,7 @@ class WordPlayer {
   }
   input() {
     document.addEventListener("keydown", (e) => {
-      // if (!this.cameraMove) return;
+      if (GAME_IN_BATTLE) return;
 
       switch (e.key) {
         case "ArrowLeft":

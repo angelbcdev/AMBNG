@@ -1,3 +1,4 @@
+import { GAMEBATTLEOFF } from "../../../../game_STATE";
 import Player, { playerAllAttacks } from "../player";
 
 const moves = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
@@ -21,10 +22,10 @@ export class PlayerState {
       return;
     }
 
-    let nwMatrixY = this.player.matrixY;
-    let nwMatrixX = this.player.matrixX;
+    const nwMatrixY = this.player.matrixY;
+    const nwMatrixX = this.player.matrixX;
 
-    let { newMatrixY, newMatrixX } = this.whichtKeyDown(
+    const { newMatrixY, newMatrixX } = this.whichtKeyDown(
       key,
       nwMatrixY,
       nwMatrixX
@@ -68,7 +69,7 @@ export class PlayerState {
         }
       },
       g: () => {
-        console.log("relsea g");
+        return;
       },
     };
     if (handleEvents[key]) {
@@ -106,6 +107,9 @@ export class PlayerState {
           this.useShip();
         }
       },
+      v: () => {
+        GAMEBATTLEOFF();
+      },
     };
 
     if (handleEvents[key]) {
@@ -116,7 +120,7 @@ export class PlayerState {
   }
 
   useShip() {
-    let chip = this.player.allChips.shift();
+    const chip = this.player.allChips.shift();
     if (!chip) {
       return;
     }
