@@ -217,7 +217,7 @@ export class GameUI {
       this.showText(c, "Paused", { x: 210, y: 100 });
     }
     if (!this.game.hasEnemys) {
-      this.showText(c, "Stage Clear", { x: 210, y: 100 });
+      this.showText(c, "Stage Clears", { x: 210, y: 100 });
     }
   }
 }

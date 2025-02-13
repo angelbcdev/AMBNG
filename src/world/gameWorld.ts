@@ -1,4 +1,12 @@
+import { GAME_IN_BATTLE, GAMEBATTLE } from "../game_STATE";
+import { game } from "../main";
+import { FloorRoad } from "./class";
 import { createWorld, matrix01 } from "./utils";
+
+const bg = new Image();
+bg.src = "/assects/world/world00.png";
+bg.width = 1123;
+bg.height = 693;
 
 export class GameWorld {
   map: FloorRoad[] = [];
@@ -7,41 +15,31 @@ export class GameWorld {
   constructor() {
     this.map = createWorld(matrix01);
   }
-  draw(c: CanvasRenderingContext2D) {
+  draw(c: CanvasRenderingContext2D, deltaTime: number) {
+    this.map = this.map.filter((floor) => !floor.isDelete);
     this.playerWorld.allBlocks = this.map;
-    c.save();
-    c.scale(2, 2);
-    c.rotate(-0.4);
-    // console.log("this.playerWorld.camera", this.playerWorld.camera);
 
-    c.translate(this.playerWorld.camera.moveX, this.playerWorld.camera.moveY);
-    c.fillStyle = "blue";
-    c.fillRect(0, 0, 430, 400);
-    this.map.forEach((floor) => {
-      floor.draw(c);
-      this.playerWorld.isRoad(floor);
-    });
-    this.playerWorld.update(c);
+    if (!GAME_IN_BATTLE) {
+      c.save();
+      c.scale(1.5, 1.5);
+      c.translate(this.playerWorld.camera.moveX, this.playerWorld.camera.moveY);
+      c.drawImage(bg, 0, 0, bg.width, bg.height);
 
-    c.restore();
-  }
-}
+      this.map.forEach((floor) => {
+        floor.draw(c);
+        this.playerWorld.isRoad(floor);
+      });
 
-export class FloorRoad {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+      this.playerWorld.update(c);
+      c.restore();
+    } else {
+      game.draw(c, deltaTime);
+      game.update(c, deltaTime);
 
-  constructor(x: number, y: number, width: number, height: number) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-  }
-  draw(c: CanvasRenderingContext2D) {
-    c.fillStyle = "green";
-    c.fillRect(this.x, this.y, this.width, this.height);
+      // setTimeout(() => {
+      //   this.playerWorld.isInBattle = false;
+      // }, 1000);
+    }
   }
 }
 
@@ -51,7 +49,32 @@ class WordPlayer {
   width: number;
   height: number;
   velocity = { x: 0, y: 0 };
-  cameraMove = { x: true, y: true };
+  frameTime = 0;
+  frameInterval = 1000 / 12;
+  frameX = 0;
+
+  moveFrameX = 23;
+  moveFrameY = 35;
+  frameWidth = 176;
+  frameHeight = 162;
+  maxFrame = 5;
+  fps = 12;
+  image = new Image();
+
+  allAnimations = {
+    comming: 0,
+    runDown: 1,
+    runUp: 2,
+    runLeft: 3,
+    runRight: 4,
+    idleDown: 5,
+    idleUp: 6,
+    idleLeft: 7,
+    idleRight: 8,
+  };
+  frameY = this.allAnimations.idleDown;
+
+  cameraMove = true;
   playerMove = {
     left: true,
     right: true,
@@ -67,8 +90,8 @@ class WordPlayer {
   mundo = {
     x: 0,
     y: 0,
-    w: 430,
-    h: 430,
+    w: bg.width,
+    h: bg.height,
   };
   camera: {
     x: number;
@@ -79,50 +102,88 @@ class WordPlayer {
     moveX: number;
     moveY: number;
   };
+  keyPress = [""];
   savePosition = { x: 0, y: 0 };
+  speed = 1;
 
   constructor() {
-    this.x = 130 / 2 - 16 / 2;
-    this.y = 280 / 2 - 16 / 2;
+    this.image.src = "/assects/world/megaman176_x_162.png";
+    this.x = 135; /// 2 - 16 / 2;
+    this.y = 85; /// 2 - 16 / 2;
     this.width = 16;
     this.height = 16;
 
     this.camera = {
       x: this.x,
       y: this.y,
-      w: 400,
-      h: 400,
+      w: 300,
+      h: 300,
       isFollowing: true,
       moveX: 0,
       moveY: 0,
     };
+    this.updateCamera();
   }
-  update(c) {
+  updateFrame(c: CanvasRenderingContext2D, deltaTime: number) {
+    if (this.frameTime >= this.frameInterval) {
+      this.frameTime = 0;
+      if (this.frameX < this.maxFrame) this.frameX++;
+      else this.frameX = 0;
+    } else {
+      this.frameTime += deltaTime;
+    }
+
+    c.drawImage(
+      this.image,
+      this.frameX * this.frameWidth,
+      this.frameY * this.frameHeight,
+      this.frameWidth,
+      this.frameHeight,
+      this.x - this.moveFrameX,
+      this.y - this.moveFrameY,
+      64,
+      64
+    );
+  }
+  update(c: CanvasRenderingContext2D, deltaTime = 16.66) {
     this.x += this.velocity.x;
     this.y += this.velocity.y;
     this.input();
-    this.draw(c);
     this.updateCamera();
+    this.draw(c);
+    this.updateFrame(c, deltaTime);
 
-    if (!this.cameraMove.x) {
+    if (!this.cameraMove) {
       if (
-        this.x + this.width < this.savePosition.x ||
-        this.x - this.width > this.savePosition.x
+        !this.playerMove.left &&
+        this.x - this.width / 3 > this.savePosition.x
       ) {
-        this.cameraMove.x = true;
-
-        if (!this.playerMove.left) this.playerMove.left = true;
-        if (!this.playerMove.right) this.playerMove.right = true;
+        this.playerMove.left = true;
+        this.cameraMove = true;
       }
-    }
-    if (!this.cameraMove.y) {
+
       if (
-        this.y + this.height < this.savePosition.y ||
-        this.y - this.height > this.savePosition.y
+        !this.playerMove.right &&
+        this.x + this.width / 3 < this.savePosition.x
       ) {
-        this.cameraMove.y = true;
-        if (!this.playerMove.up) this.playerMove.up = true;
-        if (!this.playerMove.down) this.playerMove.down = true;
+        this.cameraMove = true;
+
+        this.playerMove.right = true;
+      }
+      if (
+        !this.playerMove.up &&
+        this.y - this.height / 3 > this.savePosition.y
+      ) {
+        this.cameraMove = true;
+
+        this.playerMove.up = true;
+      }
+      if (
+        !this.playerMove.down &&
+        this.y + this.height / 3 < this.savePosition.y
+      ) {
+        this.cameraMove = true;
+        this.playerMove.down = true;
       }
     }
   }
@@ -134,30 +195,34 @@ class WordPlayer {
       this.y < floor.y + floor.height &&
       this.y + this.height > floor.y
     ) {
-      if (this.cameraMove.x && this.cameraMove.y) {
-        this.savePosition = { x: this.x, y: this.y };
-      }
-      if (this.velocity.x > 0) {
-        this.velocity.x = 0;
+      if (floor.isCollision) {
+        if (this.cameraMove) {
+          this.cameraMove = false;
 
-        this.x = floor.x - (this.width + gap);
-        this.playerMove = { ...this.playerMove, right: false };
-        this.cameraMove.x = false;
-      } else if (this.velocity.x < 0) {
-        this.velocity.x = 0;
-        this.cameraMove.x = false;
-        this.playerMove = { ...this.playerMove, left: false };
-        this.x = floor.x + (floor.width + gap);
-      } else if (this.velocity.y > 0) {
-        this.velocity.y = 0;
-        this.cameraMove.y = false;
-        this.playerMove = { ...this.playerMove, down: false };
-        this.y = floor.y - (this.height + gap);
-      } else if (this.velocity.y < 0) {
-        this.velocity.y = 0;
-        this.cameraMove.y = false;
-        this.playerMove = { ...this.playerMove, up: false };
-        this.y = floor.y + (floor.height + gap);
+          this.savePosition = { x: this.x, y: this.y };
+        }
+        if (this.velocity.x > 0 && this.playerMove.right) {
+          this.velocity.x = 0;
+
+          this.x = floor.x - (this.width + gap);
+          this.playerMove = { ...this.playerMove, right: false };
+        } else if (this.velocity.x < 0 && this.playerMove.left) {
+          this.velocity.x = 0;
+          this.playerMove = { ...this.playerMove, left: false };
+          this.x = floor.x + (floor.width + gap);
+        } else if (this.velocity.y > 0 && this.playerMove.down) {
+          this.velocity.y = 0;
+          this.playerMove = { ...this.playerMove, down: false };
+          this.y = floor.y - (this.height + gap);
+        } else if (this.velocity.y < 0 && this.playerMove.up) {
+          this.velocity.y = 0;
+          this.playerMove = { ...this.playerMove, up: false };
+          this.y = floor.y + (floor.height + gap);
+        }
+      } else {
+        floor.isDelete = true;
+        GAMEBATTLE();
+        game.startNewBattle({ backGround: 3, allEnemies: [], floorImage: 2 });
       }
     }
   }
@@ -176,27 +241,37 @@ class WordPlayer {
       switch (e.key) {
         case "ArrowLeft":
           if (this.playerMove.left) {
-            // this.velocity.y = 0;
-            this.velocity.x = -1;
+            this.frameY = this.allAnimations.runLeft;
+            this.velocity.y = 0;
+            // this.velocity.y = this.speed * 0.5;
+            this.velocity.x = -this.speed;
           }
           break;
 
         case "ArrowRight":
           if (this.playerMove.right) {
-            // this.velocity.y = 0;
-            this.velocity.x = 1;
+            this.frameY = this.allAnimations.runRight;
+            this.velocity.y = 0;
+            // this.velocity.y = -this.speed * 0.5;
+            this.velocity.x = this.speed;
           }
           break;
         case "ArrowUp":
           if (this.playerMove.up) {
-            // this.velocity.x = 0;
-            this.velocity.y = -1;
+            this.frameY = this.allAnimations.runUp;
+            this.velocity.x = 0;
+            // this.velocity.x = -this.speed * 1.45;
+            // this.velocity.y = -this.speed * 0.75;
+            this.velocity.y = -this.speed;
           }
           break;
         case "ArrowDown":
           if (this.playerMove.down) {
-            // this.velocity.x = 0;
-            this.velocity.y = 1;
+            this.frameY = this.allAnimations.runDown;
+            this.velocity.x = 0;
+            // this.velocity.x = this.speed * 1.45;
+            // this.velocity.y = this.speed * 0.75;
+            this.velocity.y = this.speed;
           }
           break;
         default:
@@ -207,15 +282,23 @@ class WordPlayer {
       switch (e.key) {
         case "ArrowLeft":
           this.velocity.x = 0;
+          this.velocity.y = 0;
+          this.frameY = this.allAnimations.idleLeft;
           break;
         case "ArrowRight":
           this.velocity.x = 0;
+          this.velocity.y = 0;
+          this.frameY = this.allAnimations.idleRight;
           break;
         case "ArrowUp":
+          this.velocity.x = 0;
           this.velocity.y = 0;
+          this.frameY = this.allAnimations.idleUp;
           break;
         case "ArrowDown":
+          this.velocity.x = 0;
           this.velocity.y = 0;
+          this.frameY = this.allAnimations.idleDown;
           break;
         default:
           break;
@@ -223,7 +306,7 @@ class WordPlayer {
     });
   }
   updateCamera() {
-    const canvas = { width: 1, height: 1 };
+    const canvas = { width: 130, height: 130 };
 
     //!player is on the top
     this.shouldPanCameraUp();
@@ -244,39 +327,39 @@ class WordPlayer {
     }
   }
   shouldPanCameraUp() {
-    if (!this.cameraMove.y) return;
+    if (!this.playerMove.up) return;
     const movedHeight = Math.abs(this.camera.moveY);
 
     // Si el jugador se mueve hacia abajo, salir de la función
     if (this.velocity.y >= 0) return;
 
     // Verifica si la cámara ha alcanzado el límite superior visible
-    // if (this.camera.y <= movedHeight) {
-    //   // Solo mueve la cámara si aún hay espacio en el mundo para moverse hacia arriba
-    //   if (movedHeight > 0) {
-    this.camera.moveY -= this.velocity.y; // Mueve la cámara hacia arriba
-    //   }
-    // }
+    if (this.camera.y <= movedHeight) {
+      // Solo mueve la cámara si aún hay espacio en el mundo para moverse hacia arriba
+      if (movedHeight > 0) {
+        this.camera.moveY -= this.velocity.y; // Mueve la cámara hacia arriba
+      }
+    }
   }
   shouldPanCameraDown({ canvas }) {
-    if (!this.cameraMove.y) return;
+    if (!this.playerMove.down) return;
+
     const movedHeight = canvas.height + Math.abs(this.camera.moveY);
 
     // Si el jugador se mueve hacia arriba, salir de la función
     if (this.velocity.y <= 0) return;
 
-    console.log("this.camera", this.camera.y + this.camera.h);
-
     // Verifica si la cámara ha alcanzado el límite inferior visible
-    // if (this.camera.y + this.camera.h >= movedHeight) {
-    //   // Solo mueve la cámara si aún hay espacio en el mundo para moverse hacia abajo
-    //   if (movedHeight < this.mundo.h) {
-    this.camera.moveY -= this.velocity.y; // Mueve la cámara hacia abajo
-    //   }
-    // }
+    if (this.camera.y + this.camera.h >= movedHeight) {
+      // Solo mueve la cámara si aún hay espacio en el mundo para moverse hacia abajo
+      if (movedHeight < this.mundo.h) {
+        this.camera.moveY -= this.velocity.y; // Mueve la cámara hacia abajo
+      }
+    }
   }
   shouldPanCameraToTheLeft() {
-    if (!this.cameraMove.x) return;
+    if (!this.playerMove.left) return;
+
     // Calcula el ancho movido basado en la posición actual de la cámara
     const movedWidth = Math.abs(this.camera.moveX);
 
@@ -284,26 +367,27 @@ class WordPlayer {
     if (this.velocity.x >= 0) return;
 
     // Verifica si la cámara ha alcanzado el límite izquierdo visible
-    // if (this.camera.x <= movedWidth) {
-    //   // Solo mueve la cámara si aún hay espacio en el mundo para moverse hacia la izquierda
-    //   if (movedWidth > 0) {
-    this.camera.moveX -= this.velocity.x; // Mueve la cámara en la dirección opuesta
-    //   }
-    // }
+    if (this.camera.x <= movedWidth) {
+      //   // Solo mueve la cámara si aún hay espacio en el mundo para moverse hacia la izquierda
+      if (movedWidth > 0) {
+        this.camera.moveX -= this.velocity.x; // Mueve la cámara en la dirección opuesta
+      }
+    }
 
     // camera.position.x -= this.velocity.x
   }
 
   shouldPanCameraToTheRight({ canvas }) {
-    if (!this.cameraMove.x) return;
+    if (!this.playerMove.right) return;
+
     const movedWidth = canvas.width + Math.abs(this.camera.moveX);
 
     if (this.velocity.x <= 0) return;
 
-    // if (this.camera.x + this.camera.w >= movedWidth) {
-    //   if (movedWidth < this.mundo.w) {
-    this.camera.moveX -= this.velocity.x;
-    //   }
-    // }
+    if (this.camera.x + this.camera.w >= movedWidth) {
+      if (movedWidth < this.mundo.w) {
+        this.camera.moveX -= this.velocity.x;
+      }
+    }
   }
 }

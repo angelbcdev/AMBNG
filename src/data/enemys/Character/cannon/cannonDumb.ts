@@ -1,5 +1,6 @@
 import Player from "../../../player/player";
 import { StaticEnemy } from "../../staticEnemy";
+
 import { CannonDumpAttack } from "./cannonDumpAttacl";
 
 const levelsInfo = {

@@ -5,14 +5,17 @@ import { FloorBase } from "./floor";
 import { matrix } from "./gameData/matrix";
 import { ubicateFloors } from "./gameData/ubicateFloors";
 import { GameUI } from "./gameData/UI";
+import { ToleteEnemy } from "./enemys/tolete";
+import { GAMEBATTLEOFF } from "../game_STATE";
+import { CannonDumb } from "./enemys/Character/cannon/cannonDumb";
 
 export class BatleGame {
   floors: FloorBase[] = [];
-  gameIsPaused = false;
+  gameIsPaused = true;
   isDev = true;
   effect = [];
   npc = [];
-  bg = new BackGround({ width: 430, height: 400 }, 3);
+  bg = new BackGround({ width: 430, height: 400 }, 0);
   matrix = matrix;
   players = [
     new PlayerBlue({
@@ -28,9 +31,30 @@ export class BatleGame {
   tembleCanvas = 0;
   canvasTime = 0;
   currentMove = 50;
+  hasEnemys = false;
   constructor() {
     this.floors = ubicateFloors({ array: matrix, blockSize: 64, gapX: 6.5 });
     this.initGame();
+  }
+  startNewBattle({ backGround = 0, allEnemies = [], floorImage = 0 }) {
+    this.currentTimeForSelectShip = 0;
+    this.canvasTime = 0;
+    this.gameIsPaused = true;
+    this.isCompletedBarShip = false;
+    this.players[0].allChips = [];
+    setTimeout(() => {
+      this.gameIsPaused = false;
+    }, 3000);
+    this.bg.updateBackGround(backGround);
+    this.floors.forEach((floor) => {
+      floor.updateImageFloor(floorImage);
+    });
+
+    this.addNewEnemy({
+      newEnemy: CannonDumb,
+      position: { x: 1, y: 1 },
+      level: 1,
+    });
   }
   initGame() {
     [...this.npc, ...this.players].forEach((entity) => {
@@ -79,6 +103,12 @@ export class BatleGame {
   }
   update(c: CanvasRenderingContext2D, deltaTime: number) {
     if (this.gameIsPaused) return;
+    this.hasEnemys = this.npc.length > 0;
+    if (!this.hasEnemys) {
+      setTimeout(() => {
+        GAMEBATTLEOFF();
+      }, 2000);
+    }
 
     this.npc = this.npc.filter((enemy: Entity) => {
       if (enemy.delete) {

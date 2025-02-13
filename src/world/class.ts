@@ -1,17 +1,32 @@
 export class FloorRoad {
+  width = 32;
+  height = 32;
   x: number;
   y: number;
-  width: number;
-  height: number;
+  isDelete = false;
 
-  constructor(x: number, y: number, width: number, height: number) {
+  color = "green";
+
+  isCollision = true;
+
+  constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
-    this.width = width;
-    this.height = height;
   }
   draw(c: CanvasRenderingContext2D) {
-    c.fillStyle = "green";
+    c.fillStyle = this.color;
     c.fillRect(this.x, this.y, this.width, this.height);
+
+    // c.fillRect(this.x, this.y, this.width, this.height);
+  }
+}
+
+export class EnemyZone extends FloorRoad {
+  width = 64;
+  height = 32;
+  isCollision = false;
+  constructor(x: number, y: number) {
+    super(x, y);
+    this.color = "red";
   }
 }

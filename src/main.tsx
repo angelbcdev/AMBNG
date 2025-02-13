@@ -14,7 +14,6 @@ import { GameWorld } from './world/gameWorld'
 
 
 
-
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 const c = canvas.getContext('2d')!
 canvas.width = 430
@@ -31,7 +30,10 @@ const animage = (timeStap: number) => {
   // game.draw(c, deltaTime)
   // game.update(c, deltaTime)
 
-  world.draw(c)
+
+
+  world.draw(c, deltaTime)
+
 
   lastTime = timeStap
   requestAnimationFrame(animage)
