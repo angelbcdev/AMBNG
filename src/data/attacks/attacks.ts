@@ -1,5 +1,5 @@
 import { Entity } from "../player/entity";
-import { Game } from "../game";
+import { Game } from "../gameBattle";
 
 export interface TCreateAttack {
   possition: { x: number; y: number };

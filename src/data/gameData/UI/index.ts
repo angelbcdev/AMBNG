@@ -1,6 +1,6 @@
 import BeeTank from "../../enemys/Character/beeTank/beetank";
 import { Mettols } from "../../enemys/Character/mettol/mettol";
-import { Game } from "../../game";
+import { Game } from "../../gameBattle";
 
 import { BottonCanvas } from "./botonCanvas";
 import { ShowChipAreaWithChip } from "./chipAreaSelector";

@@ -1,14 +1,12 @@
 import { BackGround } from "./backGround";
 import { Entity } from "./player/entity";
 import PlayerBlue from "./player/player/Player";
-
 import { FloorBase } from "./floor";
 import { matrix } from "./gameData/matrix";
-
 import { ubicateFloors } from "./gameData/ubicateFloors";
 import { GameUI } from "./gameData/UI";
 
-export class Game {
+export class BatleGame {
   floors: FloorBase[] = [];
   gameIsPaused = false;
   isDev = true;

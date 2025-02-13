@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Game } from "../data/game";
+import { Game } from "../data/gameBattle";
 
 const Joystick = ({ game }: { game: Game }) => {
 
@@ -40,13 +40,13 @@ const Joystick = ({ game }: { game: Game }) => {
 export default Joystick;
 
 
-const ActionsButtons = ({ game, pressButton, releaseButton }) => {
+const ActionsButtons = ({ pressButton, releaseButton }) => {
   // Usamos el estado para realizar un seguimiento de la presión
   const [isPressed, setIsPressed] = useState(false);
   const [actionCurrent, setAction] = useState("nada");
 
   const handleMouseDown = (e, action) => {
-    // e.preventDefault();
+    e.preventDefault();
     setIsPressed(true);  // Establece el estado cuando el botón es presionado
     pressButton(action); // Ejecuta la acción correspondiente
     setAction(action)
