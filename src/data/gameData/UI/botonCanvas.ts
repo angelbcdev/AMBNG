@@ -9,14 +9,14 @@ export class BottonCanvas {
   clickPoint = { x: 0, y: 0 };
   isCanvasPressed = false;
   isAviable = false;
-  constructor({ position, title, isAviable = false }) {
+  constructor({ position, title, isAviable = true }) {
     this.position = position;
     this.title = title;
     this.isAviable = isAviable;
   }
   draw(c: CanvasRenderingContext2D) {
-    c.fillStyle = this.isAviable ? "red" : "green";
-    c.fillRect(this.position.x, this.position.y, this.width, this.height);
+    // c.fillStyle = this.isAviable ? "#ff009050" : "#ff009030";
+    // c.fillRect(this.position.x, this.position.y, this.width, this.height);
     if (this.isCanvasPressed) {
       this.showClick(c);
     }
