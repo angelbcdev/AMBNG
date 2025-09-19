@@ -95,13 +95,9 @@ export class BackGround {
   }
 
   draw(c, deltaTime) {
-    c.clearRect(0, 0, this.canvas.width, this.canvas.height); // Limpiar el canvas
-    c.fillStyle = "white";
-    c.fillRect(0, 0, this.canvas.width, this.canvas.height + 60);
-
-    // Actualizar la posición de la imagen de fondo, moviéndola hacia la derecha y hacia abajo
-    this.position.x += deltaTime * this.speed; // Mover hacia la derecha
-    this.position.y += deltaTime * this.speed; // Mover hacia abajo
+    // c.clearRect(0, 0, this.canvas.width, this.canvas.height); // Limpiar el canvas
+    // c.fillStyle = "white";
+    // c.fillRect(0, 0, this.canvas.width, this.canvas.height + 60);
 
     // Reposicionar las imágenes cuando se hayan movido más allá de la pantalla en el eje X
     if (this.position.x > this.canvas.width) {
@@ -113,18 +109,21 @@ export class BackGround {
       this.position.y = 0;
     }
 
-    // Actualización de la animación del sprite (si la tienes)
-    if (this.frameTime > this.frameInterval) {
-      this.frameTime = 0;
-      this.frameX =
-        this.frameX < this.maxFrame ? this.frameX + 1 : this.initialFrameX;
-      if (this.mapa === 5 && this.frameX === this.maxFrame) {
-        this.maxFrame = Math.floor(Math.random() * 10) + 7;
+    if (document.hasFocus()) {
+      this.position.x += deltaTime * this.speed; // Mover hacia la derecha
+      this.position.y += deltaTime * this.speed; // Mover hacia abajo
+      if (this.frameTime > this.frameInterval) {
+        // Actualización de la animación del sprite (si la tienes)
+        this.frameTime = 0;
+        this.frameX =
+          this.frameX < this.maxFrame ? this.frameX + 1 : this.initialFrameX;
+        if (this.mapa === 5 && this.frameX === this.maxFrame) {
+          this.maxFrame = Math.floor(Math.random() * 10) + 7;
+        }
+      } else {
+        this.frameTime += deltaTime;
       }
-    } else {
-      this.frameTime += deltaTime;
     }
-
     // Dibujar las 9 imágenes de fondo en una cuadrícula 3x3
     for (let i = -1; i <= 1; i++) {
       // Tres filas, desde -1 hasta 1 (3 posiciones)

@@ -80,6 +80,9 @@ export class SceneManager {
       this.currentScene.in();
     }
   }
+  hasFocus() {
+    return document.hasFocus();
+  }
 }
 
 export const GAME = SceneManager.getInstance();
