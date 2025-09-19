@@ -19,7 +19,9 @@ class SceneRoot {
     c.fillStyle = "#fff";
     c.fillRect(0, 0, canvas.width, canvas.height);
 
-    this.bg.draw(c, 14);
+    if (this.bg) {
+      this.bg.draw(c, 14);
+    }
     c.font = "32px 'Mega-Man-Battle-Network-Regular'"; // Nombre que has definido en @font-face
     c.fillStyle = "#000"; // Color del texto
     c.textAlign = "left";
@@ -30,7 +32,7 @@ class SceneRoot {
     // console.log(`click en ${this.nameScene} (${mouseX}, ${mouseY})`);
   }
   checkKey(e: KeyboardEvent) {
-    console.log(`key en ${this.nameScene} (${e.key})`);
+    // console.log(`key en ${this.nameScene} (${e.key})`);
   }
 }
 

@@ -11,6 +11,7 @@ canvas.height = 430;
 export class SceneManager {
   c: CanvasRenderingContext2D;
   canvas: HTMLCanvasElement;
+  isDev = true;
   static instance: SceneManager | null = null;
   allScenes = [
     new HomeScene(),

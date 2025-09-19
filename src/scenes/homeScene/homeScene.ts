@@ -8,7 +8,7 @@ export class HomeScene extends SceneRoot {
     {
       position: { x: 50, y: 150 },
       title: "Play",
-      action: () => console.log("Play pressed!"),
+      action: () => GAME.changeScene(GAME.scenes.world),
     },
     {
       position: { x: 50, y: 210 },
