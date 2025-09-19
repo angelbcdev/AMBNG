@@ -1,3 +1,4 @@
+import { keyBindings } from "@/config/keyBindings";
 import { PlayerState } from ".";
 import Player, { playerAllAttacks } from "../player";
 
@@ -42,7 +43,7 @@ export class ShootStateCharge extends PlayerState {
 
   acctionKeyUp(key: string): void {
     const handleEvents = {
-      f: () => {
+      [keyBindings.singleShoot]: () => {
         this.player.frameY = this.player.states.shoot;
         this.player.makeShoot = true;
         this.player.canShoot = true;
@@ -75,7 +76,7 @@ export class ShootStateCharge extends PlayerState {
       ArrowRight: () => {
         newMatrixX += 1;
       },
-      f: () => {
+      [keyBindings.singleShoot]: () => {
         this.canCountTimer = true;
       },
     };

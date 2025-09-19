@@ -19,16 +19,17 @@ export const game = new BatleGame();
 
 export const world = new GameWorld();
 
-const lastTime = 0;
+let lastTime = 0;
 const animage = (timeStap: number) => {
   const deltaTime = timeStap - lastTime;
+  lastTime = timeStap;
   c.clearRect(0, 0, canvas.width, canvas.height);
 
   GAME.draw(deltaTime);
   GAME.update(deltaTime);
   // world.draw(c, deltaTime)
-
-  // lastTime = timeStap
+  // c.fillStyle = "#000";
+  // c.fillText(deltaTime.toFixed(2), 100, 20);
   requestAnimationFrame(animage);
 };
 

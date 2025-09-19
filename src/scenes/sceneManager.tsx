@@ -63,7 +63,7 @@ export class SceneManager {
   }
 
   update(deltaTime: number) {
-    this.currentScene.update(deltaTime);
+    this.currentScene.update(deltaTime, this.c);
   }
 
   draw(deltaTime: number) {

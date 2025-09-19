@@ -1,3 +1,5 @@
+import { keyBindings } from "@/config/keyBindings";
+
 export class ButtonManager {
   arrowImage = new Image();
   currentButtonIndex = 0;
@@ -43,7 +45,10 @@ export class ButtonManager {
     } else if (e.key === "ArrowDown") {
       this.currentButtonIndex =
         (this.currentButtonIndex + 1) % this.buttons?.length;
-    } else if (e.key === "Enter") {
+    } else if (
+      e.key === "Enter" ||
+      keyBindings.singleShoot === e.key.toLowerCase()
+    ) {
       this.buttons[this.currentButtonIndex]?.action();
     }
   }

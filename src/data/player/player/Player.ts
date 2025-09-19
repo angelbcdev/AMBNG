@@ -88,7 +88,7 @@ export class Player extends Entity {
   constructor({ possition: { x, y }, sideToPlay }) {
     super({ x, y, sideToPlay });
     this.height = 35;
-    this.handleInput();
+    // this.handleInput();
 
     //   allChipsA.map(
     //   (chip) => new BattleShip({ title: chip.title })
@@ -210,16 +210,22 @@ export class Player extends Entity {
 
     c.restore(); // Restaurar el estado del contexto
   }
+  handleKeyDown = (event: KeyboardEvent) => {
+    this.currentState.acctionKeyDown(event.key);
+  };
 
-  handleInput() {
-    if (GAME_IN_BATTLE) return;
-    document.addEventListener("keydown", (event) => {
-      this.currentState.acctionKeyDown(event.key);
-    });
+  handleKeyUp = (event: KeyboardEvent) => {
+    this.currentState.acctionKeyUp(event.key);
+  };
 
-    document.addEventListener("keyup", (event) => {
-      this.currentState.acctionKeyUp(event.key);
-    });
+  handleInput(state: string) {
+    if (state === "BATTLE") {
+      document.addEventListener("keydown", this.handleKeyDown);
+      document.addEventListener("keyup", this.handleKeyUp);
+    } else {
+      document.removeEventListener("keydown", this.handleKeyDown);
+      document.removeEventListener("keyup", this.handleKeyUp);
+    }
   }
 
   makeAttack(attack: string) {

@@ -10,7 +10,7 @@ class SceneRoot {
   out() {
     console.log(`scene ${this.nameScene} out`);
   }
-  update(deltaTime: number) {}
+  update(__: number, _: CanvasRenderingContext2D) {}
   draw(
     deltaTime: number,
     c: CanvasRenderingContext2D,

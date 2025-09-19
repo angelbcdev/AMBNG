@@ -1,3 +1,4 @@
+import { keyBindings } from "@/config/keyBindings";
 import { GAMEBATTLEOFF } from "../../../../game_STATE";
 import Player, { playerAllAttacks } from "../player";
 
@@ -63,12 +64,12 @@ export class PlayerState {
   }
   acctionKeyUp(key: string) {
     const handleEvents = {
-      f: () => {
+      [keyBindings.singleShoot]: () => {
         if (!this.player.canShoot) {
           this.player.canShoot = true;
         }
       },
-      g: () => {
+      [keyBindings.useChip]: () => {
         return;
       },
     };
@@ -93,7 +94,7 @@ export class PlayerState {
       ArrowRight: () => {
         newMatrixX += 1;
       },
-      f: () => {
+      [keyBindings.singleShoot]: () => {
         if (this.player.canShoot) {
           this.player.changeState(this.player.stateReference.SHOOT);
           setTimeout(() => {
@@ -102,7 +103,7 @@ export class PlayerState {
         }
       },
 
-      g: () => {
+      [keyBindings.useChip]: () => {
         if (this.player.canShoot) {
           this.useShip();
         }

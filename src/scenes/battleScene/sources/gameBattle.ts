@@ -1,26 +1,26 @@
-import { BackGround } from "../newUI/backGround/backGroundShow";
-import { Entity } from "../data/player/entity";
-import PlayerBlue from "../data/player/Player";
-import { FloorBase } from "../data/floor";
-import { matrix } from "../data/gameData/matrix";
-import { ubicateFloors } from "../data/gameData/ubicateFloors";
-import { GameUI } from "../data/gameData/UI";
-import { ToleteEnemy } from "../data/enemys/tolete";
+import { FloorBase } from "@/data/floor";
+import { matrix } from "@/data/gameData/matrix";
+import { ubicateFloors } from "@/data/gameData/ubicateFloors";
+// import { GameUI } from "@/data/gameData/UI";
+import { Entity } from "@/data/player/entity";
+import PlayerBlue from "@/data/player/player/Player";
 
-import { CannonDumb } from "../data/enemys/Character/cannon/cannonDumb";
-import { Mettols } from "../data/enemys/Character/mettol/mettol";
-import BeeTank from "../data/enemys/Character/beeTank/beetank";
-import { Scene } from "./Scene";
+import { Mettols } from "@/data/enemys/Character/mettol/mettol";
+import BeeTank from "@/data/enemys/Character/beeTank/beetank";
+import { CannonDumb } from "@/data/enemys/Character/cannon/cannonDumb";
+import { ToleteEnemy } from "@/data/enemys/tolete";
+import { GAME } from "@/scenes/sceneManager";
+import { BattleScene } from "../battleScene";
 
 const allEnemies = [Mettols, BeeTank, CannonDumb, ToleteEnemy];
+
 export class BatleGame {
-  scene: Scene;
   floors: FloorBase[] = [];
   gameIsPaused = true;
   isDev = true;
   effect = [];
   npc = [];
-  bg = new BackGround({ width: 430, height: 400 }, 0);
+
   matrix = matrix;
   players = [
     new PlayerBlue({
@@ -28,7 +28,7 @@ export class BatleGame {
       sideToPlay: 0,
     }),
   ];
-  gameUI = new GameUI(this);
+  // gameUI = new GameUI(this);
   timeForSelectShip = 1000;
   currentTimeForSelectShip = 0;
   isCompletedBarShip = false;
@@ -39,20 +39,23 @@ export class BatleGame {
   hasEnemys = false;
   timeInBattle = 0;
   totalTimeInBattle = 0;
-  constructor() {
+  battleScene: BattleScene;
+  constructor(battleScene: BattleScene) {
     this.floors = ubicateFloors({ array: matrix, blockSize: 64, gapX: 6.5 });
     this.initGame();
+    this.battleScene = battleScene;
   }
+
   startNewBattle({ backGround = 0, allEnemiesS = [], floorImage = 0 }) {
     console.log(allEnemiesS);
-    this.gameUI.chipSelected.chipUsed = [];
+    // this.gameUI.chipSelected.chipUsed = [];
     this.npc = [];
 
     this.players[0].live = 100;
-    this.gameUI.clearImagePosition = {
-      x: -this.gameUI.clearImageViewPort,
-      y: this.gameUI.clearImagePosition.y,
-    };
+    // this.gameUI.clearImagePosition = {
+    //   x: -this.gameUI.clearImageViewPort,
+    //   y: this.gameUI.clearImagePosition.y,
+    // };
     this.timeInBattle = 0;
     this.totalTimeInBattle = 0;
     this.currentTimeForSelectShip = 0;
@@ -63,23 +66,23 @@ export class BatleGame {
     setTimeout(() => {
       this.gameIsPaused = false;
     }, 3000);
-    this.bg.updateBackGround(backGround);
+
     this.floors.forEach((floor) => {
       floor.updateImageFloor(floorImage);
     });
 
-    const randomeEnemy =
-      allEnemies[Math.floor(Math.random() * allEnemies.length)];
-    const randomPosition = {
-      x: Math.floor(Math.random() * 2),
-      y: Math.floor(Math.random() * 2),
-    };
-    const randomLevel = Math.floor(Math.random() * 3 + 1);
+    // const randomeEnemy =
+    //   allEnemies[Math.floor(Math.random() * allEnemies.length)];
+    // const randomPosition = {
+    //   x: Math.floor(Math.random() * 2),
+    //   y: Math.floor(Math.random() * 2),
+    // };
+    // const randomLevel = Math.floor(Math.random() * 3 + 1);
 
     this.addNewEnemy({
-      newEnemy: randomeEnemy,
-      position: randomPosition,
-      level: randomLevel,
+      newEnemy: Mettols,
+      position: { x: 1, y: 1 },
+      level: 1,
     });
   }
   initGame() {
@@ -87,8 +90,7 @@ export class BatleGame {
       entity.game = this;
     });
   }
-  draw(c: CanvasRenderingContext2D, deltaTime: number) {
-    this.bg.draw(c, deltaTime);
+  draw(deltaTime: number, c: CanvasRenderingContext2D) {
     c.save();
     if (this.canTembleCanvas) {
       if (this.canvasTime > 50) {
@@ -99,7 +101,7 @@ export class BatleGame {
         this.canvasTime += deltaTime;
       }
     }
-    if (this.gameUI.chipSelected.showChipArea) {
+    if (this.battleScene.chipAreaSelect.showChipArea) {
       if (this.currentMove < 100) {
         this.currentMove += 2;
       }
@@ -125,16 +127,21 @@ export class BatleGame {
     });
     this.showAllAttacks();
     c.restore();
-    this.gameUI.draw(c, deltaTime);
+    // this.gameUI.draw(c, deltaTime);
   }
   update(deltaTime: number, c: CanvasRenderingContext2D) {
-    if (this.gameIsPaused) return;
+    if (!GAME.hasFocus()) {
+      this.gameIsPaused = true;
+      return;
+    } else {
+      this.gameIsPaused = false;
+    }
 
     this.hasEnemys = this.npc.length > 0;
     if (!this.hasEnemys) {
-      this.gameUI.clearStateImg(c, deltaTime, this.totalTimeInBattle);
+      // this.gameUI.clearStateImg(c, deltaTime, this.totalTimeInBattle);
       setTimeout(() => {
-        this.scene.gameState.endBattle();
+        GAME.changeScene(GAME.scenes.world);
       }, 2000);
     } else {
       if (this.timeInBattle > 1000) {
@@ -144,7 +151,7 @@ export class BatleGame {
         this.timeInBattle += deltaTime;
       }
       if (this.players[0].live <= 0) {
-        this.scene.startGameOver();
+        GAME.changeScene(GAME.scenes.home);
       }
     }
 
@@ -225,7 +232,7 @@ export class BatleGame {
     this.effect = [...attacksPlayers, ...attacksNpc];
   }
   checkClick(mouseX: number, mouseY: number) {
-    this.gameUI.checkClick(mouseX, mouseY);
+    // this.gameUI.checkClick(mouseX, mouseY);
   }
   addNewEnemy({ newEnemy, position, level }) {
     const enemy = new newEnemy({

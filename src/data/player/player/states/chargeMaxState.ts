@@ -1,3 +1,4 @@
+import { keyBindings } from "@/config/keyBindings";
 import { PlayerState } from ".";
 import Player, { playerAllAttacks } from "../player";
 
@@ -23,7 +24,7 @@ export class ShootStateMax extends PlayerState {
 
   acctionKeyUp(key: string): void {
     const handleEvents = {
-      f: () => {
+      [keyBindings.singleShoot]: () => {
         if (!this.player.makeShoot) {
           this.player.frameY = this.player.states.shoot;
           this.player.makeShoot = true;
