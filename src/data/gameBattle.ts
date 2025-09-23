@@ -246,7 +246,6 @@ export class BatleGame {
     });
     newElement.game = this;
     newElement.sideToPlay = player.side;
-    console.log("newElement", newElement);
 
     this.npc.push(newElement);
   }

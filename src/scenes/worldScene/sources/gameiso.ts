@@ -3,6 +3,7 @@ import { EnemyZone, mySquare, WalkPath, Wall } from "./isoEntitys";
 import { PlayerIso } from "./isPlayer";
 import { testWorld } from "./utils";
 import { BackGround, mapDetails } from "@/newUI/backGround/backGroundShow";
+import { PauseMenu } from "@/newUI/menu/pauseMenu";
 
 const canvas = {
   width: 240,
@@ -62,6 +63,7 @@ export class GameIso {
   walkPath = [];
   spritesheet = false;
   player = new PlayerIso(64, 64, 16, 16);
+  menuScreen = new PauseMenu();
   constructor() {
     this.init();
     this.cam = new Camera();
@@ -70,7 +72,18 @@ export class GameIso {
     this.player.checkKeyDown(e);
     const options = {
       Enter: () => {
-        this.pause = !this.pause;
+        if (!this.pause) {
+          this.pause = true;
+          this.menuScreen.showMenu = true;
+          if (this.menuScreen.showMenu) {
+            // this.menuScreen.in();
+            document.addEventListener("keydown", this.menuScreen.checkKey);
+          }
+          // else {
+          //   // this.menuScreen.out();
+          //   document.removeEventListener("keydown", this.menuScreen.checkKey);
+          // }
+        }
       },
     };
     if (options[e.key]) {
@@ -156,7 +169,6 @@ export class GameIso {
       if (this.player.intersects(this.enemyZone[i])) {
         const rng = Math.random();
         if (rng > 0.98754) {
-          console.log("Battle" + rng);
           GAME.changeScene(GAME.statesKeys.battle);
           this.player.pressKey = [];
           this.player.returnIdle();
@@ -174,20 +186,6 @@ export class GameIso {
 
     // Draw map
     this.fillIsoMap(ctx);
-
-    // // Draw enemies
-    // for (i = 0, l = this.enemies.length; i < l; i += 1) {
-    //   this.enemies[i].drawIsoImageArea(
-    //     ctx,
-    //     this.cam,
-    //     this.spritesheet,
-    //     8,
-    //     48 + (~~(this.elapsed * 10) % 2) * 16,
-    //     this.enemies[i].dir * 16,
-    //     16,
-    //     16
-    //   );
-    // }
 
     // draw player
     this.player.drawIsoImageAreaPlayer(
@@ -211,7 +209,8 @@ export class GameIso {
       );
     });
   }
-  drawUI(ctx: CanvasRenderingContext2D) {
+  drawUI(ctx: CanvasRenderingContext2D, deltaTime: number) {
+    this.menuScreen.draw(ctx, deltaTime);
     // Debug last key pressed
     ctx.fillStyle = "#fff";
     ctx.fillText(this.data_world_maps[this.currentMap].name, 4, 20);
@@ -359,6 +358,11 @@ export class GameIso {
   in() {
     document.addEventListener("keyup", this.checkKeyUp);
     document.addEventListener("keydown", this.checkKeyDown);
+    if (this.pause) {
+      this.pause = false;
+      this.menuScreen.showMenu = false;
+      document.removeEventListener("keydown", this.menuScreen.checkKey);
+    }
   }
   out() {
     document.removeEventListener("keyup", this.checkKeyUp);

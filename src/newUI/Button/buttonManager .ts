@@ -70,7 +70,7 @@ export class ButtonManager {
       if (index === this.currentButtonIndex) {
         c.drawImage(
           this.arrowImage,
-          btn.position.x - 32,
+          btn.position.x - 22,
           btn.position.y + 8,
           32,
           32

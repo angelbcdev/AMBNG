@@ -1,5 +1,5 @@
 import SceneRoot from "../sceneROOT";
-import { GameIso } from "./sources/test";
+import { GameIso } from "./sources/gameiso";
 
 const isoWorld = new GameIso();
 
@@ -19,7 +19,7 @@ export class WorldScene extends SceneRoot {
     c.translate(-50, 0);
     isoWorld.draw(c);
     c.restore();
-    isoWorld.drawUI(c);
+    isoWorld.drawUI(c, deltaTime);
   }
   in() {
     super.in();

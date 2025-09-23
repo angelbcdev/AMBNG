@@ -2,12 +2,8 @@ class SceneRoot {
   nameScene = "ROOT";
   bg = null;
   constructor() {}
-  in() {
-    console.log(`scene ${this.nameScene} in`);
-  }
-  out() {
-    console.log(`scene ${this.nameScene} out`);
-  }
+  in() {}
+  out() {}
   update(__: number, _: CanvasRenderingContext2D) {}
   draw(
     deltaTime: number,
@@ -26,12 +22,8 @@ class SceneRoot {
 
     c.fillText(this.nameScene, 100, 100);
   }
-  checkClick(mouseX: number, mouseY: number) {
-    // console.log(`click en ${this.nameScene} (${mouseX}, ${mouseY})`);
-  }
-  checkKey(e: KeyboardEvent) {
-    // console.log(`key en ${this.nameScene} (${e.key})`);
-  }
+  checkClick(mouseX: number, mouseY: number) {}
+  checkKey(e: KeyboardEvent) {}
 }
 
 export default SceneRoot;

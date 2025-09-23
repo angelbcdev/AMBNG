@@ -47,7 +47,6 @@ export class BatleGame {
   }
 
   startNewBattle({ backGround = 0, allEnemiesS = [], floorImage = 0 }) {
-    console.log(allEnemiesS);
     // this.gameUI.chipSelected.chipUsed = [];
     this.npc = [];
 

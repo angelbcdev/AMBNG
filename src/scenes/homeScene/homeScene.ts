@@ -51,17 +51,15 @@ export class HomeScene extends SceneRoot {
   checkClick(mouseX: number, mouseY: number) {
     this.optionsButtons.checkClick(mouseX, mouseY);
   }
-  checkKey(e: KeyboardEvent) {
+  checkKey = (e: KeyboardEvent) => {
     this.optionsButtons.keyDown(e);
-  }
+  };
 
   in() {
-    console.log("HomeScene in");
     this.optionsButtons.in();
     document.addEventListener("keydown", this.homeKey);
   }
   out() {
-    console.log("HomeScene out");
     this.optionsButtons.out();
     document.removeEventListener("keydown", this.homeKey);
   }

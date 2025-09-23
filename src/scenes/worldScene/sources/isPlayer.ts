@@ -74,7 +74,7 @@ export class PlayerIso extends mySquare {
     }
   }
   mover(wall: mySquare[]) {
-    if (this.pressKey.includes(keyBindings.singleShoot)) {
+    if (this.pressKey.includes(keyBindings.useChip)) {
       this.speed = 1.75;
     } else {
       this.speed = 0.75;

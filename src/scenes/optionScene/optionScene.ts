@@ -41,8 +41,6 @@ export class OptionScene extends SceneRoot {
 
   // ✅ function to start key rebinding
   rebindKey(actionName: keyof typeof keyBindings) {
-    console.log(`Press a new key for ${actionName}...`);
-
     const listener = (e: KeyboardEvent) => {
       const forbidden = ["arrowup", "arrowdown", "arrowleft", "arrowright"];
       const newKey = e.key.toLowerCase();
@@ -66,7 +64,6 @@ export class OptionScene extends SceneRoot {
 
       // ✅ Set the new binding
       keyBindings[actionName] = newKey;
-      console.log(`${actionName} set to ${newKey}`);
 
       window.removeEventListener("keydown", listener);
       this.refreshButtonLabels();

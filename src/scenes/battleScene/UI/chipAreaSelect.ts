@@ -282,7 +282,6 @@ export class ShowChipAreaWithChip {
     }
   }
   keyDown(e: KeyboardEvent) {
-    console.log(e.key);
     switch (e.key) {
       case "ArrowLeft":
         if (this.chipInView.viewX > 0) {

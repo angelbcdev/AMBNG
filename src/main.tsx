@@ -5,7 +5,7 @@ import { BatleGame } from "./data/gameBattle";
 
 import { DevFucntions } from "./components/DevFucntions";
 import Joystick from "./components/joystick";
-import { GameWorld } from "./world/gameWorld";
+// import { GameWorld } from "./world/gameWorld";
 import { GAME } from "./scenes/sceneManager";
 
 // import { TestGame } from './Ts/textGame'
@@ -17,7 +17,7 @@ canvas.height = 430;
 
 export const game = new BatleGame();
 
-export const world = new GameWorld();
+// export const world = new GameWorld();
 
 let lastTime = 0;
 const animage = (timeStap: number) => {

@@ -329,7 +329,6 @@ export class FloorBase {
       this.floorState === floorStatus.GRIETA &&
       this.characterFloor == character
     ) {
-      console.log("character", character);
       this.unAvailableFloor();
     }
   }

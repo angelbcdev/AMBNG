@@ -20,7 +20,6 @@ export class GameState {
   }
   endBattle() {
     this.setState("WORLD");
-    console.log("endBattle");
   }
   setGameOver() {
     this.setState("GAME_OVER");

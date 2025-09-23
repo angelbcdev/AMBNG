@@ -6,7 +6,7 @@ export class mySquare {
   vx: number = 0;
   vy: number = 0;
   dir: number = 0;
-  color: string = "";
+  color: string = "#0ff00050";
 
   constructor(
     x: number,

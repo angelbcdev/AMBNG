@@ -54,6 +54,7 @@ export class BattleShip {
   spriteState: string;
   elementToAdd: string;
   id: string;
+  idForMove: string = "N/A";
 
   constructor({ title }: { title: string }) {
     const currentChip = allChipsA.find(
@@ -123,8 +124,6 @@ export class BattleShip {
         break;
 
       case "addElement":
-        console.log("create a block ", this.gamechange);
-
         setTimeout(() => {
           player.game[this.gamechange]({
             element: this.elementToAdd,
@@ -153,6 +152,20 @@ export class BattleShip {
         type: this.chipType,
       });
     }, this.timeForAttack);
+  }
+  drawName(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    extraX: string = ""
+  ) {
+    c.font = "16px 'Mega-Man-Battle-Network-Regular'";
+
+    c.fillStyle = "black";
+    c.fillText(this.name + (extraX ? `-${extraX}` : ""), x, y);
+
+    c.fillStyle = "white";
+    c.fillText(this.name + (extraX ? `-${extraX}` : ""), x - 3, y - 3);
   }
 }
 

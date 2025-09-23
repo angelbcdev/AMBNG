@@ -1,7 +1,7 @@
-import { WorldScene } from "../scenes/worldScene/worldScene";
-import { BattleScene } from "../scenes/battleScene/battleScene";
-import { HomeScene } from "../scenes/homeScene/homeScene";
-import { OptionScene } from "../scenes/optionScene/optionScene";
+import { WorldScene } from "./worldScene/worldScene";
+import { BattleScene } from "./battleScene/battleScene";
+import { HomeScene } from "./homeScene/homeScene";
+import { OptionScene } from "./optionScene/optionScene";
 import { ChipsScene } from "./chipsScene/chipsScene";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -16,6 +16,7 @@ export class SceneManager {
   static instance: SceneManager | null = null;
 
   currentSceneIndex = "home";
+  previousScene = "home";
   statesKeys = {
     home: "home",
     world: "world",
@@ -75,6 +76,7 @@ export class SceneManager {
 
     if (this.currentSceneIndex !== newScene) {
       this.currentScene.out();
+      this.previousScene = this.currentSceneIndex;
       this.currentSceneIndex = newScene;
       this.currentScene = this.scenes[this.currentSceneIndex];
       this.currentScene.in();
@@ -82,6 +84,9 @@ export class SceneManager {
   }
   hasFocus() {
     return document.hasFocus();
+  }
+  returnToPreviousScene() {
+    this.changeScene(this.previousScene);
   }
 }
 
