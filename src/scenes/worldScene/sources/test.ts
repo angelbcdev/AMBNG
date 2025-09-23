@@ -1,875 +1,403 @@
-"use strict";
-let KEY_ENTER = 13,
-  KEY_LEFT = 37,
-  KEY_UP = 38,
-  KEY_RIGHT = 39,
-  KEY_DOWN = 40,
-  canvas = null,
-  ctx = null,
-  lastPress = null,
-  pressing = [],
-  pause = false,
-  gameover = true,
-  currentMap = 0,
-  worldWidth = 0,
-  worldHeight = 0,
-  elapsed = 0,
-  cam = null,
-  player = null,
-  wall = [],
-  lava = [],
-  enemies = [],
-  maps = [],
-  spritesheet = new Image();
+import { GAME } from "@/scenes/sceneManager";
+import { EnemyZone, mySquare, WalkPath, Wall } from "./isoEntitys";
+import { PlayerIso } from "./isPlayer";
+import { testWorld } from "./utils";
+import { BackGround, mapDetails } from "@/newUI/backGround/backGroundShow";
 
-maps[0] = [
-  [
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1,
-  ],
-  [
-    1, 2, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 1, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 0, 0, 1,
-  ],
-  [
-    1, 1, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0,
-    0, 1, 0, 0, 1,
-  ],
-  [
-    0, 2, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0,
-    0, 1, 0, 0, 0,
-  ],
-  [
-    0, 2, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0,
-    0, 1, 0, 0, 0,
-  ],
-  [
-    1, 1, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0,
-    0, 1, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-    0, 1, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-    1, 1, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1,
-  ],
-];
-maps[1] = [
-  [
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  ],
-  [
-    1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 2, 2, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 2, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 1, 1, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0, 1, 2, 2, 1,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 3, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 0, 2, 1, 1, 1, 1, 1, 2, 2, 1,
-    1, 1, 0, 0, 2, 2, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0,
-    0, 1, 0, 2, 2, 2, 2, 0, 1, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-    1, 1, 0, 0, 0, 0, 1, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 1, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 1, 0, 1, 2, 2, 2, 2, 2, 2, 0, 0,
-    0, 1, 1, 2, 2, 2, 2, 1, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 1, 2, 1, 2, 2, 2,
-    2, 1, 0, 0, 0, 0, 1, 0, 0, 1,
-  ],
-  [
-    1, 1, 1, 1, 0, 0, 0, 0, 1, 2, 2, 2, 2, 1, 1, 0, 1, 1, 2, 2, 2, 2, 0, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2,
-    2, 1, 0, 0, 0, 0, 1, 1, 1, 1,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ],
-  [
-    1, 1, 1, 1, 0, 0, 0, 0, 1, 2, 2, 2, 2, 1, 1, 0, 1, 1, 2, 2, 2, 2, 0, 0, 0,
-    0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 1, 1, 0, 1, 1, 2, 2,
-    2, 1, 0, 0, 0, 0, 1, 1, 1, 1,
-  ],
-  [
-    1, 0, 0, 1, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 1, 0, 1, 2, 2, 2, 2, 2, 2, 0, 0,
-    0, 1, 1, 2, 2, 2, 2, 1, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 1, 0, 1, 2, 2, 2,
-    2, 1, 0, 0, 0, 0, 1, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0,
-    0, 1, 0, 2, 2, 2, 2, 0, 1, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2,
-    1, 1, 0, 0, 0, 0, 1, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 0, 2, 1, 1, 1, 1, 1, 2, 2, 1,
-    1, 1, 0, 0, 2, 2, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 2, 2, 2, 0, 2, 2, 2, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 2, 2, 0, 0, 0, 1, 2, 2, 1,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 2, 0, 2, 1, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 3, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 1, 1, 1, 1,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 2, 1,
-  ],
-  [
-    1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 2, 2, 1,
-  ],
-  [
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  ],
-];
-maps[2] = [
-  [
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1,
-  ],
-  [
-    1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 1, 0, 0, 4, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 1, 1,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 1,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 2, 1,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 1,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 1, 1, 1, 0, 0, 0, 0, 1,
-    0, 0, 0, 0, 0,
-  ],
-  [
-    0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 1,
-    0, 0, 0, 0, 0,
-  ],
-  [
-    1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 1,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 1,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 2, 1, 1, 1, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 1,
-    1, 1, 2, 0, 1,
-  ],
-  [
-    1, 2, 2, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0,
-    0, 1, 2, 2, 1,
-  ],
-  [
-    1, 1, 1, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0,
-    0, 1, 1, 1, 1,
-  ],
-  [
-    1, 2, 2, 0, 0, 4, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 4,
-    0, 0, 2, 2, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 1, 1, 0,
-    0, 0, 0, 2, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 2, 2, 1, 1, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 1, 1, 2, 2, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0,
-    0, 0, 1, 1, 1,
-  ],
-  [
-    1, 1, 2, 2, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0,
-    0, 0, 0, 1, 1,
-  ],
-  [
-    1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 2, 2, 2, 0, 0, 0, 2, 2, 2, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 1, 1, 1, 0, 2, 2, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 2, 1, 1, 1,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 0, 0, 1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 3, 0, 0, 1,
-  ],
-  [
-    1, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1,
-  ],
-  [
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1,
-  ],
-];
+const canvas = {
+  width: 240,
+  height: 160,
+};
 
-function Camera() {
-  this.x = 0;
-  this.y = 0;
-}
+class Camera {
+  x: number = 0;
+  y: number = 0;
+  worldWidth: number = 0;
+  worldHeight: number = 0;
 
-Camera.prototype = {
-  constructor: Camera,
-
-  focus: function (x, y) {
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+  }
+  focus(x: number, y: number) {
     this.x = x - canvas.width / 2;
     this.y = y - canvas.height / 2;
 
     if (this.x < 0) {
       this.x = 0;
-    } else if (this.x > worldWidth - canvas.width) {
-      this.x = worldWidth - canvas.width;
+    } else if (this.x > this.worldWidth - canvas.width) {
+      this.x = this.worldWidth - canvas.width;
     }
     if (this.y < 0) {
       this.y = 0;
-    } else if (this.y > worldHeight - canvas.height) {
-      this.y = worldHeight - canvas.height;
+    } else if (this.y > this.worldHeight - canvas.height) {
+      this.y = this.worldHeight - canvas.height;
     }
-  },
+  }
 
-  isoFocus: function (x, y) {
+  isoFocus(x: number, y: number) {
     this.x = x / 2 - y / 2 - canvas.width / 2;
     this.y = x / 4 + y / 4 - canvas.height / 2;
-  },
-};
-
-function Rectangle2D(x, y, width, height, createFromTopLeft) {
-  this.width = width === undefined ? 0 : width;
-  this.height = height === undefined ? this.width : height;
-  if (createFromTopLeft) {
-    this.left = x === undefined ? 0 : x;
-    this.top = y === undefined ? 0 : y;
-  } else {
-    this.x = x === undefined ? 0 : x;
-    this.y = y === undefined ? 0 : y;
   }
 }
 
-Rectangle2D.prototype = {
-  constructor: Rectangle2D,
-  left: 0,
-  top: 0,
-  width: 0,
-  height: 0,
-  vx: 0,
-  vy: 0,
-  dir: 0,
+export class GameIso {
+  lastPress = null;
+  pressing = [];
+  pause = false;
+  gameover = true;
+  worldWidth = 0;
+  worldHeight = 0;
+  elapsed = 0;
+  cam = null;
+  bg = new BackGround(1);
+  // player = null;
 
-  get x() {
-    return this.left + this.width / 2;
-  },
-  set x(value) {
-    this.left = value - this.width / 2;
-  },
-
-  get y() {
-    return this.top + this.height / 2;
-  },
-  set y(value) {
-    this.top = value - this.height / 2;
-  },
-
-  get right() {
-    return this.left + this.width;
-  },
-  set right(value) {
-    this.left = value - this.width;
-  },
-
-  get bottom() {
-    return this.top + this.height;
-  },
-  set bottom(value) {
-    this.top = value - this.height;
-  },
-
-  intersects: function (rect) {
-    if (rect !== undefined) {
-      return (
-        this.left < rect.right &&
-        this.right > rect.left &&
-        this.top < rect.bottom &&
-        this.bottom > rect.top
-      );
+  currentMap = 0;
+  data_world_bloks = testWorld.bloks;
+  data_world_maps = testWorld.maps;
+  wall = [];
+  enemyZone = [];
+  enemies = [];
+  walkPath = [];
+  spritesheet = false;
+  player = new PlayerIso(64, 64, 16, 16);
+  constructor() {
+    this.init();
+    this.cam = new Camera();
+  }
+  checkKeyDown = (e: KeyboardEvent) => {
+    this.player.checkKeyDown(e);
+    const options = {
+      Enter: () => {
+        this.pause = !this.pause;
+      },
+    };
+    if (options[e.key]) {
+      options[e.key]();
     }
-  },
+  };
+  drawBackground(c: CanvasRenderingContext2D, deltaTime: number) {
+    if (!this.pause) {
+      this.bg.canMove = true;
+    } else {
+      this.bg.canMove = false;
+    }
+    this.bg.draw(c, deltaTime);
+  }
 
-  fill: function (ctx) {
-    if (ctx !== undefined) {
-      if (cam !== undefined) {
-        ctx.fillRect(
-          this.left - cam.x,
-          this.top - cam.y,
-          this.width,
-          this.height
-        );
-      } else {
-        ctx.fillRect(this.left, this.top, this.width, this.height);
+  checkKeyUp = (e: KeyboardEvent) => {
+    this.player.checkKeyUp(e);
+  };
+  init() {
+    // Get canvas and context
+
+    this.worldWidth = canvas.width;
+    this.worldHeight = canvas.height;
+
+    // Create camera and player
+
+    // Set initial map
+    this.setMap(this.data_world_maps[this.currentMap]);
+
+    // Start game
+  }
+
+  update(deltaTime: number) {
+    if (!this.pause) {
+      this.player.update(deltaTime);
+      this.player.mover(this.wall);
+      // GameOver Reset
+      if (this.gameover) {
+        this.reset();
+      }
+
+      // Out Screen
+      if (this.player.x > this.worldWidth) {
+        this.currentMap += 1;
+        if (this.currentMap > this.data_world_maps.length - 1) {
+          this.currentMap = 0;
+        }
+        this.setMap(this.data_world_maps[this.currentMap]);
+        this.player.x = 0;
+      } else if (this.player.y > this.worldHeight) {
+        this.player.y = 0;
+      } else if (this.player.x < 0) {
+        this.currentMap -= 1;
+        if (this.currentMap < 0) {
+          this.currentMap = this.data_world_maps.length - 1;
+        }
+        this.setMap(this.data_world_maps[this.currentMap]);
+        this.player.x = this.worldWidth;
+      } else if (this.player.y < 0) {
+        this.player.y = this.worldHeight;
+      }
+
+      this.checkEnemyZone();
+
+      // Focus player
+      //cam.focus(player.x, player.y);
+      this.cam.isoFocus(this.player.x, this.player.y);
+
+      // Elapsed time
+      this.elapsed += deltaTime;
+      if (this.elapsed > 360000) {
+        this.elapsed -= 360000;
       }
     }
-  },
-
-  drawImageArea: function (ctx, cam, img, sx, sy, sw, sh) {
-    if (ctx !== undefined) {
-      if (cam !== undefined) {
-        if (img.width) {
-          ctx.drawImage(
-            img,
-            sx,
-            sy,
-            sw,
-            sh,
-            this.left - cam.x,
-            this.top - cam.y,
-            this.width,
-            this.height
-          );
-        } else {
-          ctx.strokeRect(
-            this.left - cam.x,
-            this.top - cam.y,
-            this.width,
-            this.height
-          );
-        }
-      } else {
-        if (img.width) {
-          ctx.drawImage(
-            img,
-            sx,
-            sy,
-            sw,
-            sh,
-            this.left,
-            this.top,
-            this.width,
-            this.height
-          );
-        } else {
-          ctx.strokeRect(this.left, this.top, this.width, this.height);
-        }
-      }
+    // Pause/Unpause
+    if (this.lastPress === "KEY_ENTER") {
+      this.pause = !this.pause;
+      this.lastPress = null;
     }
-  },
-
-  drawIsoImageArea: function (ctx, cam, img, z, sx, sy, sw, sh) {
-    if (ctx !== undefined) {
-      z = z === undefined ? 0 : z;
-      if (cam !== undefined) {
-        if (img.width) {
-          ctx.drawImage(
-            img,
-            sx,
-            sy,
-            sw,
-            sh,
-            this.left / 2 - this.top / 2 - cam.x,
-            this.left / 4 + this.top / 4 - z - cam.y,
-            this.width,
-            this.height
-          );
-        } else {
-          ctx.strokeRect(
-            this.left / 2 - this.top / 2 - cam.x,
-            this.left / 4 + this.top / 4 - z - cam.y,
-            this.width,
-            this.height
-          );
+  }
+  checkEnemyZone() {
+    for (let i = 0; i < this.enemyZone.length; i++) {
+      if (this.player.intersects(this.enemyZone[i])) {
+        const rng = Math.random();
+        if (rng > 0.98754) {
+          console.log("Battle" + rng);
+          GAME.changeScene(GAME.statesKeys.battle);
+          this.player.pressKey = [];
+          this.player.returnIdle();
+          this.enemyZone.splice(i, 1);
         }
-      } else {
-        if (img.width) {
-          ctx.drawImage(
-            img,
-            sx,
-            sy,
-            sw,
-            sh,
-            this.left / 2 - this.top / 2,
-            this.left / 4 + this.top / 4 - z,
-            this.width,
-            this.height
-          );
-        } else {
-          ctx.strokeRect(
-            this.left / 2 - this.top / 2,
-            this.left / 4 + this.top / 4 - z,
-            this.width,
-            this.height
-          );
-        }
-      }
-    }
-  },
-};
-
-document.addEventListener(
-  "keydown",
-  function (evt) {
-    lastPress = evt.which;
-    pressing[evt.which] = true;
-  },
-  false
-);
-
-document.addEventListener(
-  "keyup",
-  function (evt) {
-    pressing[evt.which] = false;
-  },
-  false
-);
-
-function setMap(map, blockSize) {
-  let col = 0,
-    row = 0,
-    columns = 0,
-    rows = 0,
-    enemy = null;
-  wall.length = 0;
-  lava.length = 0;
-  enemies.length = 0;
-  for (row = 0, rows = map.length; row < rows; row += 1) {
-    for (col = 0, columns = map[row].length; col < columns; col += 1) {
-      if (map[row][col] === 1) {
-        wall.push(
-          new Rectangle2D(
-            col * blockSize,
-            row * blockSize,
-            blockSize,
-            blockSize,
-            true
-          )
-        );
-      } else if (map[row][col] === 2) {
-        lava.push(
-          new Rectangle2D(
-            col * blockSize,
-            row * blockSize,
-            blockSize,
-            blockSize,
-            true
-          )
-        );
-      } else if (map[row][col] > 2) {
-        enemy = new Rectangle2D(
-          col * blockSize,
-          row * blockSize,
-          blockSize,
-          blockSize,
-          true
-        );
-        if (map[row][col] === 3) {
-          enemy.vx = 8;
-          enemy.dir = 1;
-        } else if (map[row][col] === 4) {
-          enemy.vy = 8;
-          enemy.dir = 2;
-        }
-        enemies.push(enemy);
       }
     }
   }
-  worldWidth = columns * blockSize;
-  worldHeight = rows * blockSize;
-}
+  draw(ctx: CanvasRenderingContext2D) {
+    const i = 0,
+      l = 0;
 
-function reset() {
-  player.dir = 1;
-  player.left = 64;
-  player.top = 160;
-  gameover = false;
-}
+    // Draw walk path
+    this.drawWalkPath(ctx);
 
-/*function fillMap(ctx, map, blockSize) {
-        var col = 0,
-            row = 0,
-            columns = 0,
-            rows = 0;
-        for (row = 0, rows = map.length; row < rows; row += 1) {
-            for (col = 0, columns = map[row].length; col < columns; col += 1) {
-                if (map[row][col] === 1) {
-                    ctx.drawImage(spritesheet, 32, 16, 16, 16, col * blockSize, row * blockSize, blockSize, blockSize);
-                } else if (map[row][col] === 2) {
-                    ctx.drawImage(spritesheet, 32, 32 + (~~(elapsed * 10) % 2) * 16, 16, 16, col * blockSize, row * blockSize, blockSize, blockSize);
-                } else {
-                    ctx.drawImage(spritesheet, 32, 0, 16, 16, col * blockSize, row * blockSize, blockSize, blockSize);
-                }
-            }
-        }
-    }*/
+    // Draw map
+    this.fillIsoMap(ctx);
 
-function fillIsoMap(ctx, map, blockSize) {
-  let col = 0,
-    row = 0,
-    columns = 0,
-    rows = 0;
-  for (row = 0, rows = map.length; row < rows; row += 1) {
-    for (col = 0, columns = map[row].length; col < columns; col += 1) {
-      if (map[row][col] === 1) {
-        // Draw wall
-        ctx.drawImage(
-          spritesheet,
-          32,
-          16,
-          16,
-          16,
-          (col * blockSize) / 2 - (row * blockSize) / 2 - cam.x,
-          (row * blockSize) / 4 + (col * blockSize) / 4 - cam.y,
-          blockSize,
-          blockSize
-        );
-      } else if (map[row][col] === 2) {
-        // Draw lava
-        ctx.drawImage(
-          spritesheet,
-          32,
-          32 + (~~(elapsed * 10) % 2) * 16,
-          16,
-          16,
-          (col * blockSize) / 2 - (row * blockSize) / 2 - cam.x,
-          (row * blockSize) / 4 + (col * blockSize) / 4 - cam.y,
-          blockSize,
-          blockSize
-        );
-      } else {
-        // Draw soil
-        ctx.drawImage(
-          spritesheet,
-          32,
-          0,
-          16,
-          16,
-          (col * blockSize) / 2 - (row * blockSize) / 2 - cam.x,
-          (row * blockSize) / 4 + (col * blockSize) / 4 - cam.y,
-          blockSize,
-          blockSize
-        );
-      }
-    }
-  }
-}
+    // // Draw enemies
+    // for (i = 0, l = this.enemies.length; i < l; i += 1) {
+    //   this.enemies[i].drawIsoImageArea(
+    //     ctx,
+    //     this.cam,
+    //     this.spritesheet,
+    //     8,
+    //     48 + (~~(this.elapsed * 10) % 2) * 16,
+    //     this.enemies[i].dir * 16,
+    //     16,
+    //     16
+    //   );
+    // }
 
-function paint(ctx) {
-  let i = 0,
-    l = 0;
-
-  // Clean canvas
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Draw map
-  fillIsoMap(ctx, maps[currentMap], 16);
-
-  // Draw player
-  player.drawIsoImageArea(
-    ctx,
-    cam,
-    spritesheet,
-    8,
-    (~~(elapsed * 10) % 2) * 16,
-    player.dir * 16,
-    16,
-    16
-  );
-
-  // Draw enemies
-  for (i = 0, l = enemies.length; i < l; i += 1) {
-    enemies[i].drawIsoImageArea(
+    // draw player
+    this.player.drawIsoImageAreaPlayer(
       ctx,
-      cam,
-      spritesheet,
-      8,
-      48 + (~~(elapsed * 10) % 2) * 16,
-      enemies[i].dir * 16,
-      16,
-      16
+      this.cam,
+
+      8
     );
   }
-
-  // Debug last key pressed
-  ctx.fillStyle = "#fff";
-  ctx.fillText("Last Press: " + lastPress, 0, 20);
-
-  // Draw pause
-  if (pause) {
-    ctx.textAlign = "center";
-    if (gameover) {
-      ctx.fillText("GAMEOVER", 120, 80);
-    } else {
-      ctx.fillText("PAUSE", 120, 80);
-    }
-    ctx.textAlign = "left";
+  drawWalkPath(ctx: CanvasRenderingContext2D) {
+    this.walkPath.forEach((element) => {
+      element.drawIsoImageArea(
+        ctx,
+        this.cam,
+        this.spritesheet,
+        8,
+        (~~(this.elapsed * 10) % 2) * 16,
+        element.dir * 16,
+        16,
+        16
+      );
+    });
   }
-}
+  drawUI(ctx: CanvasRenderingContext2D) {
+    // Debug last key pressed
+    ctx.fillStyle = "#fff";
+    ctx.fillText(this.data_world_maps[this.currentMap].name, 4, 20);
 
-function act(deltaTime) {
-  let i = 0,
-    l = 0,
-    j = 0,
-    jl = 0;
+    // Draw pause
+    if (this.pause) {
+      ctx.textAlign = "center";
+      if (this.gameover) {
+        ctx.fillText("GAMEOVER", 430 / 2, 430 / 2);
+      } else {
+        ctx.fillText("PAUSE", 430 / 2, 430 / 2);
+      }
+      ctx.textAlign = "left";
+    }
+  }
+  fillIsoMap(ctx: CanvasRenderingContext2D) {
+    this.wall
+      .sort((a, b) => a.y - b.y)
+      .forEach((element) => {
+        element.drawIsoImageArea(
+          ctx,
+          this.cam,
+          this.spritesheet,
+          8,
+          (~~(this.elapsed * 10) % 2) * 16,
+          element.dir * 16,
+          16,
+          16
+        );
+      });
 
-  if (!pause) {
-    // GameOver Reset
-    if (gameover) {
-      reset();
+    this.enemyZone
+      .sort((a, b) => a.y + b.y)
+      .forEach((element) => {
+        element.drawIsoImageArea(
+          ctx,
+          this.cam,
+          this.spritesheet,
+          8,
+          (~~(this.elapsed * 10) % 2) * 16,
+          element.dir * 16,
+          16,
+          16
+        );
+      });
+  }
+  setMap(map: {
+    data: number[];
+    height: number;
+    id: number;
+    name: string;
+    opacity: number;
+    type: string;
+    visible: boolean;
+    width: number;
+    x: number;
+    y: number;
+  }) {
+    const blockSize = 16;
+    this.bg.updateBackGround(Math.floor(Math.random() * mapDetails.length));
+
+    const arrayChunks = [];
+    for (let i = 0; i < map.data.length; i += map.width) {
+      const chunk = map.data.slice(i, i + map.width);
+      arrayChunks.push(chunk);
     }
 
-    // Move Rect
-    if (pressing[KEY_UP]) {
-      player.dir = 0;
-      player.y -= 8;
-      for (i = 0, l = wall.length; i < l; i += 1) {
-        if (player.intersects(wall[i])) {
-          player.top = wall[i].bottom;
+    let col = 0,
+      row = 0,
+      columns = 0,
+      rows = 0,
+      enemy = null;
+    this.wall.length = 0;
+    this.enemyZone.length = 0;
+    this.enemies.length = 0;
+    for (row = 0, rows = arrayChunks.length; row < rows; row += 1) {
+      for (
+        col = 0, columns = arrayChunks[row].length;
+        col < columns;
+        col += 1
+      ) {
+        if (arrayChunks[row][col] === this.data_world_bloks.blockRoad) {
+          this.walkPath.push(
+            new WalkPath(
+              col * blockSize,
+              row * blockSize,
+              blockSize + 2,
+              blockSize + 2,
+              true
+            )
+          );
+        }
+
+        if (arrayChunks[row][col] === this.data_world_bloks.blockWall) {
+          this.wall.push(
+            new Wall(
+              col * blockSize,
+              row * blockSize,
+              blockSize,
+              blockSize,
+              true
+            )
+          );
+        } else if (
+          arrayChunks[row][col] === this.data_world_bloks.blockEnemyZone
+        ) {
+          this.enemyZone.push(
+            new EnemyZone(
+              col * blockSize,
+              row * blockSize,
+              blockSize,
+              blockSize,
+              true
+            )
+          );
+        } else if (arrayChunks[row][col] > 2) {
+          enemy = new mySquare(
+            col * blockSize,
+            row * blockSize,
+            blockSize,
+            blockSize,
+            true
+          );
+          if (arrayChunks[row][col] === 3) {
+            enemy.vx = 8;
+            enemy.dir = 1;
+          } else if (arrayChunks[row][col] === 4) {
+            enemy.vy = 8;
+            enemy.dir = 2;
+          }
+          this.enemies.push(enemy);
         }
       }
     }
-    if (pressing[KEY_RIGHT]) {
-      player.dir = 1;
-      player.x += 8;
-      for (i = 0, l = wall.length; i < l; i += 1) {
-        if (player.intersects(wall[i])) {
-          player.right = wall[i].left;
-        }
-      }
-    }
-    if (pressing[KEY_DOWN]) {
-      player.dir = 2;
-      player.y += 8;
-      for (i = 0, l = wall.length; i < l; i += 1) {
-        if (player.intersects(wall[i])) {
-          player.bottom = wall[i].top;
-        }
-      }
-    }
-    if (pressing[KEY_LEFT]) {
-      player.dir = 3;
-      player.x -= 8;
-      for (i = 0, l = wall.length; i < l; i += 1) {
-        if (player.intersects(wall[i])) {
-          player.left = wall[i].right;
-        }
-      }
-    }
+    this.worldWidth = columns * blockSize;
+    this.worldHeight = rows * blockSize;
+  }
+  reset() {
+    this.player.dir = 1;
+    this.player.left = 64;
+    this.player.top = 160;
+    this.gameover = false;
+  }
 
-    // Out Screen
-    if (player.x > worldWidth) {
-      currentMap += 1;
-      if (currentMap > maps.length - 1) {
-        currentMap = 0;
-      }
-      setMap(maps[currentMap], 16);
-      player.x = 0;
-    }
-    if (player.y > worldHeight) {
-      player.y = 0;
-    }
-    if (player.x < 0) {
-      currentMap -= 1;
-      if (currentMap < 0) {
-        currentMap = maps.length - 1;
-      }
-      setMap(maps[currentMap], 16);
-      player.x = worldWidth;
-    }
-    if (player.y < 0) {
-      player.y = worldHeight;
-    }
+  in() {
+    document.addEventListener("keyup", this.checkKeyUp);
+    document.addEventListener("keydown", this.checkKeyDown);
+  }
+  out() {
+    document.removeEventListener("keyup", this.checkKeyUp);
+    document.removeEventListener("keydown", this.checkKeyDown);
+  }
 
+  moveNPC() {
+    let i = 0,
+      l = 0,
+      j = 0,
+      jl = 0;
     // Move enemies
-    for (i = 0, l = enemies.length; i < l; i += 1) {
-      if (enemies[i].vx !== 0) {
-        enemies[i].x += enemies[i].vx;
+    for (i = 0, l = this.enemies.length; i < l; i += 1) {
+      if (this.enemies[i].vx !== 0) {
+        this.enemies[i].x += this.enemies[i].vx;
 
-        for (j = 0, jl = wall.length; j < jl; j += 1) {
-          if (enemies[i].intersects(wall[j])) {
-            enemies[i].vx *= -1;
-            enemies[i].x += enemies[i].vx;
-            enemies[i].dir += 2;
-            if (enemies[i].dir > 3) {
-              enemies[i].dir -= 4;
+        for (j = 0, jl = this.wall.length; j < jl; j += 1) {
+          if (this.enemies[i].intersects(this.wall[j])) {
+            this.enemies[i].vx *= -1;
+            this.enemies[i].x += this.enemies[i].vx;
+            this.enemies[i].dir += 2;
+            if (this.enemies[i].dir > 3) {
+              this.enemies[i].dir -= 4;
             }
             break;
           }
         }
       }
 
-      if (enemies[i].vy !== 0) {
-        enemies[i].y += enemies[i].vy;
+      if (this.enemies[i].vy !== 0) {
+        this.enemies[i].y += this.enemies[i].vy;
 
-        for (j = 0, jl = wall.length; j < jl; j += 1) {
-          if (enemies[i].intersects(wall[j])) {
-            enemies[i].vy *= -1;
-            enemies[i].y += enemies[i].vy;
-            enemies[i].dir += 2;
-            if (enemies[i].dir > 3) {
-              enemies[i].dir -= 4;
+        for (j = 0, jl = this.wall.length; j < jl; j += 1) {
+          if (this.enemies[i].intersects(this.wall[j])) {
+            this.enemies[i].vy *= -1;
+            this.enemies[i].y += this.enemies[i].vy;
+            this.enemies[i].dir += 2;
+            if (this.enemies[i].dir > 3) {
+              this.enemies[i].dir -= 4;
             }
             break;
           }
@@ -877,67 +405,10 @@ function act(deltaTime) {
       }
 
       // Player Intersects Enemy
-      if (player.intersects(enemies[i])) {
-        gameover = true;
-        pause = true;
+      if (this.player.intersects(this.enemies[i])) {
+        this.gameover = true;
+        this.pause = true;
       }
     }
-
-    // Player Intersects Lava
-    for (i = 0, l = lava.length; i < l; i += 1) {
-      if (player.intersects(lava[i])) {
-        gameover = true;
-        pause = true;
-      }
-    }
-
-    // Focus player
-    //cam.focus(player.x, player.y);
-    cam.isoFocus(player.x, player.y);
-
-    // Elapsed time
-    elapsed += deltaTime;
-    if (elapsed > 3600) {
-      elapsed -= 3600;
-    }
   }
-  // Pause/Unpause
-  if (lastPress === KEY_ENTER) {
-    pause = !pause;
-    lastPress = null;
-  }
-}
-
-function repaint() {
-  window.requestAnimationFrame(repaint);
-  paint(ctx);
-}
-
-function run() {
-  setTimeout(run, 50);
-  act(0.05);
-}
-
-function init() {
-  // Get canvas and context
-  canvas = document.getElementById("canvas");
-  ctx = canvas.getContext("2d");
-  canvas.width = 240;
-  canvas.height = 160;
-  worldWidth = canvas.width;
-  worldHeight = canvas.height;
-
-  // Load assets
-  spritesheet.src = "assets/iso-sprites.png";
-
-  // Create camera and player
-  cam = new Camera();
-  player = new Rectangle2D(64, 64, 16, 16, true);
-
-  // Set initial map
-  setMap(maps[0], 16);
-
-  // Start game
-  run();
-  repaint();
 }

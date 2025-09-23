@@ -1,5 +1,16 @@
 export const mapDetails = [
   {
+    img: "/assects/background/bgfull0.png",
+    width: 240,
+    height: 159,
+    maxFrame: 11,
+    speed: 0.03,
+    fps: 1000 / 5,
+    name: "Intro",
+    moveY: false,
+    moveX: false,
+  },
+  {
     img: "/assects/background/bgfull1.png",
     width: 255,
     height: 255,
@@ -7,6 +18,9 @@ export const mapDetails = [
     speed: 0.02,
     fps: 1000 / 6,
     name: "Pink Diamonds",
+    moveY: true,
+
+    moveX: true,
   },
   {
     img: "/assects/background/bgfull2.png",
@@ -16,6 +30,9 @@ export const mapDetails = [
     speed: 0.02,
     fps: 1000 / 6,
     name: "Blue Square",
+    moveY: true,
+
+    moveX: true,
   },
   {
     img: "/assects/background/bgfull3.png",
@@ -25,6 +42,9 @@ export const mapDetails = [
     speed: 0.02,
     fps: 1000 / 6,
     name: "Golden E",
+    moveY: true,
+
+    moveX: true,
   },
   {
     img: "/assects/background/bgfull4.png",
@@ -34,15 +54,32 @@ export const mapDetails = [
     speed: 0.02,
     fps: 1000 / 6,
     name: "Brown food",
+    moveY: true,
+
+    moveX: true,
   },
   {
     img: "/assects/background/bgfull5.png",
     width: 240,
     height: 160,
     maxFrame: 15,
-    speed: 0.03,
+    speed: 0.0003,
     fps: 1000 / 30,
     name: "Dark Thunder",
+    moveY: false,
+
+    moveX: false,
+  },
+  {
+    img: "/assects/background/bgfull6.png",
+    width: 238,
+    height: 157,
+    maxFrame: 11,
+    speed: 0.03,
+    fps: 1000 / 6,
+    name: "Game Over",
+    moveY: true,
+    moveX: false,
   },
 ];
 export class BackGround {
@@ -61,12 +98,18 @@ export class BackGround {
   speed: number;
   mapa: number;
   name = "";
+  moveY = false;
+  moveX = true;
+  canMove = true;
 
-  constructor(canvas: { width: number; height: number }, mapa = 0) {
+  constructor(mapa = 0) {
     this.img = new Image();
     this.img.src = mapDetails[mapa].img;
+    this.moveY = mapDetails[mapa].moveY;
+    this.moveX = mapDetails[mapa].moveX;
+
     this.position = { x: 0, y: 0 }; // Iniciar en la esquina superior izquierda
-    this.canvas = canvas;
+    this.canvas = { width: 430, height: 430 };
     this.frameTime = 0;
     this.mapa = mapa;
     this.frameInterval = mapDetails[mapa].fps;
@@ -92,6 +135,9 @@ export class BackGround {
     this.frameWidth = mapDetails[newMapa].width; // 508; // El ancho de cada fragmento de la imagen
     this.frameHeight = mapDetails[newMapa].height; // 511; // La altura de cada fragmento de la imagen
     this.speed = mapDetails[newMapa].speed; // Ajusta la velocidad de movimiento
+    this.moveY = mapDetails[newMapa].moveY;
+    this.moveX = mapDetails[newMapa].moveX;
+    this.name = mapDetails[newMapa].name;
   }
 
   draw(c, deltaTime) {
@@ -109,9 +155,7 @@ export class BackGround {
       this.position.y = 0;
     }
 
-    if (document.hasFocus()) {
-      this.position.x += deltaTime * this.speed; // Mover hacia la derecha
-      this.position.y += deltaTime * this.speed; // Mover hacia abajo
+    if (document.hasFocus() && this.canMove) {
       if (this.frameTime > this.frameInterval) {
         // Actualización de la animación del sprite (si la tienes)
         this.frameTime = 0;
@@ -123,24 +167,48 @@ export class BackGround {
       } else {
         this.frameTime += deltaTime;
       }
-    }
-    // Dibujar las 9 imágenes de fondo en una cuadrícula 3x3
-    for (let i = -1; i <= 1; i++) {
-      // Tres filas, desde -1 hasta 1 (3 posiciones)
-      for (let j = -1; j <= 1; j++) {
-        // Tres columnas, desde -1 hasta 1 (3 posiciones)
-        c.drawImage(
-          this.img,
-          this.frameX * this.frameWidth,
-          this.frameY * this.frameHeight,
-          this.frameWidth,
-          this.frameHeight,
-          this.position.x + j * this.canvas.width, // Ajustar posición horizontal
-          this.position.y + i * this.canvas.height, // Ajustar posición vertical
-          this.canvas.width + 2,
-          this.canvas.height + 2 // Asegurarse de que cubra todo el canvas
-        );
+
+      if (this.moveY && this.moveX) {
+        this.position.x += deltaTime * this.speed; // Mover hacia la derecha
+        this.position.y += deltaTime * this.speed; // Mover hacia abajo
+      } else if (this.moveY) {
+        this.position.y += deltaTime * this.speed; // Mover hacia abajo
+      } else if (this.moveX) {
+        this.position.x += deltaTime * this.speed; // Mover hacia la derecha
       }
+    }
+
+    if (this.moveY || this.moveX) {
+      // Dibujar las 9 imágenes de fondo en una cuadrícula 3x3
+      for (let i = -1; i <= 1; i++) {
+        // Tres filas, desde -1 hasta 1 (3 posiciones)
+        for (let j = -1; j <= 1; j++) {
+          // Tres columnas, desde -1 hasta 1 (3 posiciones)
+          c.drawImage(
+            this.img,
+            this.frameX * this.frameWidth,
+            this.frameY * this.frameHeight,
+            this.frameWidth,
+            this.frameHeight,
+            this.position.x + j * this.canvas.width, // Ajustar posición horizontal
+            this.position.y + i * this.canvas.height, // Ajustar posición vertical
+            this.canvas.width + 4,
+            this.canvas.height + 4 // Asegurarse de que cubra todo el canvas
+          );
+        }
+      }
+    } else {
+      c.drawImage(
+        this.img,
+        this.frameX * this.frameWidth,
+        this.frameY * this.frameHeight,
+        this.frameWidth,
+        this.frameHeight,
+        this.position.x,
+        this.position.y,
+        this.canvas.width + 2,
+        this.canvas.height + 2 // Asegurarse de que cubra todo el canvas
+      );
     }
   }
 }

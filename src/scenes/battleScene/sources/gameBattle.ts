@@ -9,7 +9,7 @@ import { Mettols } from "@/data/enemys/Character/mettol/mettol";
 import BeeTank from "@/data/enemys/Character/beeTank/beetank";
 import { CannonDumb } from "@/data/enemys/Character/cannon/cannonDumb";
 import { ToleteEnemy } from "@/data/enemys/tolete";
-import { GAME } from "@/scenes/sceneManager";
+import { GAME } from "../../sceneManager";
 import { BattleScene } from "../battleScene";
 
 const allEnemies = [Mettols, BeeTank, CannonDumb, ToleteEnemy];
@@ -141,7 +141,7 @@ export class BatleGame {
     if (!this.hasEnemys) {
       // this.gameUI.clearStateImg(c, deltaTime, this.totalTimeInBattle);
       setTimeout(() => {
-        GAME.changeScene(GAME.scenes.world);
+        GAME.changeScene(GAME.statesKeys.world);
       }, 2000);
     } else {
       if (this.timeInBattle > 1000) {
@@ -151,7 +151,7 @@ export class BatleGame {
         this.timeInBattle += deltaTime;
       }
       if (this.players[0].live <= 0) {
-        GAME.changeScene(GAME.scenes.home);
+        GAME.changeScene(GAME.statesKeys.home);
       }
     }
 

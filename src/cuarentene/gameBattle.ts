@@ -1,18 +1,20 @@
 import { BackGround } from "../newUI/backGround/backGroundShow";
-import { Entity } from "./player/entity";
-import PlayerBlue from "./player/player/Player";
-import { FloorBase } from "./floor";
-import { matrix } from "./gameData/matrix";
-import { ubicateFloors } from "./gameData/ubicateFloors";
-import { GameUI } from "./gameData/UI";
-import { ToleteEnemy } from "./enemys/tolete";
-import { GAMEBATTLEOFF } from "../game_STATE";
-import { CannonDumb } from "./enemys/Character/cannon/cannonDumb";
-import { Mettols } from "./enemys/Character/mettol/mettol";
-import BeeTank from "./enemys/Character/beeTank/beetank";
+import { Entity } from "../data/player/entity";
+import PlayerBlue from "../data/player/Player";
+import { FloorBase } from "../data/floor";
+import { matrix } from "../data/gameData/matrix";
+import { ubicateFloors } from "../data/gameData/ubicateFloors";
+import { GameUI } from "../data/gameData/UI";
+import { ToleteEnemy } from "../data/enemys/tolete";
+
+import { CannonDumb } from "../data/enemys/Character/cannon/cannonDumb";
+import { Mettols } from "../data/enemys/Character/mettol/mettol";
+import BeeTank from "../data/enemys/Character/beeTank/beetank";
+import { Scene } from "./Scene";
 
 const allEnemies = [Mettols, BeeTank, CannonDumb, ToleteEnemy];
 export class BatleGame {
+  scene: Scene;
   floors: FloorBase[] = [];
   gameIsPaused = true;
   isDev = true;
@@ -42,6 +44,7 @@ export class BatleGame {
     this.initGame();
   }
   startNewBattle({ backGround = 0, allEnemiesS = [], floorImage = 0 }) {
+    console.log(allEnemiesS);
     this.gameUI.chipSelected.chipUsed = [];
     this.npc = [];
 
@@ -124,14 +127,14 @@ export class BatleGame {
     c.restore();
     this.gameUI.draw(c, deltaTime);
   }
-  update(c: CanvasRenderingContext2D, deltaTime: number) {
+  update(deltaTime: number, c: CanvasRenderingContext2D) {
     if (this.gameIsPaused) return;
 
     this.hasEnemys = this.npc.length > 0;
     if (!this.hasEnemys) {
       this.gameUI.clearStateImg(c, deltaTime, this.totalTimeInBattle);
       setTimeout(() => {
-        GAMEBATTLEOFF();
+        this.scene.gameState.endBattle();
       }, 2000);
     } else {
       if (this.timeInBattle > 1000) {
@@ -141,7 +144,7 @@ export class BatleGame {
         this.timeInBattle += deltaTime;
       }
       if (this.players[0].live <= 0) {
-        GAMEBATTLEOFF();
+        this.scene.startGameOver();
       }
     }
 
@@ -246,7 +249,6 @@ export class BatleGame {
     });
     newElement.game = this;
     newElement.sideToPlay = player.side;
-    console.log("newElement", newElement);
 
     this.npc.push(newElement);
   }

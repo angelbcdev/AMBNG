@@ -29,11 +29,11 @@ export class OptionScene extends SceneRoot {
     {
       position: { x: 250, y: 360 },
       title: "Back Home",
-      action: () => GAME.changeScene(GAME.scenes.home),
+      action: () => GAME.changeScene(GAME.statesKeys.home),
     },
   ]);
 
-  bg = new BackGround({ width: 430, height: 400 }, 0);
+  bg = new BackGround(0);
 
   constructor() {
     super();

@@ -1,4 +1,4 @@
-import { GAME } from "@/scenes/sceneManager";
+import { GAME } from "@/cuarentene/sceneManager";
 import { EnemyZone, FloorRoad } from "./class";
 import { GameWorld } from "./gameWorld";
 
@@ -281,7 +281,7 @@ export class WordPlayer {
       this.y + this.height > floor.y
     ) {
       if (floor.constructor.name == "EnemyZone") {
-        GAME.changeScene(GAME.scenes.battle);
+        GAME.changeScene(GAME.statesKeys.battle);
         floor.isDelete = true;
         this.allBlocks = this.allBlocks.filter((block) => !block.isDelete);
       }

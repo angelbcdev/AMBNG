@@ -1,7 +1,8 @@
-import { WorldScene } from "./worldScene/worldScene";
-import { BattleScene } from "./battleScene/battleScene";
-import { HomeScene } from "./homeScene/homeScene";
-import { OptionScene } from "./optionScene/optionScene";
+import { WorldScene } from "../scenes/worldScene/worldScene";
+import { BattleScene } from "../scenes/battleScene/battleScene";
+import { HomeScene } from "../scenes/homeScene/homeScene";
+import { OptionScene } from "../scenes/optionScene/optionScene";
+import { ChipsScene } from "./chipsScene/chipsScene";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -13,24 +14,27 @@ export class SceneManager {
   canvas: HTMLCanvasElement;
   isDev = true;
   static instance: SceneManager | null = null;
-  allScenes = [
-    new HomeScene(),
-    new WorldScene(),
-    new BattleScene(),
-    new OptionScene(),
-  ];
-  currentSceneIndex = 0;
-  scenes = {
-    home: 0,
-    world: 1,
-    battle: 2,
-    option: 3,
+
+  currentSceneIndex = "home";
+  statesKeys = {
+    home: "home",
+    world: "world",
+    battle: "battle",
+    option: "option",
+    chips: "chips",
   };
-  currentScene = this.allScenes[this.currentSceneIndex];
+  scenes = {
+    home: new HomeScene(),
+    world: new WorldScene(),
+    battle: new BattleScene(),
+    option: new OptionScene(),
+    chips: new ChipsScene(),
+  };
+  currentScene = this.scenes[this.currentSceneIndex];
 
   static getInstance() {
     if (!this.instance) {
-      this.instance = new SceneManager(c, canvas);
+      this.instance = new SceneManager();
     }
     return this.instance;
   }
@@ -49,12 +53,7 @@ export class SceneManager {
 
     window.addEventListener("keydown", (e) => {
       this.currentScene.checkKey(e);
-      const options = {
-        3: "battle",
-        2: "world",
-        1: "home",
-        4: "option",
-      };
+      const options = this.statesKeys;
       const nextID = this.scenes[options[e.key.toLowerCase()]];
       if (nextID !== undefined) {
         this.changeScene(nextID);
@@ -69,15 +68,15 @@ export class SceneManager {
   draw(deltaTime: number) {
     this.currentScene.draw(deltaTime, this.c, this.canvas);
   }
-  changeScene(id: number) {
-    if (id >= this.allScenes.length) {
+  changeScene(newScene: string) {
+    if (!this.scenes[newScene]) {
       return;
     }
 
-    if (this.currentSceneIndex !== id) {
+    if (this.currentSceneIndex !== newScene) {
       this.currentScene.out();
-      this.currentSceneIndex = id;
-      this.currentScene = this.allScenes[this.currentSceneIndex];
+      this.currentSceneIndex = newScene;
+      this.currentScene = this.scenes[this.currentSceneIndex];
       this.currentScene.in();
     }
   }

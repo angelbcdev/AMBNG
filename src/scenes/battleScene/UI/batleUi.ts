@@ -2,7 +2,7 @@
 
 import { keyBindings } from "@/config/keyBindings";
 
-import { GAME } from "@/scenes/sceneManager";
+import { GAME } from "../../sceneManager";
 import { BattleScene } from "../battleScene";
 
 // import { Dialogue } from "./dialoque";

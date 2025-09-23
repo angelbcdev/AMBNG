@@ -7,7 +7,7 @@ import { BattleUI } from "./UI/batleUi";
 import { ShowChipAreaWithChip } from "./UI/chipAreaSelect";
 
 export class BattleScene extends SceneRoot {
-  bg = new BackGround({ width: 430, height: 400 }, 3);
+  bg = new BackGround(3);
   nameScene = "battle";
   gameBattle = new BatleGame(this);
   battleUI = new BattleUI(this);
