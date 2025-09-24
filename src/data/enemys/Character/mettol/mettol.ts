@@ -1,3 +1,7 @@
+import {
+  GAME_IS_DEV,
+  GAME_IS_PAUSE,
+} from "@/scenes/battleScene/sources/gameState";
 import { DashShoot } from "../../../attacks/dashShoot";
 import { Entity } from "../../../player/entity";
 
@@ -100,7 +104,7 @@ export class Mettols extends Enemy {
     this.currentState.enter();
   }
   update(c: CanvasRenderingContext2D, deltaTime: number): void {
-    if (this.game.isDev) {
+    if (GAME_IS_DEV()) {
       c.fillStyle = "#ff005450";
       c.fillRect(this.possition.x, this.possition.y, this.width, this.height);
     }
@@ -143,19 +147,19 @@ export class Mettols extends Enemy {
 
     if (
       newMatrixY < 0 ||
-      newMatrixY >= this.game.matrix.length ||
+      newMatrixY >= this.matrix.length ||
       newMatrixX < 0 ||
-      newMatrixX >= this.game.matrix[0].length ||
-      this.game.matrix[newMatrixY][newMatrixX].side !== this.side ||
-      this.game.matrix[newMatrixY][newMatrixX]?.ocupated
+      newMatrixX >= this.matrix[0].length ||
+      this.matrix[newMatrixY][newMatrixX].side !== this.side ||
+      this.matrix[newMatrixY][newMatrixX]?.ocupated
     ) {
       return;
     }
-    this.game.matrix[this.matrixY][this.matrixX].ocupated = false;
+    this.matrix[this.matrixY][this.matrixX].ocupated = false;
     this.matrixY = newMatrixY;
     this.matrixX = newMatrixX;
     setTimeout(() => {
-      this.game.matrix[this.matrixY][this.matrixX].ocupated = true;
+      this.matrix[this.matrixY][this.matrixX].ocupated = true;
       this.changeState(this.finiteStates.idle);
     }, 500);
   }
@@ -175,7 +179,7 @@ export class Mettols extends Enemy {
       this.side === player.side ||
       this.delete ||
       !this.canMove ||
-      this.game.gameIsPaused
+      GAME_IS_PAUSE()
     ) {
       return;
     }

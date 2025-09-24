@@ -1,9 +1,12 @@
 import { FloorBase } from "../floor";
+import { TMatrix } from "../floor/matrixForFloor";
 
-export const ubicateFloors = function ({ array, blockSize, gapX = 1 }) {
+export const ubicateFloors = function (matrix: TMatrix[][]) {
+  const blockSize = 64;
+  const gapX = 6.5;
   const objects = [];
 
-  array.forEach((row, y) => {
+  matrix.forEach((row, y) => {
     row.forEach((symbol, x) => {
       // if (symbol.side != 0 && symbol.side != 1) {
       //   return;

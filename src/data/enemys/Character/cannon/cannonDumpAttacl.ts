@@ -1,10 +1,11 @@
+import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState";
 import Attack from "../../../attacks/attacks";
 
 export class CannonDumpAttack extends Attack {
   onCollisionPlayer = false;
   constructor(data) {
     super(data);
-    this.game = data.game;
+    this.matrix = data.matrix;
 
     this.color = "#ff0070" + "80";
     this.width = 30;
@@ -33,7 +34,7 @@ export class CannonDumpAttack extends Attack {
       this.delete = true;
     }
 
-    if (this.game.isDev) {
+    if (GAME_IS_DEV()) {
       c.fillStyle = this.color;
       c.fillRect(this.possition.x, this.possition.y, this.width, this.height);
     }

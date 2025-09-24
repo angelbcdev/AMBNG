@@ -71,11 +71,11 @@ export class ToleteEnemy extends Enemy {
     this.changeFloorSignal(false);
     let newMatrixX, newMatrixY;
     do {
-      newMatrixX = Math.floor(Math.random() * this.game.matrix[0].length);
-      newMatrixY = Math.floor(Math.random() * this.game.matrix.length);
+      newMatrixX = Math.floor(Math.random() * this.matrix[0].length);
+      newMatrixY = Math.floor(Math.random() * this.matrix.length);
     } while (
-      this.game.matrix[newMatrixY][newMatrixX].ocupated || // Verifica que no esté ocupada
-      this.game.matrix[newMatrixY][newMatrixX].side !== 1 // Verifica que side sea 0 o 1
+      this.matrix[newMatrixY][newMatrixX].ocupated || // Verifica que no esté ocupada
+      this.matrix[newMatrixY][newMatrixX].side !== 1 // Verifica que side sea 0 o 1
     );
 
     this.matrixY = newMatrixY;

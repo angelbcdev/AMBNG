@@ -1,6 +1,8 @@
 import PlayerBlue from "../playerBlue";
 import Attack from "../../attacks/attacks";
 import { allChipsA, ChipData } from "./chipData";
+import { FLOOR_MANAGER } from "@/scenes/battleScene/sources/floorManager";
+import { ENTITY_MANAGER } from "@/scenes/battleScene/sources/entityManager";
 
 export const IChips = {
   maze: "maze",
@@ -115,7 +117,7 @@ export class BattleShip {
         break;
       case "fieldChange":
         setTimeout(() => {
-          player.game[this.gamechange](player, this.chipType);
+          FLOOR_MANAGER[this.gamechange](player, this.chipType);
         }, this.timeForAttack);
 
         break;
@@ -125,7 +127,7 @@ export class BattleShip {
 
       case "addElement":
         setTimeout(() => {
-          player.game[this.gamechange]({
+          ENTITY_MANAGER[this.gamechange]({
             element: this.elementToAdd,
             player,
           });

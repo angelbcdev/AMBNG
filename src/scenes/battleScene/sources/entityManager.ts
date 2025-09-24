@@ -1,9 +1,11 @@
 import { Entity } from "@/data/player/entity";
-import { MATRIX_MANAGER } from "./matrixManager";
+import { FLOOR_MANAGER } from "./floorManager";
 import PlayerBlue from "@/data/player/player/Player";
+import { GAME_IS_PAUSE } from "./gameState";
 
-class BattleManager {
-  static instance: BattleManager | null = null;
+class EntityManager {
+  static instance: EntityManager | null = null;
+
   effect = [];
   npc = [];
   player = new PlayerBlue({
@@ -12,8 +14,22 @@ class BattleManager {
   });
 
   static getInstance() {
-    if (!this.instance) this.instance = new BattleManager();
+    if (!this.instance) this.instance = new EntityManager();
     return this.instance;
+  }
+  initBattle() {
+    this.clearEntites();
+    this.asignarMatrixToEntity();
+    this.resetPlayers();
+  }
+  asignarMatrixToEntity() {
+    this.npc.forEach((enemy) => {
+      enemy.matrix = FLOOR_MANAGER.matrix;
+
+      enemy.calculateMatrix();
+    });
+    this.player.matrix = FLOOR_MANAGER.matrix;
+    this.player.calculateMatrix();
   }
 
   runFilters() {
@@ -23,7 +39,7 @@ class BattleManager {
 
     this.npc = this.npc.filter((enemy: Entity) => {
       if (enemy.delete) {
-        MATRIX_MANAGER.matrix[enemy.matrixY][enemy.matrixX].ocupated = false;
+        FLOOR_MANAGER.matrix[enemy.matrixY][enemy.matrixX].ocupated = false;
       }
       return enemy.delete !== true;
     });
@@ -70,11 +86,12 @@ class BattleManager {
       sideToPlay: this.player.side == 0 ? 1 : 0,
       level: level,
     });
+    enemy.matrix = FLOOR_MANAGER.matrix;
+    console.log("enemy.matrix", enemy.matrix);
+    enemy.calculateMatrix();
 
-    if (BATTLE_MANAGER.npc.length < 3) {
-      enemy.game = this;
-
-      BATTLE_MANAGER.npc.push(enemy);
+    if (this.npc.length < 3) {
+      this.npc.push(enemy);
     } else {
       alert("por el momento no se pueden agregar mas enemigos limitados a 2");
     }
@@ -86,20 +103,15 @@ class BattleManager {
     });
   }
 
-  levelToPaint(
-    c: CanvasRenderingContext2D,
-    deltaTime: number,
-    row: number,
-    gameIsPaused: boolean
-  ) {
+  levelToPaint(c: CanvasRenderingContext2D, deltaTime: number, row: number) {
     [...this.npc, this.player]
       .filter((entity) => entity.matrixY == row)
       .sort((a, b) => b.y - a.y)
       .forEach((entity: any) => {
         entity.collisionAttacks = this.effect;
         entity.draw(c, deltaTime);
-        console.log(gameIsPaused);
-        if (!gameIsPaused) {
+
+        if (!GAME_IS_PAUSE()) {
           entity.update(c, deltaTime);
         }
       });
@@ -116,6 +128,16 @@ class BattleManager {
   getAllEntities() {
     return [...this.npc, this.player];
   }
+  addPlayerElement({ element, player }: { element: any; player: Entity }) {
+    const newElement = new element({
+      possition: { x: player.matrixX + 1, y: player.matrixY },
+      sideToPlay: player.side,
+    });
+    // newElement.sideToPlay set by constructor
+    // newElement.sideToPlay = player.side;
+
+    ENTITY_MANAGER.effect.push(newElement);
+  }
 }
 
-export const BATTLE_MANAGER = BattleManager.getInstance();
+export const ENTITY_MANAGER = EntityManager.getInstance();

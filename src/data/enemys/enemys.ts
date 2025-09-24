@@ -1,3 +1,7 @@
+import {
+  GAME_IS_DEV,
+  GAME_IS_PAUSE,
+} from "@/scenes/battleScene/sources/gameState";
 import { Entity } from "../player/entity";
 
 class Enemy extends Entity {
@@ -72,6 +76,7 @@ class Enemy extends Entity {
   }
 
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
+    // console.log("this.matrix", this.matrix);
     super.draw(c, deltaTime);
     this.drawAreaView(c);
 
@@ -91,10 +96,10 @@ class Enemy extends Entity {
   paintLive(_: CanvasRenderingContext2D) {}
 
   drawAreaView(c: CanvasRenderingContext2D) {
-    if (this.game.isDev) {
+    //TODO
+    if (GAME_IS_DEV()) {
       //area de rango
       c.fillStyle = this.color + "50";
-
       c.fillRect(this.possition.x, this.possition.y, this.width, this.height);
       c.fillStyle = "#ff9900" + "30";
       c.fillRect(
@@ -145,27 +150,27 @@ class Enemy extends Entity {
     }
 
     try {
-      if (this.game.matrix[newMatrixY][newMatrixX]?.ocupated) {
+      if (this.matrix[newMatrixY][newMatrixX]?.ocupated) {
         return;
       }
     } catch (_) {}
 
     if (
       newMatrixY < 0 ||
-      newMatrixY >= this.game.matrix.length ||
+      newMatrixY >= this.matrix.length ||
       newMatrixX < 0 ||
-      newMatrixX >= this.game.matrix[0].length ||
-      this.game.matrix[newMatrixY][newMatrixX].side !== this.side
+      newMatrixX >= this.matrix[0].length ||
+      this.matrix[newMatrixY][newMatrixX].side !== this.side
     ) {
       return;
     }
 
-    this.game.matrix[this.matrixY][this.matrixX].ocupated = false;
+    this.matrix[this.matrixY][this.matrixX].ocupated = false;
 
     this.matrixY = newMatrixY;
     this.matrixX = newMatrixX;
     setTimeout(() => {
-      this.game.matrix[this.matrixY][this.matrixX].ocupated = true;
+      this.matrix[this.matrixY][this.matrixX].ocupated = true;
       // this.changeState(this.finiteStates.idle);
     }, 500);
   }
@@ -175,7 +180,7 @@ class Enemy extends Entity {
       this.side === player.side ||
       this.delete ||
       !this.canMove ||
-      this.game.gameIsPaused
+      GAME_IS_PAUSE()
     ) {
       return;
     }

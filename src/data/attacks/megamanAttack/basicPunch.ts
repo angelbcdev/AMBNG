@@ -1,3 +1,4 @@
+import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState";
 import Attack from "../attacks";
 
 export class BasicPunch extends Attack {
@@ -29,7 +30,7 @@ export class BasicPunch extends Attack {
     this.drawSprite(c);
   }
   drawSprite(c) {
-    if (this.attackOuwner.game.isDev) {
+    if (GAME_IS_DEV()) {
       c.fillStyle = this.color;
       c.fillRect(this.possition.x, this.possition.y, this.width, this.height);
     }

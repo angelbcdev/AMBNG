@@ -1,4 +1,4 @@
-import { BattleShip } from ".";
+import { BattleShip } from "./battleChip";
 import { allChipsA, ChipData } from "./chipData";
 
 export class ChipManager {

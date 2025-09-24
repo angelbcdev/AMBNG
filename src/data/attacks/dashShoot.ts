@@ -1,3 +1,4 @@
+import { FLOOR_MANAGER } from "@/scenes/battleScene/sources/floorManager";
 import Attack from "./attacks";
 
 export class DashShoot extends Attack {
@@ -48,6 +49,6 @@ export class DashShoot extends Attack {
       this.firstPlace = false;
       return;
     }
-    this.game.breackFloor(matrixX, this.initialMatrixY); //(matrixX, matrixY);
+    FLOOR_MANAGER.breackFloor(matrixX, this.initialMatrixY); //(matrixX, matrixY);
   }
 }

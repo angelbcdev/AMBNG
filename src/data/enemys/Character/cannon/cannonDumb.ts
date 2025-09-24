@@ -1,9 +1,10 @@
-import { BATTLE_MANAGER } from "@/scenes/battleScene/sources/battleManager";
+import { ENTITY_MANAGER } from "@/scenes/battleScene/sources/entityManager";
 
 import { StaticEnemy } from "../../staticEnemy";
 
 import { CannonDumpAttack } from "./cannonDumpAttacl";
 import Player from "@/data/player/player/Player";
+import { GAME_IS_PAUSE } from "@/scenes/battleScene/sources/gameState";
 
 const levelsInfo = {
   1: {
@@ -89,7 +90,7 @@ class CannonDumb extends StaticEnemy {
       this.attackShort.draw(c, deltaTime);
       this.attackShort.update(c, deltaTime);
 
-      BATTLE_MANAGER.player.validCollision(this.attackShort);
+      ENTITY_MANAGER.player.validCollision(this.attackShort);
       if (this.attackShort.delete) {
         this.attackShort = null;
       }
@@ -120,7 +121,7 @@ class CannonDumb extends StaticEnemy {
     }
   }
   onDetectedPlayer(_: Player) {
-    if (this.delete || !this.canMove || this.game.gameIsPaused) {
+    if (this.delete || !this.canMove || GAME_IS_PAUSE()) {
       return;
     }
     if (this.frameY == this.states.idle && this.canAttack) {
@@ -131,7 +132,6 @@ class CannonDumb extends StaticEnemy {
           sideToPlay: this.side,
           color: this.color,
           damage: this.damage,
-          game: this.game,
           attackOuwner: this,
           initialMatrixY: this.matrixY,
         });

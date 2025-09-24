@@ -1,6 +1,11 @@
 import { keyBindings } from "@/config/keyBindings";
-import { GAMEBATTLEOFF } from "../../../../game_STATE";
+
 import Player, { playerAllAttacks } from "../player";
+import {
+  GAME_IS_PAUSE,
+  GAME_TOGGLE_DEV,
+  GAME_TOGGLE_PAUSE,
+} from "@/scenes/battleScene/sources/gameState";
 
 const moves = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
 
@@ -16,10 +21,7 @@ export class PlayerState {
   onCollision(_: any) {}
   exit() {}
   acctionKeyDown(key: string) {
-    if (
-      this.player.frameY == this.player.states.hit ||
-      this.player.game.gameIsPaused
-    ) {
+    if (this.player.frameY == this.player.states.hit || GAME_IS_PAUSE()) {
       return;
     }
 
@@ -33,7 +35,7 @@ export class PlayerState {
     );
 
     try {
-      if (this.player.game.matrix[newMatrixY][newMatrixX]?.ocupated) {
+      if (this.player.matrix[newMatrixY][newMatrixX]?.ocupated) {
         return;
       }
     } catch (error) {}
@@ -41,16 +43,16 @@ export class PlayerState {
     // Verificar los límites y ocupación
     if (
       newMatrixY < 0 ||
-      newMatrixY >= this.player.game.matrix.length ||
+      newMatrixY >= this.player.matrix.length ||
       newMatrixX < 0 ||
-      newMatrixX >= this.player.game.matrix[0].length ||
-      this.player.game.matrix[newMatrixY][newMatrixX].side !== this.player.side
+      newMatrixX >= this.player.matrix[0].length ||
+      this.player.matrix[newMatrixY][newMatrixX].side !== this.player.side
     ) {
       return; // Salir si hay un movimiento no válido
     }
 
     // Marcar la posición actual como no ocupada
-    this.player.game.matrix[this.player.matrixY][this.player.matrixX].ocupated =
+    this.player.matrix[this.player.matrixY][this.player.matrixX].ocupated =
       false;
 
     // Actualizar las coordenadas
@@ -59,7 +61,7 @@ export class PlayerState {
 
     // Marcar la nueva posición como ocupada
 
-    this.player.game.matrix[this.player.matrixY][this.player.matrixX].ocupated =
+    this.player.matrix[this.player.matrixY][this.player.matrixX].ocupated =
       true;
   }
   acctionKeyUp(key: string) {
@@ -109,7 +111,10 @@ export class PlayerState {
         }
       },
       v: () => {
-        GAMEBATTLEOFF();
+        GAME_TOGGLE_DEV();
+      },
+      enter: () => {
+        GAME_TOGGLE_PAUSE();
       },
     };
 

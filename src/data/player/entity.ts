@@ -1,5 +1,7 @@
+import { FLOOR_MANAGER } from "@/scenes/battleScene/sources/floorManager.js";
 import Attack from "../attacks/attacks.js";
 import { ExplotionsBombs } from "../extra/StaticAnimations.js";
+
 export class Entity {
   matrixX: number;
   matrixY: number;
@@ -46,7 +48,7 @@ export class Entity {
   allExplotions = [];
   frameAjustY = 10;
   frameAjustX = 0;
-  game: any;
+  matrix: any;
   fps = 12;
   delete = false;
   canMove = true;
@@ -101,6 +103,7 @@ export class Entity {
       ll: -15,
     };
     this.image = new Image();
+    this.matrix = null;
   }
 
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
@@ -118,9 +121,9 @@ export class Entity {
     this.paintLive(c, this.possition.x, this.possition.y);
     try {
       if (this.isVisible) {
-        this.game.matrix[this.matrixY][this.matrixX].ocupated = true;
+        this.matrix[this.matrixY][this.matrixX].ocupated = true;
       } else {
-        this.game.matrix[this.matrixY][this.matrixX].ocupated = false;
+        this.matrix[this.matrixY][this.matrixX].ocupated = false;
       }
     } catch (_) {}
   }
@@ -130,10 +133,11 @@ export class Entity {
   }
 
   calculateMatrix() {
-    if (this.game.matrix == null) {
+    if (this.matrix == null) {
       return;
     }
-    this.game.matrix.forEach((row: number[], y: number) => {
+
+    this.matrix.forEach((row: number[], y: number) => {
       row.forEach((_, x: number) => {
         if (this.matrixY == y && this.matrixX == x) {
           let gap = 130;
@@ -282,8 +286,8 @@ export class Entity {
 
     setTimeout(() => {
       this.delete = true;
-      this.game.matrix[this.matrixY][this.matrixX].ocupated = false;
-      // this.game.breackFloor(this.matrixX, this.matrixY);
+      this.matrix[this.matrixY][this.matrixX].ocupated = false;
+      // FLOOR_MANAGER.breackFloor(this.matrixX, this.matrixY);
     }, this.timeToDie);
   }
   addAttack({
@@ -297,6 +301,7 @@ export class Entity {
   }) {
     this.AllattackToShow.push(
       new typeElemetns({
+        matrix: this.matrix,
         possition: {
           x: this.possition.x,
           y: this.possition.y,

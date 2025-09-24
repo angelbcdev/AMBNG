@@ -5,7 +5,7 @@ import SceneRoot from "../sceneROOT";
 import { GAME } from "../sceneManager";
 import { BattleUI } from "./UI/batleUi";
 import { ShowChipAreaWithChip } from "./UI/chipAreaSelect";
-import { BATTLE_MANAGER } from "./sources/battleManager";
+import { ENTITY_MANAGER } from "./sources/entityManager";
 
 export class BattleScene extends SceneRoot {
   nameScene = "battle";
@@ -59,7 +59,7 @@ export class BattleScene extends SceneRoot {
   handleInput() {
     if (!GAME.hasFocus()) return;
 
-    BATTLE_MANAGER.player.handleInput(this.currentState);
+    ENTITY_MANAGER.player.handleInput(this.currentState);
     this.chipAreaSelect.handleInput(this.currentState);
     // if (this.chipAreaSelect.showChipArea) {
     //   this.chipAreaSelect.handleInput();

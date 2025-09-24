@@ -1,5 +1,5 @@
+import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState";
 import { Entity } from "../player/entity";
-import { Game } from "../gameBattle";
 
 export interface TCreateAttack {
   possition: { x: number; y: number };
@@ -7,7 +7,7 @@ export interface TCreateAttack {
   color: string;
   damage: number;
   origin: string;
-  game: Game;
+  matrix: any;
   faceToLeft?: boolean;
   Attack?: Attack;
 }
@@ -23,7 +23,7 @@ class Attack extends Entity {
   frameAjustX = 0;
   attackOuwner: Entity;
   initialMatrixY: number;
-  isDev: boolean;
+
   canMakeDamage = true;
 
   constructor({
@@ -44,7 +44,7 @@ class Attack extends Entity {
     this.color = color + "80";
 
     this.delete = false;
-    this.isDev = false;
+
     this.color = color + "30";
     this.image = new Image();
     this.ajustY = 0;
@@ -59,7 +59,7 @@ class Attack extends Entity {
     this.frameWidth = 90;
     this.frameHeight = 76;
     this.attackOuwner = attackOuwner;
-    this.game = attackOuwner?.game;
+    this.matrix = attackOuwner?.matrix;
 
     this.possition = {
       x: this.isToLeft === "left" ? (x / 70) * 70 : x + 55,
@@ -98,7 +98,7 @@ class Attack extends Entity {
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
     this.updateframe(deltaTime);
     if (
-      this.isDev
+      GAME_IS_DEV()
       // true
     ) {
       c.fillStyle = this.color;
@@ -129,7 +129,11 @@ class Attack extends Entity {
 
     c.restore();
   }
-  getMatrixIndices = (xPos, yPos, jump = 70) => {
+  getMatrixIndices = (xPos: number, yPos: number, jump = 70) => {
+    if (!this.matrix) {
+      console.log("no matrix", this.matrix);
+      return false;
+    }
     // Calculamos el índice en x (que es simplemente el valor de xPos dividido por jump)
     let matrixX = Math.floor(xPos / jump);
 
@@ -162,8 +166,8 @@ class Attack extends Entity {
     this.attackFloorEfect(matrixX, this.initialMatrixY);
     // Retornamos los índices calculados
     return (
-      this.game.matrix[matrixY][matrixX]?.side == 0 ||
-      this.game.matrix[matrixY][matrixX]?.side == 1
+      this.matrix[matrixY][matrixX]?.side == 0 ||
+      this.matrix[matrixY][matrixX]?.side == 1
     );
   };
   attackCollision(_: Entity) {

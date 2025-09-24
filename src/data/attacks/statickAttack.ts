@@ -1,3 +1,4 @@
+import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState";
 import Attack from "./attacks";
 
 export class StaticAttack extends Attack {
@@ -30,7 +31,7 @@ export class StaticAttack extends Attack {
     // if (this.frameX >= this.maxFrame) {
     //   this.delete = true;
     // }
-    if (this.game.isDev) {
+    if (GAME_IS_DEV()) {
       c.fillStyle = this.color;
       c.fillRect(this.possition.x, this.possition.y, this.width, this.height);
     }

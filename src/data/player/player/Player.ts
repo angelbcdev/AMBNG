@@ -1,3 +1,4 @@
+import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState.ts";
 import { GAME_IN_BATTLE } from "../../../game_STATE.ts";
 import Attack from "../../attacks/attacks.ts";
 
@@ -6,7 +7,7 @@ import { MegamanAttackBasic } from "../../attacks/megamanAttack/MegamanAttackBas
 import { MegamanAttackDash } from "../../attacks/megamanAttack/MegamanAttackDash.ts";
 import { Entity } from "../entity.ts";
 
-import { BattleShip } from "./chips/index.ts";
+import { BattleShip } from "./chips/battleChip.ts";
 import { ShootStateMax } from "./states/chargeMaxState.ts";
 import { ShootStateCharge } from "./states/chargeShootState.ts.ts";
 import { HealState } from "./states/healState.ts";
@@ -174,7 +175,7 @@ export class Player extends Entity {
   paintLive(_: CanvasRenderingContext2D) {}
 
   drawSprite(c: CanvasRenderingContext2D) {
-    if (this.game.isDev) {
+    if (GAME_IS_DEV()) {
       c.fillStyle = this.color;
       c.fillRect(
         this.possition.x + this.width / 2,

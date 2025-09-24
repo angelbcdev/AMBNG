@@ -1,10 +1,10 @@
 class StaticAnimations {
-  constructor({ possition, sideToPlay, color, isDev }) {
+  constructor({ possition, sideToPlay, color }) {
     this.possition = {
       x: possition.x,
       y: possition.y - 2,
     };
-    this.isDev = isDev;
+
     this.sideToPlay = sideToPlay;
     this.color = color;
     this.frameX = 0;
@@ -29,7 +29,7 @@ class StaticAnimations {
     } else {
       this.frameTime += deltaTime;
     }
-    if (this.isDev) {
+    if (GAME_IS_DEV()) {
       c.fillStyle = this.color + "90";
       c.fillRect(
         this.sideToPlay ? this.possition.x - 25 : this.possition.x + 65,

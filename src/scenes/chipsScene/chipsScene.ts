@@ -3,7 +3,7 @@ import SceneRoot from "../sceneROOT";
 
 import { CHIPS_M } from "@/data/player/player/chips/chipsManager";
 
-import { BattleShip } from "@/data/player/player/chips";
+import { BattleShip } from "@/data/player/player/chips/battleChip";
 import { keyBindings } from "@/config/keyBindings";
 
 export class ChipsScene extends SceneRoot {

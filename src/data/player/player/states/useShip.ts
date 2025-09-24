@@ -48,7 +48,8 @@ export class UseShip extends PlayerState {
       case this.player.states.maze:
         if (this.player.frameX == this.player.maxFrame) {
           this.player.incialFrameX = this.player.maxFrame;
-          this.player.game.makeGameTemble();
+          //TODO search way to make tamble the canvas
+          // this.player.game.makeGameTemble();
           if (this.time >= this.timeKeepImage + 500) {
             this.player.changeState(this.player.states.idle);
             this.time = 0;

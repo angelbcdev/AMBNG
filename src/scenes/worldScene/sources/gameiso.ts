@@ -4,6 +4,11 @@ import { PlayerIso } from "./isPlayer";
 import { testWorld } from "./utils";
 import { BackGround } from "@/newUI/backGround/backGroundShow";
 import { PauseMenu } from "@/newUI/menu/pauseMenu";
+import {
+  GAME_IS_PAUSE,
+  GAME_SET_PAUSE,
+  GAME_TOGGLE_PAUSE,
+} from "@/scenes/battleScene/sources/gameState";
 
 const canvas = {
   width: 240,
@@ -45,7 +50,7 @@ class Camera {
 export class GameIso {
   lastPress = null;
   pressing = [];
-  pause = false;
+  pause = GAME_IS_PAUSE();
   gameover = true;
   worldWidth = 0;
   worldHeight = 0;
@@ -71,13 +76,13 @@ export class GameIso {
   checkKeyDown = (e: KeyboardEvent) => {
     this.player.checkKeyDown(e);
     const options = {
-      Enter: () => {
-        if (!this.pause) {
-          this.pause = true;
+      f: () => {
+        if (!GAME_IS_PAUSE()) {
+          GAME_SET_PAUSE();
           this.menuScreen.showMenu = true;
           if (this.menuScreen.showMenu) {
             // this.menuScreen.in();
-            document.addEventListener("keydown", this.menuScreen.checkKey);
+            // document.addEventListener("keydown", this.menuScreen.checkKey);
           }
           // else {
           //   // this.menuScreen.out();
@@ -101,6 +106,21 @@ export class GameIso {
 
   checkKeyUp = (e: KeyboardEvent) => {
     this.player.checkKeyUp(e);
+    const options = {
+      f: () => {
+        if (GAME_IS_PAUSE()) {
+          GAME_SET_PAUSE();
+          this.menuScreen.showMenu = false;
+          if (!this.menuScreen.showMenu) {
+            // this.menuScreen.in();
+            document.removeEventListener("keydown", this.menuScreen.checkKey);
+          }
+        }
+      },
+    };
+    if (options[e.key]) {
+      options[e.key]();
+    }
   };
   init() {
     // Get canvas and context
@@ -117,6 +137,7 @@ export class GameIso {
   }
 
   update(deltaTime: number) {
+    this.pause = GAME_IS_PAUSE();
     if (!this.pause) {
       this.player.update(deltaTime);
       this.player.mover(this.wall);
@@ -354,7 +375,7 @@ export class GameIso {
     document.addEventListener("keyup", this.checkKeyUp);
     document.addEventListener("keydown", this.checkKeyDown);
     if (this.pause) {
-      this.pause = false;
+      GAME_TOGGLE_PAUSE();
       this.menuScreen.showMenu = false;
       document.removeEventListener("keydown", this.menuScreen.checkKey);
     }

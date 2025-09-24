@@ -4,7 +4,7 @@ import { keyBindings } from "@/config/keyBindings";
 
 import { GAME } from "../../sceneManager";
 import { BattleScene } from "../battleScene";
-import { BATTLE_MANAGER } from "../sources/battleManager";
+import { ENTITY_MANAGER } from "../sources/entityManager";
 
 // import { Dialogue } from "./dialoque";
 
@@ -87,7 +87,7 @@ export class BattleUI {
 
     this.drawLivePlayer(c);
     this.showAllAlerts(c);
-    BATTLE_MANAGER.player.showChipts(c, deltaTime);
+    ENTITY_MANAGER.player.showChipts(c, deltaTime);
 
     this.showDetails(c);
 
@@ -219,7 +219,7 @@ export class BattleUI {
     c.fillRect(x, y, w, h);
     c.fillStyle = "blue";
 
-    this.showText(c, BATTLE_MANAGER.player.live, {
+    this.showText(c, ENTITY_MANAGER.player.live, {
       x: x + 30,
       y: y + 16,
     });

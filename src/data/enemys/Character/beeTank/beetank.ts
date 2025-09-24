@@ -1,3 +1,7 @@
+import {
+  GAME_IS_DEV,
+  GAME_IS_PAUSE,
+} from "@/scenes/battleScene/sources/gameState";
 import Attack from "../../../attacks/attacks";
 import { BasicBomb } from "../../../attacks/megamanAttack/basicBomp";
 
@@ -102,7 +106,7 @@ export default class BeeTank extends Enemy {
       this.side === player.side ||
       this.delete ||
       !this.canMove ||
-      this.game.gameIsPaused
+      GAME_IS_PAUSE()
     ) {
       return;
     }
@@ -125,7 +129,7 @@ export default class BeeTank extends Enemy {
       this.blockSize.w + 60,
       this.blockSize.h + 50
     );
-    if (this.game.isDev) {
+    if (GAME_IS_DEV()) {
       c.fillStyle = "red";
       c.font = "20px Arial";
       c.fillText(
@@ -136,10 +140,10 @@ export default class BeeTank extends Enemy {
     }
   }
   calculateMatrix() {
-    if (this.game.matrix == null || !this.setEnemey) {
+    if (this.matrix == null || !this.setEnemey) {
       return;
     }
-    this.game.matrix.forEach((row: number[], y: number) => {
+    this.matrix.forEach((row: number[], y: number) => {
       if (y === 0) {
         this.topFloor = y * this.jump + 160;
       }
@@ -159,7 +163,7 @@ export default class BeeTank extends Enemy {
             gap -= 20;
           }
 
-          this.buttomFloor = this.game.matrix.length * 97;
+          this.buttomFloor = this.matrix.length * 97;
           this.possition = {
             x: x * this.jump + this.blockSize.w / 2 - this.width + 12,
             y: y * this.jump + gap + 15,
@@ -206,8 +210,7 @@ export default class BeeTank extends Enemy {
     this.matrixY = matrixY;
     let isAvailable;
     try {
-      isAvailable =
-        this.game.matrix[this.matrixY][this.matrixX]?.side == this.side;
+      isAvailable = this.matrix[this.matrixY][this.matrixX]?.side == this.side;
     } catch (_) {
       this.matrixX = 0;
     }

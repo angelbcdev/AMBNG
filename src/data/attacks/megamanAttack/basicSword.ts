@@ -1,3 +1,4 @@
+import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState";
 import { Entity } from "../../player/entity";
 import Attack from "../attacks";
 
@@ -29,7 +30,7 @@ export class BasicSword extends Attack {
     super.update(c, deltaTime);
   }
   drawSprite(c) {
-    if (this.attackOuwner.game.isDev) {
+    if (GAME_IS_DEV()) {
       c.fillStyle = this.color;
       c.fillRect(this.possition.x, this.possition.y, this.width, this.height);
     }
