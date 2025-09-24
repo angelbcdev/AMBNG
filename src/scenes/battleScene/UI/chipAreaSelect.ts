@@ -3,6 +3,7 @@ import { BattleShip } from "@/data/player/player/chips";
 import { allChipsA } from "@/data/player/player/chips/chipData";
 import { BattleScene } from "../battleScene";
 import { keyBindings } from "@/config/keyBindings";
+import { BATTLE_MANAGER } from "../sources/battleManager";
 // import { allChipsA } from "@/data/player/chips/chipData";
 
 export class ShowChipAreaWithChip {
@@ -330,7 +331,7 @@ export class ShowChipAreaWithChip {
   }
   sendChipToPlayer() {
     if (this.chipSelected.length > 0) {
-      this.battleScene.gameBattle.players[0].addChip(this.chipSelected);
+      BATTLE_MANAGER.player.addChip(this.chipSelected);
       this.currentRawChip = 1;
       this.battleScene.currentState = this.battleScene.states.BATTLE;
     }

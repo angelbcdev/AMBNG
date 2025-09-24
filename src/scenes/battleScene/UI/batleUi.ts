@@ -4,6 +4,7 @@ import { keyBindings } from "@/config/keyBindings";
 
 import { GAME } from "../../sceneManager";
 import { BattleScene } from "../battleScene";
+import { BATTLE_MANAGER } from "../sources/battleManager";
 
 // import { Dialogue } from "./dialoque";
 
@@ -86,12 +87,11 @@ export class BattleUI {
 
     this.drawLivePlayer(c);
     this.showAllAlerts(c);
-    this.battleScene.gameBattle.players[0].showChipts(c, deltaTime);
+    BATTLE_MANAGER.player.showChipts(c, deltaTime);
 
     this.showDetails(c);
 
-    // this.chipSelected.draw(c, deltaTime);
-    // this.dialogue.draw(c, deltaTime);
+    //TODO this.dialogue.draw(c, deltaTime);
   }
 
   showDetails(c: CanvasRenderingContext2D) {
@@ -219,7 +219,7 @@ export class BattleUI {
     c.fillRect(x, y, w, h);
     c.fillStyle = "blue";
 
-    this.showText(c, this.battleScene.gameBattle.players[0].live, {
+    this.showText(c, BATTLE_MANAGER.player.live, {
       x: x + 30,
       y: y + 16,
     });

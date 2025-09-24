@@ -3,7 +3,6 @@ import { FloorBase } from "@/data/floor";
 import { ubicateFloors } from "@/data/gameData/ubicateFloors";
 // import { GameUI } from "@/data/gameData/UI";
 import { Entity } from "@/data/player/entity";
-import PlayerBlue from "@/data/player/player/Player";
 
 import { Mettols } from "@/data/enemys/Character/mettol/mettol";
 // import BeeTank from "@/data/enemys/Character/beeTank/beetank";
@@ -13,7 +12,8 @@ import { GAME } from "../../sceneManager";
 import { BattleScene } from "../battleScene";
 import { matrix } from "@/data/floor/matrixForFloor";
 import { BackGround } from "@/newUI/backGround/backGroundShow";
-import { ToleteEnemy } from "@/data/enemys/tolete";
+import { BATTLE_MANAGER } from "./battleManager";
+// import { ToleteEnemy } from "@/data/enemys/tolete";
 
 // const allEnemies = [Mettols, BeeTank, CannonDumb, ToleteEnemy];
 
@@ -22,16 +22,11 @@ export class BatleGame {
   floors: FloorBase[] = [];
   gameIsPaused = true;
   isDev = true;
-  effect = [];
-  npc = [];
+  // effect = [];
+  // npc = [];
 
   matrix = matrix;
-  players = [
-    new PlayerBlue({
-      possition: { x: 1, y: 1 },
-      sideToPlay: 0,
-    }),
-  ];
+
   // gameUI = new GameUI(this);
   timeForSelectShip = 1000;
   currentTimeForSelectShip = 0;
@@ -52,9 +47,8 @@ export class BatleGame {
 
   startNewBattle({ backGround = 0, floorImage = 0 }) {
     this.bg.updateBackGround(backGround);
-    this.npc = [];
+    BATTLE_MANAGER.clearEntites();
 
-    this.players[0].live = 100;
     // this.gameUI.clearImagePosition = {
     //   x: -this.gameUI.clearImageViewPort,
     //   y: this.gameUI.clearImagePosition.y,
@@ -65,7 +59,7 @@ export class BatleGame {
     this.canvasTime = 0;
     this.gameIsPaused = true;
     this.isCompletedBarShip = false;
-    this.players[0].allChips = [];
+
     setTimeout(() => {
       this.gameIsPaused = false;
     }, 3000);
@@ -89,7 +83,7 @@ export class BatleGame {
     });
   }
   initGame() {
-    [...this.npc, ...this.players].forEach((entity) => {
+    [...BATTLE_MANAGER.npc, BATTLE_MANAGER.player].forEach((entity) => {
       entity.game = this;
     });
   }
@@ -125,14 +119,16 @@ export class BatleGame {
       this.levelToPaintAttack(c, deltaTime, indexY);
     });
 
-    [...this.npc].forEach((entity: Entity) => {
-      entity?.collisionArea(this.players[0]);
-    });
+    BATTLE_MANAGER.validateCollisionEnemys();
+
+    BATTLE_MANAGER.runFilters();
     this.showAllAttacks();
     c.restore();
     // this.gameUI.draw(c, deltaTime);
   }
   update(deltaTime: number, c: CanvasRenderingContext2D) {
+    // BATTLE_MANAGER.runFilters();
+    console.log(BATTLE_MANAGER.effect);
     if (!GAME.hasFocus()) {
       this.gameIsPaused = true;
       return;
@@ -140,7 +136,7 @@ export class BatleGame {
       this.gameIsPaused = false;
     }
 
-    this.hasEnemys = this.npc.length > 0;
+    this.hasEnemys = BATTLE_MANAGER.npc.length > 0;
     if (!this.hasEnemys) {
       // this.gameUI.clearStateImg(c, deltaTime, this.totalTimeInBattle);
       setTimeout(() => {
@@ -153,20 +149,11 @@ export class BatleGame {
       } else {
         this.timeInBattle += deltaTime;
       }
-      if (this.players[0].live <= 0) {
+      if (!BATTLE_MANAGER.playerIsLive()) {
         GAME.changeScene(GAME.statesKeys.home);
       }
     }
 
-    this.npc = this.npc.filter((enemy: Entity) => {
-      if (enemy.delete) {
-        this.matrix[enemy.matrixY][enemy.matrixX].ocupated = false;
-      }
-      return enemy.delete !== true;
-    });
-    this.effect = this.effect.filter(
-      (effect: Entity) => effect.delete !== true
-    );
     this.floors.forEach((floor: FloorBase) => {
       floor.update(c, deltaTime);
     });
@@ -184,73 +171,29 @@ export class BatleGame {
       .forEach((entity: FloorBase) => {
         entity.draw(c, deltaTime);
         entity.floors = this.floors;
-        entity.validateAttack(this.effect);
+        entity.validateAttack(BATTLE_MANAGER.effect);
 
         entity.game = this;
       });
   }
   levelToPaint(c: CanvasRenderingContext2D, deltaTime: number, row: number) {
-    [...this.npc, ...this.players]
-      .filter((entity) => entity.matrixY == row)
-      .sort((a, b) => b.y - a.y)
-      .forEach((entity: any) => {
-        entity.collisionAttacks = this.effect;
-        entity.draw(c, deltaTime);
-        if (!this.gameIsPaused) {
-          entity.update(c, deltaTime);
-        }
-      });
+    BATTLE_MANAGER.levelToPaint(c, deltaTime, row, this.gameIsPaused);
   }
   levelToPaintAttack(
     c: CanvasRenderingContext2D,
     deltaTime: number,
     row: number
   ) {
-    this.effect
-      .filter((effect: any) => effect.initialMatrixY == row)
-      .forEach((effect) => {
-        effect.draw(c, deltaTime);
-        if (this.gameIsPaused) return;
-        effect.update(c, deltaTime);
-      });
+    BATTLE_MANAGER.levelToPaintAttack(c, deltaTime, row, this.gameIsPaused);
   }
   showAllAttacks() {
-    this.players.forEach((player) => {
-      player.AllattackToShow = player.AllattackToShow.filter(
-        (attack) => attack.delete !== true
-      );
-    });
-
-    const attacksPlayers = this.players
-      .map((player) => player.AllattackToShow)
-      .flat(1);
-
-    this.npc.forEach((enemy) => {
-      enemy.AllattackToShow = enemy.AllattackToShow.filter(
-        (attack) => attack.delete !== true
-      );
-    });
-    const attacksNpc = this.npc.map((npc) => npc.AllattackToShow).flat(1);
-
-    this.effect = [...attacksPlayers, ...attacksNpc];
+    BATTLE_MANAGER.extractAttacks();
   }
   checkClick(mouseX: number, mouseY: number) {
     // this.gameUI.checkClick(mouseX, mouseY);
   }
   addNewEnemy({ newEnemy, position, level }) {
-    const enemy = new newEnemy({
-      possition: { x: position.x, y: position.y },
-      sideToPlay: this.players[0].side == 0 ? 1 : 0,
-      level: level,
-    });
-
-    if (this.npc.length < 3) {
-      enemy.game = this;
-
-      this.npc.push(enemy);
-    } else {
-      alert("por el momento no se pueden agregar mas enemigos limitados a 2");
-    }
+    BATTLE_MANAGER.addNewEnemy({ newEnemy, position, level });
   }
   addPlayerElement({ element, player }) {
     const newElement = new element({
@@ -260,7 +203,7 @@ export class BatleGame {
     newElement.game = this;
     newElement.sideToPlay = player.side;
 
-    this.npc.push(newElement);
+    BATTLE_MANAGER.npc.push(newElement);
   }
   breackFloor(posX: number, posY: number) {
     const findFloor = this.floors.findIndex(

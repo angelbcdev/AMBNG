@@ -1,3 +1,4 @@
+import { BATTLE_MANAGER } from "@/scenes/battleScene/sources/battleManager";
 import Attack from "../attacks/attacks";
 import { Entity } from "../player/entity";
 
@@ -148,7 +149,7 @@ export class FloorBase {
   }
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
     if (this.game && this.floorState === floorStatus.GRIETA) {
-      this.validateCharacter([...this.game.players, ...this.game.npc]);
+      this.validateCharacter(BATTLE_MANAGER.getAllEntities());
     }
     this.paintNormalImage(c);
 

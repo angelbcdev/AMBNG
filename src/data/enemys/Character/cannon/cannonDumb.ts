@@ -1,7 +1,9 @@
-import Player from "../../../player/player";
+import { BATTLE_MANAGER } from "@/scenes/battleScene/sources/battleManager";
+
 import { StaticEnemy } from "../../staticEnemy";
 
 import { CannonDumpAttack } from "./cannonDumpAttacl";
+import Player from "@/data/player/player/Player";
 
 const levelsInfo = {
   1: {
@@ -87,7 +89,7 @@ class CannonDumb extends StaticEnemy {
       this.attackShort.draw(c, deltaTime);
       this.attackShort.update(c, deltaTime);
 
-      this.game.players[0].validCollision(this.attackShort);
+      BATTLE_MANAGER.player.validCollision(this.attackShort);
       if (this.attackShort.delete) {
         this.attackShort = null;
       }
