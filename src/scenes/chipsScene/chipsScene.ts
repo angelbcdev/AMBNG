@@ -250,11 +250,7 @@ export class ChipsScene extends SceneRoot {
     setViewSlice(viewSlice);
   }
 
-  draw(
-    deltaTime: number,
-    c: CanvasRenderingContext2D,
-    canvas: HTMLCanvasElement
-  ) {
+  draw(deltaTime: number, c: CanvasRenderingContext2D) {
     if (this.viewSack) {
       this.frameX += deltaTime * 2.5;
       if (this.frameX >= this.frameXLimit - 38) {
@@ -349,10 +345,10 @@ export class ChipsScene extends SceneRoot {
     });
   }
 
-  checkClick(mouseX: number, mouseY: number) {
+  checkClick(_: number, __: number) {
     // this.optionsButtons.checkClick(mouseX, mouseY);
   }
-  checkKey(e: KeyboardEvent) {
+  checkKey(_: KeyboardEvent) {
     // this.optionsButtons.keyDown(e);
   }
 

@@ -6,7 +6,8 @@ export class mySquare {
   vx: number = 0;
   vy: number = 0;
   dir: number = 0;
-  color: string = "#0ff00050";
+  color: string = "#0ff000";
+  image: HTMLImageElement | HTMLCanvasElement = new Image();
 
   constructor(
     x: number,
@@ -74,65 +75,37 @@ export class mySquare {
   drawIsoImageArea(
     ctx?: CanvasRenderingContext2D,
     cam?: { x: number; y: number },
-    img?: HTMLImageElement | HTMLCanvasElement,
-    z?: number,
-    sx?: number,
-    sy?: number,
-    sw?: number,
-    sh?: number
+
+    z?: number
   ): void {
     if (ctx !== undefined) {
       z = z === undefined ? 0 : z;
       if (cam !== undefined) {
-        if (img && img.width) {
-          ctx.drawImage(
-            img,
-            sx!,
-            sy!,
-            sw!,
-            sh!,
-            this.left / 2 - this.top / 2 - cam.x,
-            this.left / 4 + this.top / 4 - z - cam.y,
-            this.width,
-            this.height
-          );
+        const x = this.left / 2 - this.top / 2 - cam.x;
+        const y = this.left / 4 + this.top / 4 - z - cam.y;
+        const TILE_W = 16;
+        const TILE_H = 8;
+        if (this.image.width > 0) {
+          ctx.drawImage(this.image, x - 8.2, y + 0.2, TILE_W, TILE_H + 3);
         } else {
-          ctx.fillStyle = this.color;
-          ctx.fillRect(
-            this.left / 2 - this.top / 2 - cam.x,
-            this.left / 4 + this.top / 4 - z - cam.y,
-            this.width / 2 + 1,
-            this.height / 2 + 1
-          );
+          ctx.fillStyle = this.color + "50";
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + TILE_W / 2, y + TILE_H / 2);
+          ctx.lineTo(x, y + TILE_H);
+          ctx.lineTo(x - TILE_W / 2, y + TILE_H / 2);
+          ctx.closePath();
+          ctx.fill();
         }
-      } else {
-        if (img && img.width) {
-          ctx.drawImage(
-            img,
-            sx!,
-            sy!,
-            sw!,
-            sh!,
-            this.left / 2 - this.top / 2,
-            this.left / 4 + this.top / 4 - z,
-            this.width,
-            this.height
-          );
-        } else {
-          ctx.fillStyle = this.color;
-          ctx.fillRect(
-            this.left / 2 - this.top / 2,
-            this.left / 4 + this.top / 4 - z,
-            this.width,
-            this.height
-          );
-        }
+        //
       }
     }
   }
 }
 
 export class WalkPath extends mySquare {
+  image = new Image();
+
   color: string = "#484848";
   constructor(
     x: number,
@@ -142,10 +115,11 @@ export class WalkPath extends mySquare {
     createFromTopLeft?: boolean
   ) {
     super(x, y, width, height, createFromTopLeft);
+    this.image.src = "/assects/isoFloorTest.png";
   }
 }
 export class Wall extends mySquare {
-  color: string = "#00000020";
+  color: string = "#000000";
   constructor(
     x: number,
     y: number,
@@ -158,7 +132,7 @@ export class Wall extends mySquare {
 }
 
 export class EnemyZone extends mySquare {
-  color: string = "#ff000050";
+  color: string = "#ff0000";
   constructor(
     x: number,
     y: number,

@@ -2,7 +2,7 @@ import { GAME } from "@/scenes/sceneManager";
 import { EnemyZone, mySquare, WalkPath, Wall } from "./isoEntitys";
 import { PlayerIso } from "./isPlayer";
 import { testWorld } from "./utils";
-import { BackGround, mapDetails } from "@/newUI/backGround/backGroundShow";
+import { BackGround } from "@/newUI/backGround/backGroundShow";
 import { PauseMenu } from "@/newUI/menu/pauseMenu";
 
 const canvas = {
@@ -178,9 +178,6 @@ export class GameIso {
     }
   }
   draw(ctx: CanvasRenderingContext2D) {
-    const i = 0,
-      l = 0;
-
     // Draw walk path
     this.drawWalkPath(ctx);
 
@@ -196,18 +193,11 @@ export class GameIso {
     );
   }
   drawWalkPath(ctx: CanvasRenderingContext2D) {
-    this.walkPath.forEach((element) => {
-      element.drawIsoImageArea(
-        ctx,
-        this.cam,
-        this.spritesheet,
-        8,
-        (~~(this.elapsed * 10) % 2) * 16,
-        element.dir * 16,
-        16,
-        16
-      );
-    });
+    this.walkPath
+      .sort((a, b) => b.x + b.y + (a.x + a.y))
+      .forEach((element) => {
+        element.drawIsoImageArea(ctx, this.cam, 8);
+      });
   }
   drawUI(ctx: CanvasRenderingContext2D, deltaTime: number) {
     this.menuScreen.draw(ctx, deltaTime);
@@ -233,12 +223,8 @@ export class GameIso {
         element.drawIsoImageArea(
           ctx,
           this.cam,
-          this.spritesheet,
-          8,
-          (~~(this.elapsed * 10) % 2) * 16,
-          element.dir * 16,
-          16,
-          16
+
+          8
         );
       });
 
@@ -248,12 +234,8 @@ export class GameIso {
         element.drawIsoImageArea(
           ctx,
           this.cam,
-          this.spritesheet,
-          8,
-          (~~(this.elapsed * 10) % 2) * 16,
-          element.dir * 16,
-          16,
-          16
+
+          8
         );
       });
   }
@@ -270,7 +252,13 @@ export class GameIso {
     y: number;
   }) {
     const blockSize = 16;
-    this.bg.updateBackGround(Math.floor(Math.random() * mapDetails.length));
+    // this.bg.updateBackGround(Math.floor(Math.random() * mapDetails.length));
+
+    // cleand arrays
+    this.walkPath = [];
+    this.wall = [];
+    this.enemyZone = [];
+    this.enemies = [];
 
     const arrayChunks = [];
     for (let i = 0; i < map.data.length; i += map.width) {
@@ -283,9 +271,7 @@ export class GameIso {
       columns = 0,
       rows = 0,
       enemy = null;
-    this.wall.length = 0;
-    this.enemyZone.length = 0;
-    this.enemies.length = 0;
+
     for (row = 0, rows = arrayChunks.length; row < rows; row += 1) {
       for (
         col = 0, columns = arrayChunks[row].length;
@@ -317,6 +303,15 @@ export class GameIso {
         } else if (
           arrayChunks[row][col] === this.data_world_bloks.blockEnemyZone
         ) {
+          this.walkPath.push(
+            new WalkPath(
+              col * blockSize,
+              row * blockSize,
+              blockSize + 2,
+              blockSize + 2,
+              true
+            )
+          );
           this.enemyZone.push(
             new EnemyZone(
               col * blockSize,

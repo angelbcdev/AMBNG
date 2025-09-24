@@ -1,20 +1,24 @@
 import { FloorBase } from "@/data/floor";
-import { matrix } from "@/data/gameData/matrix";
+
 import { ubicateFloors } from "@/data/gameData/ubicateFloors";
 // import { GameUI } from "@/data/gameData/UI";
 import { Entity } from "@/data/player/entity";
 import PlayerBlue from "@/data/player/player/Player";
 
 import { Mettols } from "@/data/enemys/Character/mettol/mettol";
-import BeeTank from "@/data/enemys/Character/beeTank/beetank";
-import { CannonDumb } from "@/data/enemys/Character/cannon/cannonDumb";
-import { ToleteEnemy } from "@/data/enemys/tolete";
+// import BeeTank from "@/data/enemys/Character/beeTank/beetank";
+// import { CannonDumb } from "@/data/enemys/Character/cannon/cannonDumb";
+// import { ToleteEnemy } from "@/data/enemys/tolete";
 import { GAME } from "../../sceneManager";
 import { BattleScene } from "../battleScene";
+import { matrix } from "@/data/floor/matrixForFloor";
+import { BackGround } from "@/newUI/backGround/backGroundShow";
+import { ToleteEnemy } from "@/data/enemys/tolete";
 
-const allEnemies = [Mettols, BeeTank, CannonDumb, ToleteEnemy];
+// const allEnemies = [Mettols, BeeTank, CannonDumb, ToleteEnemy];
 
 export class BatleGame {
+  bg = new BackGround(3);
   floors: FloorBase[] = [];
   gameIsPaused = true;
   isDev = true;
@@ -46,8 +50,8 @@ export class BatleGame {
     this.battleScene = battleScene;
   }
 
-  startNewBattle({ backGround = 0, allEnemiesS = [], floorImage = 0 }) {
-    // this.gameUI.chipSelected.chipUsed = [];
+  startNewBattle({ backGround = 0, floorImage = 0 }) {
+    this.bg.updateBackGround(backGround);
     this.npc = [];
 
     this.players[0].live = 100;
@@ -192,9 +196,9 @@ export class BatleGame {
       .forEach((entity: any) => {
         entity.collisionAttacks = this.effect;
         entity.draw(c, deltaTime);
-        if (this.gameIsPaused) return;
-        entity.update(c, deltaTime);
-        // entity.
+        if (!this.gameIsPaused) {
+          entity.update(c, deltaTime);
+        }
       });
   }
   levelToPaintAttack(

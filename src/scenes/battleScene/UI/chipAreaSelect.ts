@@ -106,7 +106,7 @@ export class ShowChipAreaWithChip {
     this.keyDown(event);
   };
 
-  handleKeyUp = (event: KeyboardEvent) => {
+  handleKeyUp = (_: KeyboardEvent) => {
     // this.keyUp(event);
   };
 

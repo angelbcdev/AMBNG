@@ -1,13 +1,12 @@
 import { BatleGame } from "./sources/gameBattle";
 import SceneRoot from "../sceneROOT";
-import { BackGround } from "@/newUI/backGround/backGroundShow";
-import { Mettols } from "@/data/enemys/Character/mettol/mettol";
+// import { BackGround } from "@/newUI/backGround/backGroundShow";
+// import { Mettols } from "@/data/enemys/Character/mettol/mettol";
 import { GAME } from "../sceneManager";
 import { BattleUI } from "./UI/batleUi";
 import { ShowChipAreaWithChip } from "./UI/chipAreaSelect";
 
 export class BattleScene extends SceneRoot {
-  bg = new BackGround(3);
   nameScene = "battle";
   gameBattle = new BatleGame(this);
   battleUI = new BattleUI(this);
@@ -32,11 +31,9 @@ export class BattleScene extends SceneRoot {
   }
   in() {
     this.gameBattle.startNewBattle({
-      backGround: 3,
-      allEnemiesS: [Mettols],
-      floorImage: 0,
+      backGround: 0,
+      floorImage: 2,
     });
-    // this.battleUI.in();
   }
   out() {
     // this.battleUI.out();
@@ -48,7 +45,7 @@ export class BattleScene extends SceneRoot {
     this.handleInput();
   }
   draw(deltaTime: number, c: CanvasRenderingContext2D) {
-    this.bg.draw(c, deltaTime);
+    this.gameBattle.bg.draw(c, deltaTime);
     this.gameBattle.draw(deltaTime, c);
     this.battleUI.draw(deltaTime, c);
     this.chipAreaSelect.draw(deltaTime, c);

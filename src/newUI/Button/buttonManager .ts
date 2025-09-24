@@ -49,7 +49,11 @@ export class ButtonManager {
       e.key === "Enter" ||
       keyBindings.singleShoot === e.key.toLowerCase()
     ) {
-      this.buttons[this.currentButtonIndex]?.action();
+      try {
+        this.buttons[this.currentButtonIndex]?.action();
+      } catch {
+        // console.log("button not found");
+      }
     }
   }
   in() {

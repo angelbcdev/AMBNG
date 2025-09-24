@@ -22,8 +22,8 @@ class SceneRoot {
 
     c.fillText(this.nameScene, 100, 100);
   }
-  checkClick(mouseX: number, mouseY: number) {}
-  checkKey(e: KeyboardEvent) {}
+  checkClick(_: number, __: number) {}
+  checkKey(_: KeyboardEvent) {}
 }
 
 export default SceneRoot;
