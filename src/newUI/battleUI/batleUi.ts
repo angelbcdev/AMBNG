@@ -2,9 +2,9 @@
 
 import { keyBindings } from "@/config/keyBindings";
 
-import { GAME } from "../../sceneManager";
+import { GAME } from "@/scenes/sceneManager";
 
-import { ENTITY_MANAGER } from "../sources/entityManager";
+import { ENTITY_MANAGER } from "@/scenes/battleScene/sources/entityManager";
 
 // import { Dialogue } from "./dialoque";
 

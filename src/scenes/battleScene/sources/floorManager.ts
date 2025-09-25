@@ -39,8 +39,6 @@ export class MatrixManager {
         floor.draw(c, deltaTime);
         floor.floors = this.floors;
         floor.validateAttack(effects);
-
-        floor.game = this;
       });
   }
   breackFloor(posX: number, posY: number) {

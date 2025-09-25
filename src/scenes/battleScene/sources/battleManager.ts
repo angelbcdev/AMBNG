@@ -11,8 +11,9 @@ import { FLOOR_MANAGER } from "../sources/floorManager";
 import { ENTITY_MANAGER } from "../sources/entityManager";
 import { Mettols } from "@/data/enemys/Character/mettol/mettol";
 import { PauseMenu } from "../../../newUI/menu/pauseMenu";
-import { ShowChipAreaWithChip } from "../UI/chipAreaSelect";
-import { BattleUI } from "../UI/batleUi";
+import { ShowChipAreaWithChip } from "../../../newUI/chipAreaSelect/chipAreaSelect";
+import { BattleUI } from "@/newUI/battleUI/batleUi";
+import { BackGround } from "@/newUI/backGround/backGroundShow";
 
 class BattleManager {
   static instance: BattleManager;
@@ -20,6 +21,7 @@ class BattleManager {
   menuScreen = new PauseMenu();
   chipAreaSelect = new ShowChipAreaWithChip();
   battleUI = new BattleUI();
+  bg = new BackGround(3);
   isCompletedBarShip = false;
   currentTimeForSelectShip = 0;
   timeForSelectShip = 5000;
@@ -46,14 +48,14 @@ class BattleManager {
     backGround,
     floorImage,
   }: {
-    backGround: number;
-    floorImage: number;
+    backGround: number; // 1
+    floorImage: number; // 3
   }) {
     this.localIsBattle = true;
     if (!GAME_IS_BATTLE()) {
       GAME.changeScene(GAME.statesKeys.battle);
 
-      GAME.currentScene.gameBattle.bg.updateBackGround(backGround);
+      this.bg.updateBackGround(backGround);
 
       FLOOR_MANAGER.initFloors();
       ENTITY_MANAGER.initBattle();
@@ -102,6 +104,9 @@ class BattleManager {
       ENTITY_MANAGER.player = null;
       FLOOR_MANAGER.floors = [];
     }, 1000);
+  }
+  drawBackground(c: CanvasRenderingContext2D, deltaTime: number) {
+    this.bg.draw(c, deltaTime);
   }
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
     this.update(deltaTime, c);

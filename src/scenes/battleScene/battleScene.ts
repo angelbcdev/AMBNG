@@ -63,7 +63,7 @@ export class BattleScene extends SceneRoot {
     }
   }
   draw(deltaTime: number, c: CanvasRenderingContext2D) {
-    this.gameBattle.bg.draw(c, deltaTime);
+    // this.gameBattle.bg.draw(c, deltaTime);
     this.gameBattle.draw(deltaTime, c);
     BATTLE_MANAGER.battleUI.draw(deltaTime, c);
     BATTLE_MANAGER.chipAreaSelect.draw(deltaTime, c);

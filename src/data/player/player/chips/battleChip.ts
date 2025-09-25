@@ -90,7 +90,9 @@ export class BattleShip {
       c.fillRect(realX - 3, realY - 3, this.with / 1.9, this.height / 1.9);
       c.drawImage(this.image, realX, realY, this.with / 2.2, this.height / 2.2);
 
-      this.damage > 0 && this.showDamage(c, realX, realY);
+      if (this.damage > 0) {
+        this.showDamage(c, realX, realY);
+      }
     } catch (error) {}
   }
   drawIcon(c: CanvasRenderingContext2D, x: number, y: number) {

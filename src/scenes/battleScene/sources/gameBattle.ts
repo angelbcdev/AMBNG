@@ -1,20 +1,10 @@
 import { FLOOR_MANAGER } from "./floorManager";
 import { GAME } from "../../sceneManager";
-
-import { BackGround } from "@/newUI/backGround/backGroundShow";
 import { ENTITY_MANAGER } from "./entityManager";
 import { GAME_IS_BATTLE, GAME_SET_PAUSE } from "./gameState";
 import { BATTLE_MANAGER } from "./battleManager";
-// import { ToleteEnemy } from "@/data/enemys/tolete";
-
-// const allEnemies = [Mettols, BeeTank, CannonDumb, ToleteEnemy];
 
 export class BatleGame {
-  bg = new BackGround(3);
-  timeForSelectShip = 1000;
-  currentTimeForSelectShip = 0;
-  isCompletedBarShip = false;
-
   tembleCanvas = 0;
   canvasTime = 0;
   currentMove = 50;
@@ -28,6 +18,9 @@ export class BatleGame {
   constructor() {}
 
   draw(deltaTime: number, c: CanvasRenderingContext2D) {
+    // draw background
+    BATTLE_MANAGER.drawBackground(c, deltaTime);
+
     c.save();
     if (FLOOR_MANAGER.canTembleCanvas) {
       if (this.canvasTime > 50) {
@@ -38,6 +31,7 @@ export class BatleGame {
         this.canvasTime += deltaTime;
       }
     }
+
     if (BATTLE_MANAGER.chipAreaSelect.showChipArea) {
       if (this.currentMove < 100) {
         this.currentMove += 2;
@@ -52,7 +46,8 @@ export class BatleGame {
     }
     c.translate(0, this.currentMove);
 
-    this.drawFloors(c, deltaTime);
+    // draw floors
+    FLOOR_MANAGER.drawFloors(c, deltaTime, ENTITY_MANAGER.effect);
 
     // draw entities and effects per row
     FLOOR_MANAGER.matrix.forEach((_, indexY) => {
@@ -67,14 +62,11 @@ export class BatleGame {
     c.restore();
 
     BATTLE_MANAGER.draw(c, deltaTime);
-    // this.gameUI.draw(c, deltaTime);
   }
   showMessage(c: CanvasRenderingContext2D, message: string, head?: boolean) {
     c.fillText(message, 430 / 2, 430 / 2 - (head ? 50 : 20));
   }
   update(deltaTime: number, c: CanvasRenderingContext2D) {
-    // ENTITY_MANAGER.runFilters();
-
     if (!GAME.hasFocus()) {
       GAME_SET_PAUSE();
       return;
@@ -101,16 +93,13 @@ export class BatleGame {
 
     FLOOR_MANAGER.updateFloors(c, deltaTime);
 
-    if (!this.isCompletedBarShip) {
-      if (this.currentTimeForSelectShip > this.timeForSelectShip) {
-        this.isCompletedBarShip = true;
-      } else {
-        this.currentTimeForSelectShip += deltaTime;
-      }
-    }
-  }
-  drawFloors(c: CanvasRenderingContext2D, deltaTime: number) {
-    FLOOR_MANAGER.drawFloors(c, deltaTime, ENTITY_MANAGER.effect);
+    // if (!this.isCompletedBarShip) {
+    //   if (this.currentTimeForSelectShip > this.timeForSelectShip) {
+    //     this.isCompletedBarShip = true;
+    //   } else {
+    //     this.currentTimeForSelectShip += deltaTime;
+    //   }
+    // }
   }
 
   checkClick(mouseX: number, mouseY: number) {
