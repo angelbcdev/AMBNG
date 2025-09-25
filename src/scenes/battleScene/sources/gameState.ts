@@ -6,7 +6,8 @@ const GAME_IS_PAUSE = () => IS_PAUSE;
 
 const GAME_TOGGLE_DEV = () => (IS_DEV = !IS_DEV);
 const GAME_TOGGLE_PAUSE = () => (IS_PAUSE = !IS_PAUSE);
-const GAME_SET_PAUSE = () => (IS_PAUSE = false);
+const GAME_SET_PAUSE = () => (IS_PAUSE = true);
+const GAME_SET_UNPAUSE = () => (IS_PAUSE = false);
 
 export {
   GAME_IS_DEV,
@@ -14,4 +15,5 @@ export {
   GAME_TOGGLE_DEV,
   GAME_TOGGLE_PAUSE,
   GAME_SET_PAUSE,
+  GAME_SET_UNPAUSE,
 };

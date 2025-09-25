@@ -4,9 +4,15 @@ import { allChipsA } from "@/data/player/player/chips/chipData";
 import { BattleScene } from "../battleScene";
 import { keyBindings } from "@/config/keyBindings";
 import { ENTITY_MANAGER } from "../sources/entityManager";
+import {
+  INPUT_MANAGER,
+  InputState,
+  inputStateKeys,
+} from "@/input/inputManager";
 // import { allChipsA } from "@/data/player/chips/chipData";
 
 export class ShowChipAreaWithChip {
+  nameScene: InputState = inputStateKeys.BATTLE_CHIP_AREA;
   mainImage = new Image();
   showChipArea = false;
   mainImageWidth = 320;
@@ -66,7 +72,15 @@ export class ShowChipAreaWithChip {
     this.addSelectorImage.src = "assects/selectedchip/selectAcept.png";
 
     this.prepareChipArea();
+
+    INPUT_MANAGER.addState(this.nameScene, {
+      onKeyDown: (e: KeyboardEvent) => {
+        this.keyDown(e);
+      },
+      // onKeyUp
+    });
   }
+
   draw(deltaTime: number, c: CanvasRenderingContext2D): void {
     this.drawBaseImage(c);
     this.drawLogoRoll(c, deltaTime);
@@ -103,23 +117,7 @@ export class ShowChipAreaWithChip {
       this.noChipSelected(c);
     }
   }
-  handleKeyDown = (event: KeyboardEvent) => {
-    this.keyDown(event);
-  };
 
-  handleKeyUp = (_: KeyboardEvent) => {
-    // this.keyUp(event);
-  };
-
-  handleInput(state: string) {
-    if (state !== "BATTLE") {
-      document.addEventListener("keydown", this.handleKeyDown);
-      document.addEventListener("keyup", this.handleKeyUp);
-    } else {
-      document.removeEventListener("keydown", this.handleKeyDown);
-      document.removeEventListener("keyup", this.handleKeyUp);
-    }
-  }
   showSelectorButtons(c: CanvasRenderingContext2D) {
     if (this.chipInView.viewX == 5 && this.showAddChip) {
       c.drawImage(
@@ -333,7 +331,6 @@ export class ShowChipAreaWithChip {
     if (this.chipSelected.length > 0) {
       ENTITY_MANAGER.player.addChip(this.chipSelected);
       this.currentRawChip = 1;
-      this.battleScene.currentState = this.battleScene.states.BATTLE;
     }
 
     this.chipSelected = [];
@@ -341,6 +338,8 @@ export class ShowChipAreaWithChip {
     this.hiddenArea();
   }
   addChip() {
+    const timeForDialoge = 1700;
+
     if (this.chipInView.viewX < 5) {
       if (this.chipSelected.length > 5) {
         return;
@@ -357,17 +356,22 @@ export class ShowChipAreaWithChip {
       }
       this.validateAddButton();
     } else {
+      // player ask 5 chip more
+      INPUT_MANAGER.setState("No input");
+
+      ENTITY_MANAGER.player.allChips = [];
       if (this.showAddChip) {
         this.sendChipToPlayer();
       } else {
-        this.currentRawChip > 2 ? 2 : this.currentRawChip++;
+        this.currentRawChip =
+          this.currentRawChip > 2 ? 2 : (this.currentRawChip += 1);
 
         // this.gameUI.dialogue.showDialogue();
         this.chipInView = { viewX: 0, viewY: 0 };
         setTimeout(() => {
           // this.gameUI.dialogue.hideDialogue();
           this.hiddenArea();
-        }, 3000);
+        }, timeForDialoge);
       }
     }
   }
@@ -422,6 +426,7 @@ export class ShowChipAreaWithChip {
     );
   }
   showArea() {
+    INPUT_MANAGER.setState(this.nameScene);
     this.chipInView = { viewX: 0, viewY: 0 };
     this.showChipArea = true;
     this.battleScene.gameBattle.gameIsPaused = true;
@@ -433,6 +438,7 @@ export class ShowChipAreaWithChip {
     this.battleScene.gameBattle.gameIsPaused = false;
     this.battleScene.gameBattle.isCompletedBarShip = false;
     this.battleScene.gameBattle.currentTimeForSelectShip = 0;
+    INPUT_MANAGER.setState("BATTLE");
   }
   prepareChipArea() {
     const chipToPlay: BattleShip[][] = [];

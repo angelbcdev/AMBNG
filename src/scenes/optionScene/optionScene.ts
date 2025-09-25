@@ -3,9 +3,14 @@ import { GAME } from "../sceneManager";
 import { ButtonManager } from "@/newUI/Button/buttonManager ";
 import { BackGround } from "@/newUI/backGround/backGroundShow";
 import SceneRoot from "../sceneROOT";
+import {
+  INPUT_MANAGER,
+  InputState,
+  inputStateKeys,
+} from "@/input/inputManager";
 
 export class OptionScene extends SceneRoot {
-  nameScene = "option";
+  nameScene: InputState = inputStateKeys.OPTION_SCENE;
   optionsButtons = new ButtonManager([
     {
       position: { x: 50, y: 150 },
@@ -37,10 +42,30 @@ export class OptionScene extends SceneRoot {
 
   constructor() {
     super();
+
+    INPUT_MANAGER.addState(this.nameScene, {
+      onKeyDown: (e: KeyboardEvent) => {
+        this.optionsButtons.keyDown(e);
+        switch (e.key) {
+          case "9":
+            GAME.changeScene(GAME.statesKeys.home);
+            break;
+          case "8":
+            GAME.changeScene(GAME.statesKeys.world);
+            break;
+          case "7":
+            GAME.changeScene(GAME.statesKeys.chips);
+            break;
+        }
+      },
+      // onKeyUp
+    });
   }
 
   // ✅ function to start key rebinding
   rebindKey(actionName: keyof typeof keyBindings) {
+    console.log(`Press a new key for ${actionName}...`);
+
     const listener = (e: KeyboardEvent) => {
       const forbidden = ["arrowup", "arrowdown", "arrowleft", "arrowright"];
       const newKey = e.key.toLowerCase();
@@ -64,6 +89,7 @@ export class OptionScene extends SceneRoot {
 
       // ✅ Set the new binding
       keyBindings[actionName] = newKey;
+      console.log(`${actionName} set to ${newKey}`);
 
       window.removeEventListener("keydown", listener);
       this.refreshButtonLabels();
@@ -84,11 +110,9 @@ export class OptionScene extends SceneRoot {
   }
 
   in() {
-    this.optionsButtons.in();
+    // INPUT_MANAGER.setState(this.nameScene);
   }
-  out() {
-    this.optionsButtons.out();
-  }
+  out() {}
   draw(
     deltaTime: number,
     c: CanvasRenderingContext2D,
@@ -99,8 +123,5 @@ export class OptionScene extends SceneRoot {
   }
   checkClick(mouseX: number, mouseY: number) {
     this.optionsButtons.checkClick(mouseX, mouseY);
-  }
-  checkKey(e: KeyboardEvent) {
-    this.optionsButtons.keyDown(e);
   }
 }

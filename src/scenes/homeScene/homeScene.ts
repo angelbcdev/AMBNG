@@ -2,10 +2,15 @@ import { BackGround } from "@/newUI/backGround/backGroundShow";
 import { GAME } from "../sceneManager";
 import SceneRoot from "../sceneROOT";
 import { ButtonManager } from "@/newUI/Button/buttonManager ";
+import {
+  INPUT_MANAGER,
+  InputState,
+  inputStateKeys,
+} from "@/input/inputManager";
 
 export class HomeScene extends SceneRoot {
   bg = new BackGround(0);
-  nameScene = "home";
+  nameScene: InputState = inputStateKeys.HOME_SCENE;
   optionsButtons = new ButtonManager([
     {
       position: { x: 50, y: 150 },
@@ -26,20 +31,28 @@ export class HomeScene extends SceneRoot {
 
   constructor() {
     super();
+    // Define "menu" input logic
+
+    INPUT_MANAGER.addState(this.nameScene, {
+      onKeyDown: (e: KeyboardEvent) => {
+        this.optionsButtons.keyDown(e);
+        switch (e.key) {
+          case "1":
+            GAME.changeScene(GAME.statesKeys.world);
+            break;
+          case "2":
+            GAME.changeScene(GAME.statesKeys.option);
+            break;
+          case "3":
+            GAME.changeScene(GAME.statesKeys.chips);
+            break;
+        }
+      },
+      // onKeyUp
+    });
+    INPUT_MANAGER.setState(this.nameScene);
   }
-  homeKey(e: KeyboardEvent) {
-    switch (e.key) {
-      case "1":
-        GAME.changeScene(GAME.statesKeys.world);
-        break;
-      case "2":
-        GAME.changeScene(GAME.statesKeys.option);
-        break;
-      case "3":
-        GAME.changeScene(GAME.statesKeys.chips);
-        break;
-    }
-  }
+
   draw(
     deltaTime: number,
     c: CanvasRenderingContext2D,
@@ -51,16 +64,7 @@ export class HomeScene extends SceneRoot {
   checkClick(mouseX: number, mouseY: number) {
     this.optionsButtons.checkClick(mouseX, mouseY);
   }
-  checkKey = (e: KeyboardEvent) => {
-    this.optionsButtons.keyDown(e);
-  };
 
-  in() {
-    this.optionsButtons.in();
-    document.addEventListener("keydown", this.homeKey);
-  }
-  out() {
-    this.optionsButtons.out();
-    document.removeEventListener("keydown", this.homeKey);
-  }
+  in() {}
+  out() {}
 }

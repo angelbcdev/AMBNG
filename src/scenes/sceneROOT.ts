@@ -1,5 +1,7 @@
+import { InputState, inputStateKeys } from "@/input/inputManager";
+
 class SceneRoot {
-  nameScene = "ROOT";
+  nameScene: InputState = inputStateKeys.ROOT_SCENE;
   bg = null;
   constructor() {}
   in() {}

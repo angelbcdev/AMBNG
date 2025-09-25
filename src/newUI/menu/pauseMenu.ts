@@ -1,7 +1,15 @@
 import { GAME } from "@/scenes/sceneManager";
 import { ButtonManager } from "../Button/buttonManager ";
+import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
+import {
+  GAME_IS_DEV,
+  GAME_SET_PAUSE,
+  GAME_SET_UNPAUSE,
+  GAME_TOGGLE_DEV,
+} from "@/scenes/battleScene/sources/gameState";
 
 export class PauseMenu {
+  nameScene = inputStateKeys.WORLD_PAUSE;
   menuImage = new Image();
   moneyImage = new Image();
   menulimitWidth = 180;
@@ -23,11 +31,17 @@ export class PauseMenu {
       title: "Folder",
       action: () => GAME.changeScene(GAME.statesKeys.chips),
     },
+    {
+      position: { x: 40, y: 70 },
+      title: `dev `,
+      action: () => GAME_TOGGLE_DEV(),
+    },
   ]);
 
   constructor() {
     this.menuImage.src = "/assects/chipsMenu/menuWindos.png";
     this.moneyImage.src = "/assects/chipsMenu/moneywindos.png";
+    this.setInputManager();
   }
   draw(ctx: CanvasRenderingContext2D, deltaTime: number) {
     this.swapMenu(deltaTime);
@@ -47,7 +61,9 @@ export class PauseMenu {
       430
     );
     this.optionsButtons.draw(ctx);
-
+    ctx.font = "12px 'Mega-Man-Battle-Network-Regular'"; // Nombre que has definido en @font-face
+    ctx.fillStyle = "#fff";
+    ctx.fillText(` ${GAME_IS_DEV() ? "on" : "off"}`, 110, 95);
     ctx.restore();
     ctx.save();
     ctx.translate(this.moneyImageX, 0);
@@ -85,15 +101,39 @@ export class PauseMenu {
       }
     }
   }
-  checkKey = (e: KeyboardEvent) => {
-    this.optionsButtons.keyDown(e);
-  };
+  checkKey = (e: KeyboardEvent) => {};
   in() {
-    this.optionsButtons.in();
-    document.addEventListener("keydown", this.checkKey);
+    this.showMenu = true;
+    INPUT_MANAGER.setState(this.nameScene);
+    GAME_SET_PAUSE();
+    // this.optionsButtons.in();
+    // document.addEventListener("keydown", this.checkKey);
   }
   out() {
-    this.optionsButtons.out();
-    document.removeEventListener("keydown", this.checkKey);
+    this.showMenu = false;
+    GAME_SET_UNPAUSE();
+    // this.optionsButtons.out();
+    // document.removeEventListener("keydown", this.checkKey);
+  }
+  checkClick(mouseX: number, mouseY: number) {
+    this.optionsButtons.checkClick(mouseX, mouseY);
+  }
+  setInputManager() {
+    INPUT_MANAGER.addState(this.nameScene, {
+      onKeyDown: (e: KeyboardEvent) => {
+        this.optionsButtons.keyDown(e);
+        const options = {
+          f: () => {
+            this.out();
+
+            INPUT_MANAGER.setState("WORLD_SCENE");
+          },
+        };
+        if (options[e.key]) {
+          options[e.key]();
+        }
+      },
+      onKeyUp: (e: KeyboardEvent) => {},
+    });
   }
 }

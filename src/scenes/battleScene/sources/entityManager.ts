@@ -87,7 +87,6 @@ class EntityManager {
       level: level,
     });
     enemy.matrix = FLOOR_MANAGER.matrix;
-    console.log("enemy.matrix", enemy.matrix);
     enemy.calculateMatrix();
 
     if (this.npc.length < 3) {

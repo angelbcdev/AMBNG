@@ -6,9 +6,14 @@ import { GAME } from "../sceneManager";
 import { BattleUI } from "./UI/batleUi";
 import { ShowChipAreaWithChip } from "./UI/chipAreaSelect";
 import { ENTITY_MANAGER } from "./sources/entityManager";
+import {
+  INPUT_MANAGER,
+  InputState,
+  inputStateKeys,
+} from "@/input/inputManager";
 
 export class BattleScene extends SceneRoot {
-  nameScene = "battle";
+  nameScene: InputState = inputStateKeys.BATTLE;
   gameBattle = new BatleGame(this);
   battleUI = new BattleUI(this);
   chipAreaSelect = new ShowChipAreaWithChip(this);
@@ -16,21 +21,33 @@ export class BattleScene extends SceneRoot {
     BATTLE: "BATTLE",
     CHIP_AREA: "CHIP_AREA",
   };
-  currentState = this.states.BATTLE;
 
   constructor() {
     super();
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === " ") {
-        if (this.gameBattle.isCompletedBarShip) {
-          this.chipAreaSelect.showArea();
-          this.currentState = this.states.CHIP_AREA;
+    INPUT_MANAGER.addState(this.nameScene, {
+      onKeyDown: (e: KeyboardEvent) => {
+        ENTITY_MANAGER.player.handleKeyDown(e);
+        // this.optionsButtons.keyDown(e);
+        const opions = {
+          " ": () => {
+            if (this.gameBattle.isCompletedBarShip) {
+              this.chipAreaSelect.showArea();
+            }
+          },
+        };
+        if (opions[e.key]) {
+          opions[e.key]();
         }
-      }
+      },
+      onKeyUp: (e: KeyboardEvent) => {
+        ENTITY_MANAGER.player.handleKeyUp(e);
+      },
+      // onKeyUp
     });
   }
   in() {
+    super.in();
     this.gameBattle.startNewBattle({
       backGround: 0,
       floorImage: 2,
@@ -43,7 +60,6 @@ export class BattleScene extends SceneRoot {
     if (GAME.hasFocus()) {
       this.gameBattle.update(deltaTime, c);
     }
-    this.handleInput();
   }
   draw(deltaTime: number, c: CanvasRenderingContext2D) {
     this.gameBattle.bg.draw(c, deltaTime);
@@ -58,13 +74,5 @@ export class BattleScene extends SceneRoot {
   }
   handleInput() {
     if (!GAME.hasFocus()) return;
-
-    ENTITY_MANAGER.player.handleInput(this.currentState);
-    this.chipAreaSelect.handleInput(this.currentState);
-    // if (this.chipAreaSelect.showChipArea) {
-    //   this.chipAreaSelect.handleInput();
-    // } else {
-    //   this.gameBattle.players[0].handleInput();
-    // }
   }
 }

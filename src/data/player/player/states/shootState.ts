@@ -3,7 +3,7 @@ import { PlayerState } from ".";
 import { Player } from "../Player";
 
 export class ShootState extends PlayerState {
-  timeForCharge = 2000;
+  timeForCharge = 1000;
   timer = 0;
   canCountTimer = false;
 
@@ -33,6 +33,7 @@ export class ShootState extends PlayerState {
       if (this.timer >= this.timeForCharge) {
         this.timer = 0;
         this.canCountTimer = false;
+        this.player.canShowEffect = true;
         this.player.changeState(this.player.stateReference.SHOOT_CHARGE);
       } else {
         this.timer += deltaTime;
@@ -70,6 +71,7 @@ export class ShootState extends PlayerState {
         newMatrixX += 1;
       },
       [keyBindings.singleShoot]: () => {
+        this.player.frameY = this.player.states.idle;
         this.canCountTimer = true;
       },
     };

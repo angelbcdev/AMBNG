@@ -1,5 +1,5 @@
 import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState.ts";
-import { GAME_IN_BATTLE } from "../../../game_STATE.ts";
+
 import Attack from "../../attacks/attacks.ts";
 
 import { BasicPunch } from "../../attacks/megamanAttack/basicPunch.ts";

@@ -21,7 +21,11 @@ export class PlayerState {
   onCollision(_: any) {}
   exit() {}
   acctionKeyDown(key: string) {
-    if (this.player.frameY == this.player.states.hit || GAME_IS_PAUSE()) {
+    if (
+      this.player.frameY == this.player.states.hit ||
+      GAME_IS_PAUSE() ||
+      this.player.matrix == null
+    ) {
       return;
     }
 

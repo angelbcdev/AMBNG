@@ -74,21 +74,11 @@ export class GameIso {
     this.cam = new Camera();
   }
   checkKeyDown = (e: KeyboardEvent) => {
+    //ADD move to isoPlayer
     this.player.checkKeyDown(e);
     const options = {
       f: () => {
-        if (!GAME_IS_PAUSE()) {
-          GAME_SET_PAUSE();
-          this.menuScreen.showMenu = true;
-          if (this.menuScreen.showMenu) {
-            // this.menuScreen.in();
-            // document.addEventListener("keydown", this.menuScreen.checkKey);
-          }
-          // else {
-          //   // this.menuScreen.out();
-          //   document.removeEventListener("keydown", this.menuScreen.checkKey);
-          // }
-        }
+        this.menuScreen.in();
       },
     };
     if (options[e.key]) {
@@ -106,18 +96,7 @@ export class GameIso {
 
   checkKeyUp = (e: KeyboardEvent) => {
     this.player.checkKeyUp(e);
-    const options = {
-      f: () => {
-        if (GAME_IS_PAUSE()) {
-          GAME_SET_PAUSE();
-          this.menuScreen.showMenu = false;
-          if (!this.menuScreen.showMenu) {
-            // this.menuScreen.in();
-            document.removeEventListener("keydown", this.menuScreen.checkKey);
-          }
-        }
-      },
-    };
+    const options = {};
     if (options[e.key]) {
       options[e.key]();
     }
@@ -380,10 +359,7 @@ export class GameIso {
       document.removeEventListener("keydown", this.menuScreen.checkKey);
     }
   }
-  out() {
-    document.removeEventListener("keyup", this.checkKeyUp);
-    document.removeEventListener("keydown", this.checkKeyDown);
-  }
+  out() {}
 
   moveNPC() {
     let i = 0,

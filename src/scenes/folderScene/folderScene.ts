@@ -5,10 +5,11 @@ import { CHIPS_M } from "@/data/player/player/chips/chipsManager";
 
 import { BattleShip } from "@/data/player/player/chips/battleChip";
 import { keyBindings } from "@/config/keyBindings";
+import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 
-export class ChipsScene extends SceneRoot {
+export class FolderScene extends SceneRoot {
   bg = null;
-  nameScene = "chips";
+  nameScene = inputStateKeys.FOLDER_SCENE;
   image = new Image();
   arrowImage = new Image();
   arrowBlackImageup = new Image();
@@ -35,6 +36,11 @@ export class ChipsScene extends SceneRoot {
     this.arrowImage.src = "/assects/UI/GreenArrow.png";
     this.arrowBlackImageup.src = "/assects/UI/BlackArrowup.png";
     this.arrowBlackImagedown.src = "/assects/UI/BlackArrowdown.png";
+
+    INPUT_MANAGER.addState(this.nameScene, {
+      onKeyDown: (e: KeyboardEvent) => {},
+      // onKeyUp
+    });
   }
 
   homeKey = (e: KeyboardEvent) => {
@@ -355,11 +361,8 @@ export class ChipsScene extends SceneRoot {
   in() {
     this.moveToFolderID = CHIPS_M.chipsSack[0].id;
     this.removeFolderID = CHIPS_M.chipsFolder[0]?.idForMove || "N/A";
-
-    document.addEventListener("keydown", this.homeKey);
   }
   out() {
-    document.removeEventListener("keydown", this.homeKey);
     this.viewSack = false;
   }
 }

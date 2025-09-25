@@ -2,7 +2,9 @@ import { WorldScene } from "./worldScene/worldScene";
 import { BattleScene } from "./battleScene/battleScene";
 import { HomeScene } from "./homeScene/homeScene";
 import { OptionScene } from "./optionScene/optionScene";
-import { ChipsScene } from "./chipsScene/chipsScene";
+import { FolderScene } from "./folderScene/folderScene";
+
+import { INPUT_MANAGER } from "../input/inputManager";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -28,9 +30,10 @@ export class SceneManager {
     world: new WorldScene(),
     battle: new BattleScene(),
     option: new OptionScene(),
-    chips: new ChipsScene(),
+    chips: new FolderScene(),
   };
   currentScene = this.scenes[this.currentSceneIndex];
+  //
 
   static getInstance() {
     if (!this.instance) {
@@ -39,9 +42,10 @@ export class SceneManager {
     return this.instance;
   }
   constructor() {
+    this.currentScene.in();
     this.canvas = canvas;
     this.c = c;
-    this.currentScene.in();
+    // this.currentScene.in();
     document.getElementById("canvas").addEventListener("click", (e) => {
       const rect = this.canvas.getBoundingClientRect();
       const scaleX = this.canvas.width / rect.width;
@@ -50,15 +54,16 @@ export class SceneManager {
       const y = (e.clientY - rect.top) * scaleY;
       this.currentScene.checkClick(x, y);
     });
+    INPUT_MANAGER.in();
 
-    window.addEventListener("keydown", (e) => {
-      this.currentScene.checkKey(e);
-      const options = this.statesKeys;
-      const nextID = this.scenes[options[e.key.toLowerCase()]];
-      if (nextID !== undefined) {
-        this.changeScene(nextID);
-      }
-    });
+    // window.addEventListener("keydown", (e) => {
+    //   this.currentScene.checkKey(e);
+    //   const options = this.statesKeys;
+    //   const nextID = this.scenes[options[e.key.toLowerCase()]];
+    //   if (nextID !== undefined) {
+    //     this.changeScene(nextID);
+    //   }
+    // });
   }
 
   update(deltaTime: number) {
@@ -78,6 +83,8 @@ export class SceneManager {
       this.previousScene = this.currentSceneIndex;
       this.currentSceneIndex = newScene;
       this.currentScene = this.scenes[this.currentSceneIndex];
+
+      INPUT_MANAGER.setState(this.currentScene.nameScene);
       this.currentScene.in();
     }
   }
