@@ -76,7 +76,6 @@ export class GameIso {
     this.player = new PlayerIso(64, 164, 16, 16);
   }
   keyDown = (e: KeyboardEvent) => {
-    console.log(e.key);
     //ADD move to isoPlayer
     this.player.checkKeyDown(e);
     const options = {

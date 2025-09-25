@@ -9,6 +9,8 @@ import {
   InputState,
   inputStateKeys,
 } from "@/input/inputManager";
+import { BATTLE_MANAGER } from "../sources/battleManager";
+import { GAME_SET_PAUSE, GAME_SET_UNPAUSE } from "../sources/gameState";
 // import { allChipsA } from "@/data/player/chips/chipData";
 
 export class ShowChipAreaWithChip {
@@ -60,8 +62,7 @@ export class ShowChipAreaWithChip {
       return new BattleShip({ title: chip.title });
     });
 
-  constructor(battleScene: BattleScene) {
-    this.battleScene = battleScene;
+  constructor() {
     this.mainImage.src = "assects/selectedchip/chipSelector.png";
     this.logoImage.src = "assects/selectedchip/logoRoll.png";
     this.addButon.src = "assects/selectedchip/addButon.png";
@@ -87,14 +88,14 @@ export class ShowChipAreaWithChip {
 
     this.drawButtonAdd(c);
     if (this.showChipArea) {
-      if (this.position.x < 0) {
+      if (this.position.x < 20) {
         this.position.x += this.speed * deltaTime;
-        this.battleScene.battleUI.position.x += this.speed * deltaTime;
+        BATTLE_MANAGER.battleUI.position.x += this.speed * deltaTime;
       }
     } else {
       if (this.position.x > -320) {
         this.position.x -= this.speed * deltaTime;
-        this.battleScene.battleUI.position.x -= this.speed * deltaTime;
+        BATTLE_MANAGER.battleUI.position.x -= this.speed * deltaTime;
       }
     }
     this.updateFrame(deltaTime);
@@ -112,7 +113,7 @@ export class ShowChipAreaWithChip {
       chip = this.chipArea[this.chipInView.viewY][this.chipInView.viewX];
     } catch (_) {}
     if (this.chipInView.viewX < 5 && chip) {
-      chip.drawFullImage(c, this.position.x + 23, this.position.y + 64);
+      chip.drawFullImage(c, this.position.x, this.position.y + 64);
     } else {
       this.noChipSelected(c);
     }
@@ -126,7 +127,7 @@ export class ShowChipAreaWithChip {
         0,
         this.addSelectorImageWidth,
         this.addSelectorImageHeight,
-        this.position.x + 227,
+        this.position.x + 200,
         this.position.y + 300, //, //
         this.addSelectorImageWidth + 8,
         this.addSelectorImageHeight
@@ -139,7 +140,7 @@ export class ShowChipAreaWithChip {
         0,
         this.addSelectorImageWidth,
         this.addSelectorImageHeight,
-        this.position.x + 227,
+        this.position.x + 200,
         this.position.y + 300 + 50, //
         this.addSelectorImageWidth + 8,
         this.addSelectorImageHeight
@@ -174,15 +175,15 @@ export class ShowChipAreaWithChip {
     }
 
     c.fillStyle = "#8A2BE2";
-    c.fillRect(this.position.x + 26, 70, 164, 150);
+    c.fillRect(this.position.x, 70, 164, 150);
     c.fillStyle = "#ffffff";
-    c.fillText(currentMSJ.titleA, this.position.x + 92, 96);
-    c.fillText(currentMSJ.titleB, this.position.x + 108, 126);
+    c.fillText(currentMSJ.titleA, this.position.x + 72, 96);
+    c.fillText(currentMSJ.titleB, this.position.x + 88, 126);
     c.strokeStyle = "#ffff";
-    c.strokeRect(this.position.x + 26, 74, 156, 80);
+    c.strokeRect(this.position.x, 74, 156, 80);
     c.font = "12px Mega-Man-Battle-Network-Regular";
-    c.fillText(currentMSJ.parrA, this.position.x + 102, 176);
-    c.fillText(currentMSJ.parrB, this.position.x + 108, 206);
+    c.fillText(currentMSJ.parrA, this.position.x + 72, 176);
+    c.fillText(currentMSJ.parrB, this.position.x + 72, 206);
   }
 
   updateFrame(deltaTime: number) {
@@ -200,7 +201,7 @@ export class ShowChipAreaWithChip {
   drawChipArea(c: CanvasRenderingContext2D) {
     this.chipArea.forEach((row, y) => {
       row.forEach((chip, x) => {
-        const squareX = this.position.x + 26 + x * 40;
+        const squareX = this.position.x + 1 + x * 42;
         const squareY = this.position.y + 278 + y * 40;
         //
         c.save();
@@ -252,7 +253,7 @@ export class ShowChipAreaWithChip {
           break;
       }
 
-      const squareX = this.position.x + 250;
+      const squareX = this.position.x + 230;
       const squareY = this.position.y + gap;
       if (chip == null) {
         return;
@@ -434,7 +435,7 @@ export class ShowChipAreaWithChip {
   drawBaseImage(c: CanvasRenderingContext2D) {
     c.drawImage(
       this.mainImage,
-      this.position.x,
+      this.position.x - 20,
       this.position.y,
       this.mainImageWidth,
       this.mainImageHeight
@@ -446,7 +447,7 @@ export class ShowChipAreaWithChip {
     }
     c.drawImage(
       this.addButon,
-      this.position.x + 225,
+      this.position.x + 205,
       this.position.y + 345,
       this.addButonWidth,
       this.addButonHeight
@@ -485,15 +486,18 @@ export class ShowChipAreaWithChip {
     INPUT_MANAGER.setState(this.nameScene);
     this.chipInView = { viewX: 0, viewY: 0 };
     this.showChipArea = true;
-    this.battleScene.gameBattle.gameIsPaused = true;
+    GAME_SET_PAUSE();
+
+    BATTLE_MANAGER.isCompletedBarShip = true;
     this.prepareChipArea();
     this.validateAddButton();
   }
   hiddenArea() {
     this.showChipArea = false;
-    this.battleScene.gameBattle.gameIsPaused = false;
-    this.battleScene.gameBattle.isCompletedBarShip = false;
-    this.battleScene.gameBattle.currentTimeForSelectShip = 0;
+    GAME_SET_UNPAUSE();
+
+    BATTLE_MANAGER.isCompletedBarShip = false;
+    BATTLE_MANAGER.currentTimeForSelectShip = 0;
     INPUT_MANAGER.setState(inputStateKeys.BATTLE);
   }
   prepareChipArea() {

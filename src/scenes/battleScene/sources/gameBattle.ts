@@ -1,15 +1,9 @@
 import { FLOOR_MANAGER } from "./floorManager";
 import { GAME } from "../../sceneManager";
-import { BattleScene } from "../battleScene";
 
 import { BackGround } from "@/newUI/backGround/backGroundShow";
 import { ENTITY_MANAGER } from "./entityManager";
-import {
-  GAME_IS_BATTLE,
-  GAME_IS_PAUSE,
-  GAME_SET_PAUSE,
-  GAME_SET_UNPAUSE,
-} from "./gameState";
+import { GAME_IS_BATTLE, GAME_SET_PAUSE } from "./gameState";
 import { BATTLE_MANAGER } from "./battleManager";
 // import { ToleteEnemy } from "@/data/enemys/tolete";
 
@@ -27,27 +21,11 @@ export class BatleGame {
   hasEnemys = false;
   timeInBattle = 0;
   totalTimeInBattle = 0;
-  battleScene: BattleScene;
 
   timeForBattleStart = 3;
   localIsBattle = false;
 
-  constructor(battleScene: BattleScene) {
-    this.battleScene = battleScene;
-  }
-
-  initBattle() {
-    this.localIsBattle = true;
-    this.timeForBattleStart = 2;
-    const timeForBattleStart = setInterval(() => {
-      this.timeForBattleStart--;
-      if (this.timeForBattleStart == 0) {
-        clearInterval(timeForBattleStart);
-        GAME_SET_UNPAUSE();
-        this.localIsBattle = false;
-      }
-    }, 1000);
-  }
+  constructor() {}
 
   draw(deltaTime: number, c: CanvasRenderingContext2D) {
     c.save();
@@ -60,7 +38,7 @@ export class BatleGame {
         this.canvasTime += deltaTime;
       }
     }
-    if (this.battleScene.chipAreaSelect.showChipArea) {
+    if (BATTLE_MANAGER.chipAreaSelect.showChipArea) {
       if (this.currentMove < 100) {
         this.currentMove += 2;
       }
@@ -88,13 +66,6 @@ export class BatleGame {
     ENTITY_MANAGER.extractAttacks();
     c.restore();
 
-    if (this.localIsBattle) {
-      this.showMessage(c, "BATTLE START", true);
-      this.showMessage(c, this.timeForBattleStart.toString(), false);
-    }
-    if (!this.localIsBattle && GAME_IS_PAUSE()) {
-      this.showMessage(c, "PAUSE", true);
-    }
     BATTLE_MANAGER.draw(c, deltaTime);
     // this.gameUI.draw(c, deltaTime);
   }

@@ -3,8 +3,7 @@ import SceneRoot from "../sceneROOT";
 // import { BackGround } from "@/newUI/backGround/backGroundShow";
 // import { Mettols } from "@/data/enemys/Character/mettol/mettol";
 import { GAME } from "../sceneManager";
-import { BattleUI } from "./UI/batleUi";
-import { ShowChipAreaWithChip } from "./UI/chipAreaSelect";
+
 import { ENTITY_MANAGER } from "./sources/entityManager";
 import {
   INPUT_MANAGER,
@@ -13,12 +12,13 @@ import {
 } from "@/input/inputManager";
 import { keyBindings } from "@/config/keyBindings";
 import { GAME_TOGGLE_DEV, GAME_TOGGLE_PAUSE } from "./sources/gameState";
+import { BATTLE_MANAGER } from "./sources/battleManager";
 
 export class BattleScene extends SceneRoot {
   nameScene: InputState = inputStateKeys.BATTLE;
-  gameBattle = new BatleGame(this);
-  battleUI = new BattleUI(this);
-  chipAreaSelect = new ShowChipAreaWithChip(this);
+  gameBattle = new BatleGame();
+
+  // chipAreaSelect = new ShowChipAreaWithChip(this);
 
   constructor() {
     super();
@@ -29,8 +29,8 @@ export class BattleScene extends SceneRoot {
         // this.optionsButtons.keyDown(e);
         const opions = {
           [keyBindings.openChipsMenu]: () => {
-            if (this.gameBattle.isCompletedBarShip) {
-              this.chipAreaSelect.showArea();
+            if (BATTLE_MANAGER.isCompletedBarShip) {
+              BATTLE_MANAGER.chipAreaSelect.showArea();
             }
           },
           v: () => {
@@ -65,12 +65,12 @@ export class BattleScene extends SceneRoot {
   draw(deltaTime: number, c: CanvasRenderingContext2D) {
     this.gameBattle.bg.draw(c, deltaTime);
     this.gameBattle.draw(deltaTime, c);
-    this.battleUI.draw(deltaTime, c);
-    this.chipAreaSelect.draw(deltaTime, c);
+    BATTLE_MANAGER.battleUI.draw(deltaTime, c);
+    BATTLE_MANAGER.chipAreaSelect.draw(deltaTime, c);
   }
   checkClick(mouseX: number, mouseY: number) {
     this.gameBattle.checkClick(mouseX, mouseY);
-    this.battleUI.checkClick(mouseX, mouseY);
-    // this.chipAreaSelect.checkClick(mouseX, mouseY);
+    BATTLE_MANAGER.battleUI.checkClick(mouseX, mouseY);
+    // BATTLE_MANAGER.chipAreaSelect.checkClick(mouseX, mouseY);
   }
 }

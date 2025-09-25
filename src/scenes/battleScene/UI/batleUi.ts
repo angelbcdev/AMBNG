@@ -3,7 +3,7 @@
 import { keyBindings } from "@/config/keyBindings";
 
 import { GAME } from "../../sceneManager";
-import { BattleScene } from "../battleScene";
+
 import { ENTITY_MANAGER } from "../sources/entityManager";
 
 // import { Dialogue } from "./dialoque";
@@ -17,12 +17,11 @@ export class BattleUI {
   size = 300;
   maxFrame = 2;
   position = {
-    x: 90,
+    x: 110,
     y: -10,
   };
   frameTime = 0;
   frameInterval = 1000 / 6;
-  sizeBar = 256;
 
   toCheckDev: any[] = [];
   // chipSelected = new ShowChipAreaWithChip(this);
@@ -32,11 +31,9 @@ export class BattleUI {
   clearImageHeight = 710;
   clearImageisVisible = true;
   clearImagePosition = { x: 5, y: 50 };
-  battleScene: BattleScene;
 
-  constructor(battleScene: BattleScene) {
+  constructor() {
     this.img.src = "assects/UI/barWait.png";
-    this.battleScene = battleScene;
     this.position = {
       x: 90,
       y: -10,
@@ -81,9 +78,7 @@ export class BattleUI {
     });
   }
   draw(deltaTime: number, c: CanvasRenderingContext2D) {
-    this.paintBarContainer(c);
-    this.fillBar(c);
-    this.updateFrame(c, deltaTime);
+    // this.(c);
 
     this.drawLivePlayer(c);
     this.showAllAlerts(c);
@@ -106,8 +101,12 @@ export class BattleUI {
       this.showText(c, dev.data, { x: x + 50, y: index * 20 + y }, 8);
     });
   }
-  updateFrame(c: CanvasRenderingContext2D, deltaTime: number) {
-    if (this.battleScene.gameBattle.isCompletedBarShip) {
+  updateFrame(
+    c: CanvasRenderingContext2D,
+    deltaTime: number,
+    isCompletedBarShip: boolean
+  ) {
+    if (isCompletedBarShip) {
       this.frameTime += deltaTime;
       if (this.frameTime > this.frameInterval) {
         this.frameTime = 0;
@@ -139,21 +138,7 @@ export class BattleUI {
       this.frameHeight
     );
   }
-  fillBar(c: CanvasRenderingContext2D) {
-    const currentProgressBarr =
-      (this.battleScene.gameBattle.currentTimeForSelectShip /
-        this.battleScene.gameBattle.timeForSelectShip) *
-      this.sizeBar;
-    c.fillStyle = this.battleScene.gameBattle.isCompletedBarShip
-      ? "#ffff0050"
-      : "#ff003059";
-    c.fillRect(
-      this.position.x + 22,
-      this.position.y + 28,
-      currentProgressBarr,
-      this.frameHeight - 33
-    );
-  }
+
   showMSJBar(c: CanvasRenderingContext2D) {
     c.save();
     c.translate(this.position.x, 0);
