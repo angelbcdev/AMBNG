@@ -1,6 +1,7 @@
 import { ENTITY_MANAGER } from "@/scenes/battleScene/sources/entityManager";
 import Attack from "../attacks/attacks";
 import { Entity } from "../player/entity";
+import { FLOOR_MANAGER } from "@/scenes/battleScene/sources/floorManager";
 
 const visualFloor = {
   0: {
@@ -77,7 +78,7 @@ export class FloorBase {
   frameHeight: number;
   side: number;
   floors: FloorBase[];
-  game: any;
+
   floorToChange: null | number = null;
   isVisible: boolean = true;
   timerForAppear: number = 5000;
@@ -148,7 +149,7 @@ export class FloorBase {
     }
   }
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
-    if (this.game && this.floorState === floorStatus.GRIETA) {
+    if (this.floorState === floorStatus.GRIETA) {
       this.validateCharacter(ENTITY_MANAGER.getAllEntities());
     }
     this.paintNormalImage(c);
@@ -335,24 +336,24 @@ export class FloorBase {
   }
   changeFloor() {
     const newSide = this.side == 0 ? 1 : 0;
-    if (this.game.matrix[this.matrixY][this.matrixX].ocupated) {
+    if (FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].ocupated) {
       return;
     }
     this.imageEffectChangeActive = true;
 
     setTimeout(() => {
       this.frameX = visualFloor[newSide][this.floorState];
-      this.game.matrix[this.matrixY][this.matrixX].side = newSide;
+      FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].side = newSide;
       this.isChangeFloor = true;
     }, 160);
   }
   returnFloor() {
-    if (this.game.matrix[this.matrixY][this.matrixX].ocupated) {
+    if (FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].ocupated) {
       return;
     }
 
     this.isChangeFloor = false;
-    this.game.matrix[this.matrixY][this.matrixX].side = this.side;
+    FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].side = this.side;
     this.frameX = visualFloor[this.side][floorStatus.NORMAL];
     this.limitTimeForChangeFloor = 3000;
   }
@@ -391,10 +392,10 @@ export class FloorBase {
     }
   }
   unAvailableFloor() {
-    if (this.game.matrix[this.matrixY][this.matrixX].ocupated) {
+    if (FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].ocupated) {
       return;
     }
-    this.game.matrix[this.matrixY][this.matrixX].side = 3;
+    FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].side = 3;
     this.isVisible = false;
     this.frameX = visualFloor[3][floorStatus.NORMAL];
     this.floorToChange = null;
@@ -404,7 +405,7 @@ export class FloorBase {
       this.isVisible = true;
       this.isChangeFloor = true;
       this.characterFloor = null;
-      this.game.matrix[this.matrixY][this.matrixX].side = this.side;
+      FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].side = this.side;
       this.frameX = visualFloor[this.side][this.floorState];
     }, this.timerForAppear);
   }

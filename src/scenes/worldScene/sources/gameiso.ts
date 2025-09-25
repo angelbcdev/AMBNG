@@ -1,14 +1,14 @@
-import { GAME } from "@/scenes/sceneManager";
 import { EnemyZone, mySquare, WalkPath, Wall } from "./isoEntitys";
 import { PlayerIso } from "./isPlayer";
 import { testWorld } from "./utils";
 import { BackGround } from "@/newUI/backGround/backGroundShow";
-import { PauseMenu } from "@/newUI/menu/pauseMenu";
 import {
+  GAME_IS_BATTLE,
   GAME_IS_PAUSE,
-  GAME_SET_PAUSE,
   GAME_TOGGLE_PAUSE,
 } from "@/scenes/battleScene/sources/gameState";
+import { keyBindings } from "@/config/keyBindings";
+import { BATTLE_MANAGER } from "@/scenes/battleScene/sources/battleManager";
 
 const canvas = {
   width: 240,
@@ -51,7 +51,7 @@ export class GameIso {
   lastPress = null;
   pressing = [];
   pause = GAME_IS_PAUSE();
-  gameover = true;
+
   worldWidth = 0;
   worldHeight = 0;
   elapsed = 0;
@@ -67,22 +67,25 @@ export class GameIso {
   enemies = [];
   walkPath = [];
   spritesheet = false;
-  player = new PlayerIso(64, 64, 16, 16);
-  menuScreen = new PauseMenu();
+  player: PlayerIso;
+  // menuScreen = new PauseMenu();
+
   constructor() {
     this.init();
     this.cam = new Camera();
+    this.player = new PlayerIso(64, 164, 16, 16);
   }
-  checkKeyDown = (e: KeyboardEvent) => {
+  keyDown = (e: KeyboardEvent) => {
+    console.log(e.key);
     //ADD move to isoPlayer
     this.player.checkKeyDown(e);
     const options = {
-      f: () => {
-        this.menuScreen.in();
+      [keyBindings.openPauseMenu]: () => {
+        BATTLE_MANAGER.menuScreen.in();
       },
     };
-    if (options[e.key]) {
-      options[e.key]();
+    if (options[e.key.toLowerCase()]) {
+      options[e.key.toLowerCase()]();
     }
   };
   drawBackground(c: CanvasRenderingContext2D, deltaTime: number) {
@@ -94,38 +97,27 @@ export class GameIso {
     this.bg.draw(c, deltaTime);
   }
 
-  checkKeyUp = (e: KeyboardEvent) => {
+  keyUp = (e: KeyboardEvent) => {
     this.player.checkKeyUp(e);
     const options = {};
-    if (options[e.key]) {
-      options[e.key]();
+    if (options[e.key.toLowerCase()]) {
+      options[e.key.toLowerCase()]();
     }
   };
   init() {
-    // Get canvas and context
-
     this.worldWidth = canvas.width;
     this.worldHeight = canvas.height;
-
-    // Create camera and player
-
-    // Set initial map
     this.setMap(this.data_world_maps[this.currentMap]);
-
-    // Start game
   }
 
   update(deltaTime: number) {
     this.pause = GAME_IS_PAUSE();
-    if (!this.pause) {
+    if (!this.pause && this.player) {
       this.player.update(deltaTime);
       this.player.mover(this.wall);
       // GameOver Reset
-      if (this.gameover) {
-        this.reset();
-      }
 
-      // Out Screen
+      //* Out Screen
       if (this.player.x > this.worldWidth) {
         this.currentMap += 1;
         if (this.currentMap > this.data_world_maps.length - 1) {
@@ -150,7 +142,7 @@ export class GameIso {
 
       // Focus player
       //cam.focus(player.x, player.y);
-      this.cam.isoFocus(this.player.x, this.player.y);
+      this.cam.isoFocus(this.player.x || 0, this.player.y || 0);
 
       // Elapsed time
       this.elapsed += deltaTime;
@@ -158,20 +150,22 @@ export class GameIso {
         this.elapsed -= 360000;
       }
     }
-    // Pause/Unpause
-    if (this.lastPress === "KEY_ENTER") {
-      this.pause = !this.pause;
-      this.lastPress = null;
-    }
   }
   checkEnemyZone() {
+    //* Check if player is in enemy zone
     for (let i = 0; i < this.enemyZone.length; i++) {
       if (this.player.intersects(this.enemyZone[i])) {
         const rng = Math.random();
         if (rng > 0.98754) {
-          GAME.changeScene(GAME.statesKeys.battle);
-          this.player.pressKey = [];
+          //* Can send config to battle manager
+          if (!GAME_IS_BATTLE()) {
+            BATTLE_MANAGER.inBattle({
+              backGround: 2,
+              floorImage: 3,
+            });
+          }
           this.player.returnIdle();
+          this.player.pressKey = [];
           this.enemyZone.splice(i, 1);
         }
       }
@@ -185,12 +179,7 @@ export class GameIso {
     this.fillIsoMap(ctx);
 
     // draw player
-    this.player.drawIsoImageAreaPlayer(
-      ctx,
-      this.cam,
-
-      8
-    );
+    this.player.drawIsoImageAreaPlayer(ctx, this.cam, 8);
   }
   drawWalkPath(ctx: CanvasRenderingContext2D) {
     this.walkPath
@@ -200,21 +189,10 @@ export class GameIso {
       });
   }
   drawUI(ctx: CanvasRenderingContext2D, deltaTime: number) {
-    this.menuScreen.draw(ctx, deltaTime);
+    BATTLE_MANAGER.draw(ctx, deltaTime);
     // Debug last key pressed
     ctx.fillStyle = "#fff";
     ctx.fillText(this.data_world_maps[this.currentMap].name, 4, 20);
-
-    // Draw pause
-    if (this.pause) {
-      ctx.textAlign = "center";
-      if (this.gameover) {
-        ctx.fillText("GAMEOVER", 430 / 2, 430 / 2);
-      } else {
-        ctx.fillText("PAUSE", 430 / 2, 430 / 2);
-      }
-      ctx.textAlign = "left";
-    }
   }
   fillIsoMap(ctx: CanvasRenderingContext2D) {
     this.wall
@@ -343,20 +321,15 @@ export class GameIso {
     this.worldWidth = columns * blockSize;
     this.worldHeight = rows * blockSize;
   }
-  reset() {
-    this.player.dir = 1;
-    this.player.left = 64;
-    this.player.top = 160;
-    this.gameover = false;
-  }
 
   in() {
-    document.addEventListener("keyup", this.checkKeyUp);
-    document.addEventListener("keydown", this.checkKeyDown);
     if (this.pause) {
       GAME_TOGGLE_PAUSE();
-      this.menuScreen.showMenu = false;
-      document.removeEventListener("keydown", this.menuScreen.checkKey);
+      BATTLE_MANAGER.menuScreen.showMenu = false;
+      document.removeEventListener(
+        "keydown",
+        BATTLE_MANAGER.menuScreen.checkKey
+      );
     }
   }
   out() {}
@@ -402,8 +375,8 @@ export class GameIso {
 
       // Player Intersects Enemy
       if (this.player.intersects(this.enemies[i])) {
-        this.gameover = true;
-        this.pause = true;
+        // this.gameover = true;
+        // this.pause = true;
       }
     }
   }

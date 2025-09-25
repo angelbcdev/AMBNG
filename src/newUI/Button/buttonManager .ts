@@ -46,7 +46,7 @@ export class ButtonManager {
       this.currentButtonIndex =
         (this.currentButtonIndex + 1) % this.buttons?.length;
     } else if (
-      e.key === "Enter" ||
+      e.key === keyBindings.singleShoot ||
       keyBindings.singleShoot === e.key.toLowerCase()
     ) {
       try {

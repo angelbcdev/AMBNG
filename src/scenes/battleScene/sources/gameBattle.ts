@@ -1,26 +1,22 @@
 import { FLOOR_MANAGER } from "./floorManager";
-import { Mettols } from "@/data/enemys/Character/mettol/mettol";
-// import BeeTank from "@/data/enemys/Character/beeTank/beetank";
-// import { CannonDumb } from "@/data/enemys/Character/cannon/cannonDumb";
-// import { ToleteEnemy } from "@/data/enemys/tolete";
 import { GAME } from "../../sceneManager";
 import { BattleScene } from "../battleScene";
 
 import { BackGround } from "@/newUI/backGround/backGroundShow";
 import { ENTITY_MANAGER } from "./entityManager";
+import {
+  GAME_IS_BATTLE,
+  GAME_IS_PAUSE,
+  GAME_SET_PAUSE,
+  GAME_SET_UNPAUSE,
+} from "./gameState";
+import { BATTLE_MANAGER } from "./battleManager";
 // import { ToleteEnemy } from "@/data/enemys/tolete";
 
 // const allEnemies = [Mettols, BeeTank, CannonDumb, ToleteEnemy];
 
 export class BatleGame {
   bg = new BackGround(3);
-
-  gameIsPaused = true;
-
-  // effect = [];
-  // npc = [];
-
-  // gameUI = new GameUI(this);
   timeForSelectShip = 1000;
   currentTimeForSelectShip = 0;
   isCompletedBarShip = false;
@@ -32,44 +28,25 @@ export class BatleGame {
   timeInBattle = 0;
   totalTimeInBattle = 0;
   battleScene: BattleScene;
+
+  timeForBattleStart = 3;
+  localIsBattle = false;
+
   constructor(battleScene: BattleScene) {
     this.battleScene = battleScene;
   }
 
-  startNewBattle({ backGround = 0, floorImage = 0 }) {
-    this.bg.updateBackGround(backGround);
-    ENTITY_MANAGER.initBattle();
-
-    // this.gameUI.clearImagePosition = {
-    //   x: -this.gameUI.clearImageViewPort,
-    //   y: this.gameUI.clearImagePosition.y,
-    // };
-    this.timeInBattle = 0;
-    this.totalTimeInBattle = 0;
-    this.currentTimeForSelectShip = 0;
-    this.canvasTime = 0;
-    this.gameIsPaused = true;
-    this.isCompletedBarShip = false;
-
-    setTimeout(() => {
-      this.gameIsPaused = false;
-    }, 3000);
-
-    FLOOR_MANAGER.updateImageFloors(floorImage);
-
-    // const randomeEnemy =
-    //   allEnemies[Math.floor(Math.random() * allEnemies.length)];
-    // const randomPosition = {
-    //   x: Math.floor(Math.random() * 2),
-    //   y: Math.floor(Math.random() * 2),
-    // };
-    // const randomLevel = Math.floor(Math.random() * 3 + 1);
-
-    ENTITY_MANAGER.addNewEnemy({
-      newEnemy: Mettols,
-      position: { x: 1, y: 1 },
-      level: 1,
-    });
+  initBattle() {
+    this.localIsBattle = true;
+    this.timeForBattleStart = 2;
+    const timeForBattleStart = setInterval(() => {
+      this.timeForBattleStart--;
+      if (this.timeForBattleStart == 0) {
+        clearInterval(timeForBattleStart);
+        GAME_SET_UNPAUSE();
+        this.localIsBattle = false;
+      }
+    }, 1000);
   }
 
   draw(deltaTime: number, c: CanvasRenderingContext2D) {
@@ -102,12 +79,7 @@ export class BatleGame {
     // draw entities and effects per row
     FLOOR_MANAGER.matrix.forEach((_, indexY) => {
       ENTITY_MANAGER.levelToPaint(c, deltaTime, indexY);
-      ENTITY_MANAGER.levelToPaintAttack(
-        c,
-        deltaTime,
-        indexY,
-        this.gameIsPaused
-      );
+      ENTITY_MANAGER.levelToPaintAttack(c, deltaTime, indexY);
     });
 
     ENTITY_MANAGER.validateCollisionEnemys();
@@ -115,24 +87,35 @@ export class BatleGame {
     ENTITY_MANAGER.runFilters();
     ENTITY_MANAGER.extractAttacks();
     c.restore();
+
+    if (this.localIsBattle) {
+      this.showMessage(c, "BATTLE START", true);
+      this.showMessage(c, this.timeForBattleStart.toString(), false);
+    }
+    if (!this.localIsBattle && GAME_IS_PAUSE()) {
+      this.showMessage(c, "PAUSE", true);
+    }
+    BATTLE_MANAGER.draw(c, deltaTime);
     // this.gameUI.draw(c, deltaTime);
+  }
+  showMessage(c: CanvasRenderingContext2D, message: string, head?: boolean) {
+    c.fillText(message, 430 / 2, 430 / 2 - (head ? 50 : 20));
   }
   update(deltaTime: number, c: CanvasRenderingContext2D) {
     // ENTITY_MANAGER.runFilters();
 
     if (!GAME.hasFocus()) {
-      this.gameIsPaused = true;
+      GAME_SET_PAUSE();
       return;
-    } else {
-      this.gameIsPaused = false;
     }
 
+    //* FINISHED BATTLE
     this.hasEnemys = ENTITY_MANAGER.npc.length > 0;
     if (!this.hasEnemys) {
-      // this.gameUI.clearStateImg(c, deltaTime, this.totalTimeInBattle);
-      setTimeout(() => {
-        GAME.changeScene(GAME.statesKeys.world);
-      }, 2000);
+      //* this.gameUI.clearStateImg(c, deltaTime, this.totalTimeInBattle);
+      if (GAME_IS_BATTLE()) {
+        BATTLE_MANAGER.outBattle();
+      }
     } else {
       if (this.timeInBattle > 1000) {
         this.timeInBattle = 0;

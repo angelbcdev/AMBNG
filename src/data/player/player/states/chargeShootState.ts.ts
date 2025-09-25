@@ -21,7 +21,6 @@ export class ShootStateCharge extends PlayerState {
   }
   update(_: CanvasRenderingContext2D, deltaTime: number): void {
     if (this.canCountTimer) {
-      this.player.canShowEffect = true;
       this.player.frameY = this.player.states.idle;
 
       if (this.timer >= this.timeForCharge) {

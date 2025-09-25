@@ -6,11 +6,15 @@ import { Entity } from "@/data/player/entity";
 export class MatrixManager {
   static instance: MatrixManager | null = null;
   canTembleCanvas = false;
-  matrix = matrix;
+  matrix = null;
   floors: FloorBase[] = [];
 
   constructor() {
-    this.floors = ubicateFloors(matrix);
+    // this.floors = ubicateFloors(matrix);
+  }
+  initFloors() {
+    this.matrix = JSON.parse(JSON.stringify(matrix));
+    this.floors = ubicateFloors(this.matrix);
   }
 
   updateFloors(c: CanvasRenderingContext2D, deltaTime: number) {
@@ -20,9 +24,13 @@ export class MatrixManager {
   }
 
   updateImageFloors(floorImage: number) {
+    this.floors = [];
+    this.floors = ubicateFloors(this.matrix);
+
     this.floors.forEach((floor) => {
       floor.updateImageFloor(floorImage);
     });
+    console.log("floors", floorImage);
   }
   drawFloors(c: CanvasRenderingContext2D, deltaTime: number, effects: any[]) {
     this.floors

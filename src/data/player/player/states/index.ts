@@ -3,11 +3,12 @@ import { keyBindings } from "@/config/keyBindings";
 import Player, { playerAllAttacks } from "../player";
 import {
   GAME_IS_PAUSE,
+  GAME_SET_PAUSE,
   GAME_TOGGLE_DEV,
   GAME_TOGGLE_PAUSE,
 } from "@/scenes/battleScene/sources/gameState";
 
-const moves = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+const moves = ["arrowUp", "arrowDown", "arrowLeft", "arrowRight"];
 
 export class PlayerState {
   name: string;
@@ -79,25 +80,26 @@ export class PlayerState {
         return;
       },
     };
-    if (handleEvents[key]) {
-      handleEvents[key]();
+    if (handleEvents[key.toLowerCase()]) {
+      handleEvents[key.toLowerCase()]();
     }
   }
   whichtKeyDown(key: string, newMatrixY: number, newMatrixX: number) {
-    if (moves.includes(key)) {
+    if (moves.includes(key.toLowerCase())) {
       this.player.changeState(this.player.stateReference.MOVE);
     }
+    console.log(key);
     const handleEvents = {
-      ArrowUp: () => {
+      arrowup: () => {
         newMatrixY -= 1;
       },
-      ArrowDown: () => {
+      arrowdown: () => {
         newMatrixY += 1;
       },
-      ArrowLeft: () => {
+      arrowleft: () => {
         newMatrixX -= 1;
       },
-      ArrowRight: () => {
+      arrowright: () => {
         newMatrixX += 1;
       },
       [keyBindings.singleShoot]: () => {
@@ -114,16 +116,10 @@ export class PlayerState {
           this.useShip();
         }
       },
-      v: () => {
-        GAME_TOGGLE_DEV();
-      },
-      enter: () => {
-        GAME_TOGGLE_PAUSE();
-      },
     };
 
-    if (handleEvents[key]) {
-      handleEvents[key]();
+    if (handleEvents[key.toLowerCase()]) {
+      handleEvents[key.toLowerCase()]();
     }
 
     return { newMatrixY, newMatrixX };

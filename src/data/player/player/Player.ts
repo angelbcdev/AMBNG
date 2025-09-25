@@ -22,6 +22,7 @@ import { UseShip } from "./states/useShip.ts";
 export class Player extends Entity {
   state: number;
   defense: number;
+  maxLive: number = 100;
 
   states = {
     idle: 0,
@@ -104,12 +105,9 @@ export class Player extends Entity {
     this.live = 100;
     this.liveTotal = this.live;
     this.defense = 30;
-
-    this.damage = 1;
-
+    this.damage = 1000;
     this.image = new Image();
     this.image.src = `assects/megaman/megamanAllStates.png`;
-
     this.collisionAttacks = [];
     this.blockSize = {
       h: 110,
@@ -176,7 +174,7 @@ export class Player extends Entity {
 
   drawSprite(c: CanvasRenderingContext2D) {
     if (GAME_IS_DEV()) {
-      c.fillStyle = this.color;
+      c.fillStyle = this.color + "50";
       c.fillRect(
         this.possition.x + this.width / 2,
         this.possition.y,
@@ -218,16 +216,6 @@ export class Player extends Entity {
   handleKeyUp = (event: KeyboardEvent) => {
     this.currentState.acctionKeyUp(event.key);
   };
-
-  handleInput(state: string) {
-    if (state === "BATTLE") {
-      document.addEventListener("keydown", this.handleKeyDown);
-      document.addEventListener("keyup", this.handleKeyUp);
-    } else {
-      document.removeEventListener("keydown", this.handleKeyDown);
-      document.removeEventListener("keyup", this.handleKeyUp);
-    }
-  }
 
   makeAttack(attack: string) {
     this.allAttack(attack);
@@ -310,6 +298,13 @@ export class Player extends Entity {
   }
   clearShips() {
     this.allChips = [];
+  }
+  resetPlayer() {
+    this.live = this.maxLive;
+    this.allChips = [];
+    this.frameY = this.states.idle;
+    this.matrixX = 1;
+    this.matrixY = 1;
   }
 }
 

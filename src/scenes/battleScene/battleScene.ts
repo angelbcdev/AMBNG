@@ -11,16 +11,14 @@ import {
   InputState,
   inputStateKeys,
 } from "@/input/inputManager";
+import { keyBindings } from "@/config/keyBindings";
+import { GAME_TOGGLE_DEV, GAME_TOGGLE_PAUSE } from "./sources/gameState";
 
 export class BattleScene extends SceneRoot {
   nameScene: InputState = inputStateKeys.BATTLE;
   gameBattle = new BatleGame(this);
   battleUI = new BattleUI(this);
   chipAreaSelect = new ShowChipAreaWithChip(this);
-  states = {
-    BATTLE: "BATTLE",
-    CHIP_AREA: "CHIP_AREA",
-  };
 
   constructor() {
     super();
@@ -30,14 +28,20 @@ export class BattleScene extends SceneRoot {
         ENTITY_MANAGER.player.handleKeyDown(e);
         // this.optionsButtons.keyDown(e);
         const opions = {
-          " ": () => {
+          [keyBindings.openChipsMenu]: () => {
             if (this.gameBattle.isCompletedBarShip) {
               this.chipAreaSelect.showArea();
             }
           },
+          v: () => {
+            GAME_TOGGLE_DEV();
+          },
+          [keyBindings.openPauseMenu]: () => {
+            GAME_TOGGLE_PAUSE();
+          },
         };
-        if (opions[e.key]) {
-          opions[e.key]();
+        if (opions[e.key.toLowerCase()]) {
+          opions[e.key.toLowerCase()]();
         }
       },
       onKeyUp: (e: KeyboardEvent) => {
@@ -48,11 +52,8 @@ export class BattleScene extends SceneRoot {
   }
   in() {
     super.in();
-    this.gameBattle.startNewBattle({
-      backGround: 0,
-      floorImage: 2,
-    });
   }
+
   out() {
     // this.battleUI.out();
   }
@@ -71,8 +72,5 @@ export class BattleScene extends SceneRoot {
     this.gameBattle.checkClick(mouseX, mouseY);
     this.battleUI.checkClick(mouseX, mouseY);
     // this.chipAreaSelect.checkClick(mouseX, mouseY);
-  }
-  handleInput() {
-    if (!GAME.hasFocus()) return;
   }
 }

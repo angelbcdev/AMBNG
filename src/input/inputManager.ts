@@ -34,10 +34,11 @@ class InputStateMachine {
   static instance: InputStateMachine;
 
   states: Record<InputState, InputHandler>;
-  currentState: string;
+  currentState: InputState;
+  oldState: InputState;
   constructor() {
     this.states = {} as Record<InputState, InputHandler>;
-    this.currentState = "";
+    this.currentState = inputStateKeys.NO_INPUT;
   }
 
   static getInstance() {
@@ -57,8 +58,9 @@ class InputStateMachine {
       console.log(`State ${name} not defined`);
       return;
     }
+    this.oldState = this.currentState;
     this.currentState = name;
-    console.log(`Transitioned to state: ${name}`);
+    console.log(`Transitioned from ${this.oldState} to -> ${name}`);
   }
 
   handleKeyDown(event: KeyboardEvent) {
@@ -87,13 +89,11 @@ INPUT_MANAGER.addState(inputStateKeys.MENU, {
   onKeyDown: (e: KeyboardEvent) => {
     if (e.key === "Enter") {
       console.log("pressed Enter!");
-      // INPUT_MANAGER.setState("GAMEPLAY");
     }
   },
   onKeyUp: (e: KeyboardEvent) => {
     if (e.key === "Enter") {
       console.log("released Enter!");
-      // INPUT_MANAGER.setState("GAMEPLAY");
     }
   },
 });
@@ -102,60 +102,6 @@ INPUT_MANAGER.addState(inputStateKeys.NO_INPUT, {
   onKeyUp: (_: KeyboardEvent) => {},
 });
 
-// // Define "gameplay" input logic
-// INPUT_MANAGER.addState("GAMEPLAY", {
-//   onKeyDown: (e: KeyboardEvent) => {
-//     if (e.key === "ArrowUp") console.log("Move up");
-//     if (e.key === " ") {
-//       console.log("Enter battle!");
-//       INPUT_MANAGER.setState("BATTLE");
-//     }
-//   },
-//   onKeyUp: (e: KeyboardEvent) => {
-//     if (e.key === "ArrowUp") console.log("Move up");
-//     if (e.key === " ") {
-//       console.log("Enter battle!");
-//       INPUT_MANAGER.setState("BATTLE");
-//     }
-//   },
-// });
-
-// // Define "battle" input logic
-// INPUT_MANAGER.addState("BATTLE", {
-//   onKeyDown: (e: KeyboardEvent) => {
-//     if (e.key === "a") console.log("Attack!");
-//     if (e.key === "Escape") {
-//       console.log("Exit battle");
-//       INPUT_MANAGER.setState("GAMEPLAY");
-//     }
-//   },
-//   onKeyUp: (e: KeyboardEvent) => {
-//     if (e.key === "a") console.log("Attack!");
-//     if (e.key === "Escape") {
-//       console.log("Exit battle");
-//       INPUT_MANAGER.setState("GAMEPLAY");
-//     }
-//   },
-// });
-
-// // Define "battle" input logic
-// INPUT_MANAGER.addState("BATTLE", {
-//   onKeyDown: (e: KeyboardEvent) => {
-//     if (e.key === "a") console.log("Attack!");
-//     if (e.key === "Escape") {
-//       console.log("Exit battle");
-//       INPUT_MANAGER.setState("GAMEPLAY");
-//     }
-//   },
-//   onKeyUp: (e: KeyboardEvent) => {
-//     if (e.key === "a") console.log("Attack!");
-//     if (e.key === "Escape") {
-//       console.log("Exit battle");
-//       INPUT_MANAGER.setState("GAMEPLAY");
-//     }
-//   },
-// });
-
-INPUT_MANAGER.setState("MENU");
+INPUT_MANAGER.setState(inputStateKeys.MENU);
 
 // Start in MENU state

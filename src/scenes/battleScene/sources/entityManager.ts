@@ -8,6 +8,7 @@ class EntityManager {
 
   effect = [];
   npc = [];
+
   player = new PlayerBlue({
     possition: { x: 1, y: 1 },
     sideToPlay: 0,
@@ -18,9 +19,13 @@ class EntityManager {
     return this.instance;
   }
   initBattle() {
+    this.player = new PlayerBlue({
+      possition: { x: 1, y: 1 },
+      sideToPlay: 0,
+    });
     this.clearEntites();
+    FLOOR_MANAGER.initFloors();
     this.asignarMatrixToEntity();
-    this.resetPlayers();
   }
   asignarMatrixToEntity() {
     this.npc.forEach((enemy) => {
@@ -53,14 +58,13 @@ class EntityManager {
   levelToPaintAttack(
     c: CanvasRenderingContext2D,
     deltaTime: number,
-    row: number,
-    isPaused: boolean
+    row: number
   ) {
     this.effect
       .filter((effect: any) => effect.initialMatrixY == row)
       .forEach((effect) => {
         effect.draw(c, deltaTime);
-        if (isPaused) return;
+
         effect.update(c, deltaTime);
       });
   }
@@ -119,10 +123,7 @@ class EntityManager {
   playerIsLive() {
     return this.player.live > 0;
   }
-  resetPlayers() {
-    this.player.live = 100;
-    this.player.allChips = [];
-  }
+  resetPlayers() {}
 
   getAllEntities() {
     return [...this.npc, this.player];

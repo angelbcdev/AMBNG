@@ -7,6 +7,7 @@ import {
   GAME_SET_UNPAUSE,
   GAME_TOGGLE_DEV,
 } from "@/scenes/battleScene/sources/gameState";
+import { keyBindings } from "@/config/keyBindings";
 
 export class PauseMenu {
   nameScene = inputStateKeys.WORLD_PAUSE;
@@ -106,8 +107,6 @@ export class PauseMenu {
     this.showMenu = true;
     INPUT_MANAGER.setState(this.nameScene);
     GAME_SET_PAUSE();
-    // this.optionsButtons.in();
-    // document.addEventListener("keydown", this.checkKey);
   }
   out() {
     this.showMenu = false;
@@ -123,14 +122,19 @@ export class PauseMenu {
       onKeyDown: (e: KeyboardEvent) => {
         this.optionsButtons.keyDown(e);
         const options = {
-          f: () => {
+          [keyBindings.openPauseMenu]: () => {
             this.out();
 
-            INPUT_MANAGER.setState("WORLD_SCENE");
+            INPUT_MANAGER.setState(inputStateKeys.WORLD_SCENE);
+          },
+          [keyBindings.useChip || keyBindings.singleShoot]: () => {
+            this.out();
+            INPUT_MANAGER.setState(inputStateKeys.WORLD_SCENE);
           },
         };
-        if (options[e.key]) {
-          options[e.key]();
+
+        if (options[e.key.toLowerCase()]) {
+          options[e.key.toLowerCase()]();
         }
       },
       onKeyUp: (e: KeyboardEvent) => {},

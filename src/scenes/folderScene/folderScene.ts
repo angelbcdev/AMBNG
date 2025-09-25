@@ -38,55 +38,47 @@ export class FolderScene extends SceneRoot {
     this.arrowBlackImagedown.src = "/assects/UI/BlackArrowdown.png";
 
     INPUT_MANAGER.addState(this.nameScene, {
-      onKeyDown: (e: KeyboardEvent) => {},
+      onKeyDown: (e: KeyboardEvent) => {
+        const options = {
+          arrowup: () => {
+            this.upIndex();
+          },
+          arrowdown: () => {
+            this.downIndex();
+          },
+          arrowleft: () => {
+            this.viewSack = false;
+          },
+          arrowright: () => {
+            this.viewSack = true;
+          },
+          [keyBindings.singleShoot]: () => {
+            this.keySelectChip();
+          },
+          [keyBindings.useChip]: () => {
+            GAME.returnToPreviousScene();
+          },
+        };
+        if (options[e.key.toLowerCase()]) {
+          options[e.key.toLowerCase()]();
+        }
+      },
       // onKeyUp
     });
   }
 
-  homeKey = (e: KeyboardEvent) => {
-    switch (e.key) {
-      case "3":
-        GAME.changeScene(GAME.statesKeys.world);
-        break;
-      case "2":
-        GAME.changeScene(GAME.statesKeys.option);
-        break;
-      case "1":
-        GAME.changeScene(GAME.statesKeys.chips);
-        break;
-      case "ArrowRight":
-        this.viewSack = true;
-        break;
-      case "ArrowLeft":
-        this.viewSack = false;
-        if (CHIPS_M.chipsFolder.length > 0) {
-          this.removeFolderID = CHIPS_M.chipsFolder[this.folderIndex].idForMove;
-        }
-        break;
-      case "ArrowUp":
-        this.upIndex();
-        break;
-      case "ArrowDown":
-        this.downIndex();
-        break;
-      case keyBindings.singleShoot:
-        if (this.viewSack) {
-          CHIPS_M.addChipToFolder(this.moveToFolderID);
-        } else {
-          if (this.globalFolderIndex - 1 > 0) {
-            this.globalFolderIndex -= 1;
-          }
-          this.folderIndex =
-            this.folderIndex - 1 > 0 ? this.folderIndex - 1 : 0;
-          this.sliceIndexFolder =
-            this.sliceIndexFolder - 1 > 0 ? this.sliceIndexFolder - 1 : 0;
-          CHIPS_M.removeChipFromFolder(this.removeFolderID);
-          this.removeFolderID = CHIPS_M.chipsFolder[this.folderIndex].idForMove;
-        }
-        break;
-      case keyBindings.useChip:
-        GAME.returnToPreviousScene();
-        break;
+  keySelectChip = () => {
+    if (this.viewSack) {
+      CHIPS_M.addChipToFolder(this.moveToFolderID);
+    } else {
+      if (this.globalFolderIndex - 1 > 0) {
+        this.globalFolderIndex -= 1;
+      }
+      this.folderIndex = this.folderIndex - 1 > 0 ? this.folderIndex - 1 : 0;
+      this.sliceIndexFolder =
+        this.sliceIndexFolder - 1 > 0 ? this.sliceIndexFolder - 1 : 0;
+      CHIPS_M.removeChipFromFolder(this.removeFolderID);
+      this.removeFolderID = CHIPS_M.chipsFolder[this.folderIndex].idForMove;
     }
   };
   upIndex = () => {

@@ -281,28 +281,27 @@ export class ShowChipAreaWithChip {
     }
   }
   keyDown(e: KeyboardEvent) {
-    switch (e.key) {
-      case "ArrowLeft":
+    const options = {
+      arrowleft: () => {
         if (this.chipInView.viewX > 0) {
           this.chipInView.viewX--;
         }
         if (!this.showAddChip) this.showAddChip = true;
-        break;
-      case "ArrowRight":
+      },
+      arrowright: () => {
         if (this.chipInView.viewX < 5) {
           this.chipInView.viewX++;
         }
-
-        break;
-      case "ArrowUp":
+      },
+      arrowup: () => {
         if (this.chipInView.viewY > 0) {
           this.chipInView.viewY--;
         }
         if (this.chipInView.viewX == 5 && !this.showAddChip) {
           this.showAddChip = true;
         }
-        break;
-      case "ArrowDown":
+      },
+      arrowdown: () => {
         if (
           this.chipInView.viewY < this.chipArea.length - 1 &&
           this.chipInView.viewX < 5
@@ -316,16 +315,67 @@ export class ShowChipAreaWithChip {
         ) {
           this.showAddChip = false;
         }
-        break;
-      case keyBindings.singleShoot:
+      },
+      [keyBindings.singleShoot]: () => {
         this.addChip();
-
-        break;
-      case keyBindings.useChip:
+      },
+      [keyBindings.useChip]: () => {
         this.chipSelected.pop();
         this.validateAddButton();
-        break;
+      },
+      [keyBindings.openPauseMenu]: () => {
+        this.chipInView.viewX = 5;
+        this.chipInView.viewY = 0;
+      },
+    };
+    if (options[e.key.toLowerCase()]) {
+      options[e.key.toLowerCase()]();
     }
+    //   switch (e.key) {
+    //   case "ArrowLeft":
+    //     if (this.chipInView.viewX > 0) {
+    //       this.chipInView.viewX--;
+    //     }
+    //     if (!this.showAddChip) this.showAddChip = true;
+    //     break;
+    //   case "ArrowRight":
+    //     if (this.chipInView.viewX < 5) {
+    //       this.chipInView.viewX++;
+    //     }
+
+    //     break;
+    //   case "ArrowUp":
+    //     if (this.chipInView.viewY > 0) {
+    //       this.chipInView.viewY--;
+    //     }
+    //     if (this.chipInView.viewX == 5 && !this.showAddChip) {
+    //       this.showAddChip = true;
+    //     }
+    //     break;
+    //   case "ArrowDown":
+    //     if (
+    //       this.chipInView.viewY < this.chipArea.length - 1 &&
+    //       this.chipInView.viewX < 5
+    //     ) {
+    //       this.chipInView.viewY++;
+    //     }
+    //     if (
+    //       this.chipInView.viewX == 5 &&
+    //       this.showAddChip &&
+    //       this.showADDButon
+    //     ) {
+    //       this.showAddChip = false;
+    //     }
+    //     break;
+    //   case keyBindings.singleShoot:
+    //     this.addChip();
+
+    //     break;
+    //   case keyBindings.useChip:
+    //     this.chipSelected.pop();
+    //     this.validateAddButton();
+    //     break;
+    // }
   }
   sendChipToPlayer() {
     if (this.chipSelected.length > 0) {
@@ -350,6 +400,12 @@ export class ShowChipAreaWithChip {
         this.chipSelected.push(chip);
         this.chipUsed.push(chip.id);
         this.addNewChip = true;
+
+        if (this.chipSelected.length == 5) {
+          this.chipInView.viewX = 5;
+          this.chipInView.viewY = 0;
+        }
+
         setTimeout(() => {
           this.addNewChip = false;
         }, 750);
@@ -357,7 +413,7 @@ export class ShowChipAreaWithChip {
       this.validateAddButton();
     } else {
       // player ask 5 chip more
-      INPUT_MANAGER.setState("No input");
+      INPUT_MANAGER.setState(inputStateKeys.NO_INPUT);
 
       ENTITY_MANAGER.player.allChips = [];
       if (this.showAddChip) {
@@ -438,7 +494,7 @@ export class ShowChipAreaWithChip {
     this.battleScene.gameBattle.gameIsPaused = false;
     this.battleScene.gameBattle.isCompletedBarShip = false;
     this.battleScene.gameBattle.currentTimeForSelectShip = 0;
-    INPUT_MANAGER.setState("BATTLE");
+    INPUT_MANAGER.setState(inputStateKeys.BATTLE);
   }
   prepareChipArea() {
     const chipToPlay: BattleShip[][] = [];

@@ -109,9 +109,7 @@ export class OptionScene extends SceneRoot {
       (keyBindings.openChipsMenu === " " ? "Space" : keyBindings.openChipsMenu);
   }
 
-  in() {
-    // INPUT_MANAGER.setState(this.nameScene);
-  }
+  in() {}
   out() {}
   draw(
     deltaTime: number,

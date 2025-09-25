@@ -1,18 +1,19 @@
-import { INPUT_MANAGER } from "@/input/inputManager";
+import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 import SceneRoot from "../sceneROOT";
 import { GameIso } from "./sources/gameiso";
+import { GAME_IS_PAUSE } from "../battleScene/sources/gameState";
 
 export class WorldScene extends SceneRoot {
   isoWorld = new GameIso();
-  nameScene = "world_scene";
+  nameScene = inputStateKeys.WORLD_SCENE;
   constructor() {
     super();
     INPUT_MANAGER.addState(this.nameScene, {
       onKeyDown: (e: KeyboardEvent) => {
-        this.isoWorld.checkKeyDown(e);
+        this.isoWorld.keyDown(e);
       },
       onKeyUp: (e: KeyboardEvent) => {
-        this.isoWorld.checkKeyUp(e);
+        this.isoWorld.keyUp(e);
       },
     });
   }
@@ -29,7 +30,9 @@ export class WorldScene extends SceneRoot {
     this.isoWorld.drawUI(c, deltaTime);
   }
   in() {
-    super.in();
+    if (GAME_IS_PAUSE()) {
+      INPUT_MANAGER.setState(inputStateKeys.WORLD_PAUSE);
+    }
     // isoWorld.in();
   }
   out() {
