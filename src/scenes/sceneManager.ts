@@ -16,7 +16,7 @@ export class SceneManager {
   canvas: HTMLCanvasElement;
   static instance: SceneManager | null = null;
 
-  currentSceneIndex = "home";
+  currentSceneIndex = "world";
   previousScene = "home";
   statesKeys = {
     home: "home",
@@ -33,6 +33,7 @@ export class SceneManager {
     chips: new FolderScene(),
   };
   currentScene = this.scenes[this.currentSceneIndex];
+
   //
 
   static getInstance() {
@@ -45,6 +46,7 @@ export class SceneManager {
     this.currentScene.in();
     this.canvas = canvas;
     this.c = c;
+    INPUT_MANAGER.setState(this.currentScene.nameScene);
     // this.currentScene.in();
     document.getElementById("canvas").addEventListener("click", (e) => {
       const rect = this.canvas.getBoundingClientRect();

@@ -1,5 +1,5 @@
 import { PlayerState } from ".";
-import Player from "../player";
+import Player from "../Player";
 
 export class ShieldState extends PlayerState {
   constructor(player: Player) {

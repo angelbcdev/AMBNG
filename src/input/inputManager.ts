@@ -2,7 +2,7 @@ export interface InputHandler {
   onKeyDown: (event: KeyboardEvent) => void;
   onKeyUp?: (event: KeyboardEvent) => void;
 }
-
+// nameScene = inputStateKeys.WORLD_SCENE;
 export type InputState =
   | "OPTION_SCENE"
   | "HOME_SCENE"
@@ -14,6 +14,7 @@ export type InputState =
   | "BATTLE_CHIP_AREA"
   | "WORLD_PAUSE"
   | "WORLD_SCENE"
+  | "DIALOGUE"
   | "FOLDER_SCENE";
 
 export const inputStateKeys: Record<InputState, InputState> = {
@@ -24,6 +25,7 @@ export const inputStateKeys: Record<InputState, InputState> = {
   BATTLE_CHIP_AREA: "BATTLE_CHIP_AREA",
   WORLD_PAUSE: "WORLD_PAUSE",
   WORLD_SCENE: "WORLD_SCENE",
+  DIALOGUE: "DIALOGUE",
   FOLDER_SCENE: "FOLDER_SCENE",
   OPTION_SCENE: "OPTION_SCENE",
   HOME_SCENE: "HOME_SCENE",
@@ -80,6 +82,9 @@ class InputStateMachine {
     // Attach to DOM events
     document.addEventListener("keydown", (e) => this.handleKeyDown(e));
     document.addEventListener("keyup", (e) => this.handleKeyUp(e));
+  }
+  returnPreviousState() {
+    this.setState(this.oldState);
   }
 }
 export const INPUT_MANAGER = InputStateMachine.getInstance();

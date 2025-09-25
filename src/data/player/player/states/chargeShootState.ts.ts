@@ -1,6 +1,6 @@
 import { keyBindings } from "@/config/keyBindings";
 import { PlayerState } from ".";
-import Player, { playerAllAttacks } from "../player";
+import Player, { playerAllAttacks } from "../Player";
 
 export class ShootStateCharge extends PlayerState {
   timeForCharge = 2000;

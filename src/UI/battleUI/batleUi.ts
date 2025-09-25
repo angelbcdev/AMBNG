@@ -77,12 +77,11 @@ export class BattleUI {
       y: this.clearImagePosition.y + 116,
     });
   }
-  draw(deltaTime: number, c: CanvasRenderingContext2D) {
+  draw(c: CanvasRenderingContext2D) {
     // this.(c);
 
     this.drawLivePlayer(c);
     this.showAllAlerts(c);
-    ENTITY_MANAGER.player.showChipts(c, deltaTime);
 
     this.showDetails(c);
 

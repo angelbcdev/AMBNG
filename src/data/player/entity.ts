@@ -37,7 +37,7 @@ export class Entity {
   goingToShoot: boolean;
   AllattackToShow: Entity[] = [];
   canShoot: boolean;
-
+  addbyPlayer = false;
   explosion: ExplotionsBombs; // ExplotionsEffect |
   proyoectile: Attack;
   width: number;

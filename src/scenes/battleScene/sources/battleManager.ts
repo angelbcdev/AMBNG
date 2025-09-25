@@ -10,10 +10,11 @@ import { GAME } from "../../sceneManager";
 import { FLOOR_MANAGER } from "../sources/floorManager";
 import { ENTITY_MANAGER } from "../sources/entityManager";
 import { Mettols } from "@/data/enemys/Character/mettol/mettol";
-import { PauseMenu } from "../../../newUI/menu/pauseMenu";
-import { ShowChipAreaWithChip } from "../../../newUI/chipAreaSelect/chipAreaSelect";
-import { BattleUI } from "@/newUI/battleUI/batleUi";
-import { BackGround } from "@/newUI/backGround/backGroundShow";
+import { PauseMenu } from "../../../UI/menu/pauseMenu";
+import { ShowChipAreaWithChip } from "../../../UI/chipAreaSelect/chipAreaSelect";
+import { BattleUI } from "@/UI/battleUI/batleUi";
+import { BackGround } from "@/UI/backGround/backGroundShow";
+import { Dialogue } from "@/UI/dialoge/dialoge";
 
 class BattleManager {
   static instance: BattleManager;
@@ -22,9 +23,10 @@ class BattleManager {
   chipAreaSelect = new ShowChipAreaWithChip();
   battleUI = new BattleUI();
   bg = new BackGround(3);
+  dialogue = new Dialogue();
   isCompletedBarShip = false;
   currentTimeForSelectShip = 0;
-  timeForSelectShip = 5000;
+  timeForSelectShip = 2000;
   localIsBattle = false;
   timeForBattleStart = 2;
 
@@ -52,10 +54,13 @@ class BattleManager {
     floorImage: number; // 3
   }) {
     this.localIsBattle = true;
+
     if (!GAME_IS_BATTLE()) {
       GAME.changeScene(GAME.statesKeys.battle);
 
       this.bg.updateBackGround(backGround);
+
+      this.currentTimeForSelectShip = this.timeForSelectShip;
 
       FLOOR_MANAGER.initFloors();
       ENTITY_MANAGER.initBattle();
@@ -65,7 +70,7 @@ class BattleManager {
       if (!GAME_IS_BATTLE()) {
         GAME_SET_PAUSE();
         GAME_SET_BATTLE();
-        this.isCompletedBarShip = false;
+        // this.isCompletedBarShip = true;
         this.localIsBattle = true;
         this.timeForBattleStart = 1;
         const timeForBattleStart = setInterval(() => {
@@ -74,15 +79,13 @@ class BattleManager {
             clearInterval(timeForBattleStart);
             GAME_SET_UNPAUSE();
             this.localIsBattle = false;
+            // Show chip area after 1 second
+            this.chipAreaSelect.prepareChipArea();
             this.chipAreaSelect.showArea();
           }
         }, 1000);
       }
 
-      // // this.gameUI.clearImagePosition = {
-      // //   x: -this.gameUI.clearImageViewPort,
-      // //   y: this.gameUI.clearImagePosition.y,
-      // // };
       GAME.currentScene.timeInBattle = 0;
       GAME.currentScene.totalTimeInBattle = 0;
       GAME.currentScene.currentTimeForSelectShip = 0;
@@ -101,7 +104,7 @@ class BattleManager {
     setTimeout(() => {
       GAME.changeScene(GAME.statesKeys.world);
       FLOOR_MANAGER.matrix = null;
-      ENTITY_MANAGER.player = null;
+      // ENTITY_MANAGER.player = null;
       FLOOR_MANAGER.floors = [];
     }, 1000);
   }
@@ -126,11 +129,23 @@ class BattleManager {
 
     // this.battleUI.updateFrame(c, deltaTime, this.isCompletedBarShip);
     //
+
+    if (GAME_IS_BATTLE()) {
+      ENTITY_MANAGER.player.showChipts(c, deltaTime);
+      this.battleUI.draw(c);
+    }
+    this.chipAreaSelect.draw(c, deltaTime);
+
+    this.showDialogue(c, deltaTime);
     this.fillBar(c);
   }
+
   showMessage(c: CanvasRenderingContext2D, message: string, head: number) {
     c.textAlign = "center";
     c.fillText(message, 430 / 2, 430 / 2 - (head || 0));
+  }
+  showDialogue(c: CanvasRenderingContext2D, deltaTime: number) {
+    this.dialogue.draw(c, deltaTime);
   }
   update(deltaTime: number, c: CanvasRenderingContext2D) {
     if (!this.isCompletedBarShip && this.timeForBattleStart == 0) {

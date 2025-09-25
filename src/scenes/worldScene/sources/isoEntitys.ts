@@ -1,3 +1,5 @@
+import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState";
+
 export class mySquare {
   left: number = 0;
   top: number = 0;
@@ -88,14 +90,16 @@ export class mySquare {
         if (this.image.width > 0) {
           ctx.drawImage(this.image, x - 8.2, y + 0.2, TILE_W, TILE_H + 3);
         } else {
-          ctx.fillStyle = this.color + "50";
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(x + TILE_W / 2, y + TILE_H / 2);
-          ctx.lineTo(x, y + TILE_H);
-          ctx.lineTo(x - TILE_W / 2, y + TILE_H / 2);
-          ctx.closePath();
-          ctx.fill();
+          if (GAME_IS_DEV()) {
+            ctx.fillStyle = this.color + "50";
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + TILE_W / 2, y + TILE_H / 2);
+            ctx.lineTo(x, y + TILE_H);
+            ctx.lineTo(x - TILE_W / 2, y + TILE_H / 2);
+            ctx.closePath();
+            ctx.fill();
+          }
         }
         //
       }

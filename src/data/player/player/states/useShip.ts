@@ -1,5 +1,6 @@
+import { FLOOR_MANAGER } from "@/scenes/battleScene/sources/floorManager";
 import { PlayerState } from ".";
-import Player from "../player";
+import Player from "../Player";
 
 export class UseShip extends PlayerState {
   timeKeepImage = 500;
@@ -48,8 +49,7 @@ export class UseShip extends PlayerState {
       case this.player.states.maze:
         if (this.player.frameX == this.player.maxFrame) {
           this.player.incialFrameX = this.player.maxFrame;
-          //TODO search way to make tamble the canvas
-          // this.player.game.makeGameTemble();
+          FLOOR_MANAGER.makeGameTemble();
           if (this.time >= this.timeKeepImage + 500) {
             this.player.changeState(this.player.states.idle);
             this.time = 0;

@@ -45,7 +45,7 @@ export class ChipManager {
 
 export const CHIPS_M = ChipManager.getInstance();
 
-const getRandomeIDforMove = () => {
+export const getRandomeIDforMove = () => {
   const charactes =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let randomID = "";

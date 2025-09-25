@@ -73,8 +73,8 @@ export class BatleGame {
     }
 
     //* FINISHED BATTLE
-    this.hasEnemys = ENTITY_MANAGER.npc.length > 0;
-    if (!this.hasEnemys) {
+
+    if (!ENTITY_MANAGER.hasEnemys()) {
       //* this.gameUI.clearStateImg(c, deltaTime, this.totalTimeInBattle);
       if (GAME_IS_BATTLE()) {
         BATTLE_MANAGER.outBattle();
@@ -92,14 +92,6 @@ export class BatleGame {
     }
 
     FLOOR_MANAGER.updateFloors(c, deltaTime);
-
-    // if (!this.isCompletedBarShip) {
-    //   if (this.currentTimeForSelectShip > this.timeForSelectShip) {
-    //     this.isCompletedBarShip = true;
-    //   } else {
-    //     this.currentTimeForSelectShip += deltaTime;
-    //   }
-    // }
   }
 
   checkClick(mouseX: number, mouseY: number) {

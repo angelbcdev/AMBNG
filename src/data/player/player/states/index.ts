@@ -1,12 +1,7 @@
 import { keyBindings } from "@/config/keyBindings";
 
-import Player, { playerAllAttacks } from "../player";
-import {
-  GAME_IS_PAUSE,
-  GAME_SET_PAUSE,
-  GAME_TOGGLE_DEV,
-  GAME_TOGGLE_PAUSE,
-} from "@/scenes/battleScene/sources/gameState";
+import Player, { playerAllAttacks } from "../Player";
+import { GAME_IS_PAUSE } from "@/scenes/battleScene/sources/gameState";
 
 const moves = ["arrowUp", "arrowDown", "arrowLeft", "arrowRight"];
 

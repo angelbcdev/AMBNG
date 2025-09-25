@@ -1,7 +1,7 @@
 import { keyBindings } from "@/config/keyBindings";
 import { GAME } from "../sceneManager";
-import { ButtonManager } from "@/newUI/Button/buttonManager ";
-import { BackGround } from "@/newUI/backGround/backGroundShow";
+import { ButtonManager } from "@/UI/Button/buttonManager ";
+import { BackGround } from "@/UI/backGround/backGroundShow";
 import SceneRoot from "../sceneROOT";
 import {
   INPUT_MANAGER,

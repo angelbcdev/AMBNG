@@ -13,6 +13,7 @@ export class MatrixManager {
     // this.floors = ubicateFloors(matrix);
   }
   initFloors() {
+    this.canTembleCanvas = false;
     this.matrix = JSON.parse(JSON.stringify(matrix));
     this.floors = ubicateFloors(this.matrix);
   }
@@ -159,7 +160,7 @@ export class MatrixManager {
 
     this.floors[findFloor]?.unAvailableFloor();
   }
-  makeGameTemble(time: number = 1000) {
+  makeGameTemble(time: number = 1200) {
     this.canTembleCanvas = true;
     setTimeout(() => {
       this.canTembleCanvas = false;

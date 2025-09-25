@@ -1,7 +1,10 @@
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 import SceneRoot from "../sceneROOT";
 import { GameIso } from "./sources/gameiso";
-import { GAME_IS_PAUSE } from "../battleScene/sources/gameState";
+import {
+  GAME_TOGGLE_DEV,
+  GAME_IS_PAUSE,
+} from "../battleScene/sources/gameState";
 
 export class WorldScene extends SceneRoot {
   isoWorld = new GameIso();
@@ -11,6 +14,14 @@ export class WorldScene extends SceneRoot {
     INPUT_MANAGER.addState(this.nameScene, {
       onKeyDown: (e: KeyboardEvent) => {
         this.isoWorld.keyDown(e);
+        const options = {
+          v: () => {
+            GAME_TOGGLE_DEV();
+          },
+        };
+        if (options[e.key.toLowerCase()]) {
+          options[e.key.toLowerCase()]();
+        }
       },
       onKeyUp: (e: KeyboardEvent) => {
         this.isoWorld.keyUp(e);

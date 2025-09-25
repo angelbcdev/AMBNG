@@ -1,7 +1,7 @@
 import { EnemyZone, mySquare, WalkPath, Wall } from "./isoEntitys";
 import { PlayerIso } from "./isPlayer";
 import { testWorld } from "./utils";
-import { BackGround } from "@/newUI/backGround/backGroundShow";
+import { BackGround } from "@/UI/backGround/backGroundShow";
 import {
   GAME_IS_BATTLE,
   GAME_IS_PAUSE,
@@ -9,6 +9,7 @@ import {
 } from "@/scenes/battleScene/sources/gameState";
 import { keyBindings } from "@/config/keyBindings";
 import { BATTLE_MANAGER } from "@/scenes/battleScene/sources/battleManager";
+import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 
 const canvas = {
   width: 240,
@@ -82,6 +83,21 @@ export class GameIso {
       [keyBindings.openPauseMenu]: () => {
         BATTLE_MANAGER.menuScreen.in();
       },
+      [keyBindings.showDialogue]: () => {
+        if (BATTLE_MANAGER.dialogue.isHidden) {
+          BATTLE_MANAGER.dialogue.showDialogue([
+            "This msj  ",
+            "This is added  ",
+            "is this long enough?",
+          ]);
+          this.player.returnIdle();
+          this.player.pressKey = [];
+          INPUT_MANAGER.setState(inputStateKeys.DIALOGUE);
+        }
+      },
+      // z: () => {
+      //   BATTLE_MANAGER.dialogue.hideDialogue();
+      // },
     };
     if (options[e.key.toLowerCase()]) {
       options[e.key.toLowerCase()]();

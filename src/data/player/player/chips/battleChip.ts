@@ -62,7 +62,7 @@ export class BattleShip {
     const currentChip = allChipsA.find(
       (chip) => chip.title === title
     ) as ChipData;
-    this.id = currentChip.id;
+    this.id = getRandomeIDforMove();
     this.image.src = currentChip.image;
     this.name = currentChip.title;
     this.chipType = currentChip.chipType;
@@ -112,6 +112,7 @@ export class BattleShip {
     c.fillText(live, realX + 8, realY + 6);
   }
   userMakeAttack(player: PlayerBlue) {
+    console.log("this.actionForChip", this.actionForChip);
     this.changeFMS(player);
     switch (this.actionForChip) {
       case "attack":
@@ -173,9 +174,15 @@ export class BattleShip {
   }
 }
 
-//swords-long
-
-//
-//addNewEnemy
+export const getRandomeIDforMove = () => {
+  const charactes =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let randomID = "";
+  for (let i = 0; i < 10; i++) {
+    const randomIndex = Math.floor(Math.random() * charactes.length);
+    randomID += charactes.charAt(randomIndex);
+  }
+  return randomID;
+};
 
 export const allChips = [...allChipsA];

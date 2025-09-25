@@ -1,7 +1,7 @@
-import { BackGround } from "@/newUI/backGround/backGroundShow";
+import { BackGround } from "@/UI/backGround/backGroundShow";
 import { GAME } from "../sceneManager";
 import SceneRoot from "../sceneROOT";
-import { ButtonManager } from "@/newUI/Button/buttonManager ";
+import { ButtonManager } from "@/UI/Button/buttonManager ";
 import {
   INPUT_MANAGER,
   InputState,

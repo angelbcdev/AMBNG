@@ -434,4 +434,7 @@ const allChipsData: ChipData[] = [
   },
 ];
 
-export const allChipsA = [...allChipsData];
+export const allChipsA = [
+  ...allChipsData,
+  ...allChipsData.sort(() => Math.random() - 0.5).slice(0, 2),
+];

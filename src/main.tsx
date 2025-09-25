@@ -7,6 +7,7 @@ import "./index.css";
 // import { GameWorld } from "./world/gameWorld";
 import { GAME } from "./scenes/sceneManager";
 import { FLOOR_MANAGER } from "./scenes/battleScene/sources/floorManager";
+import { BATTLE_MANAGER } from "./scenes/battleScene/sources/battleManager";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -35,17 +36,45 @@ const animage2 = (timeStap: number) => {
   c2.clearRect(0, 0, canvas2.width, canvas2.height);
   c2.fillStyle = "white";
   c2.fillRect(0, 0, canvas2.width, canvas2.height);
+  // print matrix
 
-  if (FLOOR_MANAGER.matrix) {
-    FLOOR_MANAGER.matrix.forEach((row, indexY) => {
-      row.forEach((floor, indexX) => {
-        c2.fillStyle = floor.ocupated ? "blue" : "red";
-        c2.fillRect(indexX * 51, indexY * 51, 50, 50);
-      });
-    });
-  }
-  FLOOR_MANAGER.floors.forEach((floor) => {
-    floor.draw(c2, 16.66);
+  // if (FLOOR_MANAGER.matrix) {
+  //   FLOOR_MANAGER.matrix.forEach((row, indexY) => {
+  //     row.forEach((floor, indexX) => {
+  //       c2.fillStyle = floor.ocupated ? "blue" : "red";
+  //       c2.fillRect(indexX * 51, indexY * 51, 50, 50);
+  //     });
+  //   });
+  // }
+  //  print floors
+  // FLOOR_MANAGER.floors.forEach((floor) => {
+  //   floor.draw(c2, 16.66);
+  // });
+
+  BATTLE_MANAGER.chipAreaSelect.availableChip.forEach((chip, index) => {
+    const colSize = 5; // how many chips per row
+    const cellSize = 51; // spacing
+
+    const row = Math.floor(index / colSize); // row number
+    const col = index % colSize; // column number
+
+    const x = col * cellSize;
+    const y = row * cellSize;
+
+    const chipIsSelected = BATTLE_MANAGER.chipAreaSelect.chipSelecteInTurn.includes(
+      chip.id
+    );
+    const chipIsUsed = BATTLE_MANAGER.chipAreaSelect.chipUsed.includes(chip.id);
+
+    chip.drawIcon(c2, x, y);
+    if (chipIsSelected) {
+      c2.fillStyle = "#ff000080";
+      c2.fillRect(x, y, 36, 32);
+    }
+    if (chipIsUsed) {
+      c2.fillStyle = "#00000090";
+      c2.fillRect(x, y, 36, 32);
+    }
   });
 
   requestAnimationFrame(animage2);

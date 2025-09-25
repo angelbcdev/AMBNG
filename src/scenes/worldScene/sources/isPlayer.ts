@@ -1,5 +1,6 @@
 import { keyBindings } from "@/config/keyBindings";
 import { mySquare } from "./isoEntitys";
+import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState";
 
 export class PlayerIso extends mySquare {
   color: string = "#fff000";
@@ -48,21 +49,7 @@ export class PlayerIso extends mySquare {
     super(x, y, width / 3, height / 3);
     this.image.src = "/assects/megaman/ sprite_mega_world.png";
   }
-  drawIsoImageAreaPlayer(
-    ctx?: CanvasRenderingContext2D,
-    cam?: { x: number; y: number },
 
-    z?: number
-  ): void {
-    ctx.strokeStyle = this.color;
-    ctx.strokeRect(
-      this.left / 2 - this.top / 2 - cam.x,
-      this.left / 4 + this.top / 4 - z - cam.y,
-      this.width / 2 + 1,
-      this.height / 2 + 1
-    );
-    this.updateFrame(ctx, cam, z);
-  }
   update(deltaTime: number) {
     if (!this.isMove) return;
     if (this.frameTime >= this.frameInterval) {
@@ -143,19 +130,34 @@ export class PlayerIso extends mySquare {
     }
   }
 
-  updateFrame(
+  drawIsoImageAreaPlayer(
     c: CanvasRenderingContext2D,
     cam: { x: number; y: number },
     z: number
   ) {
+    const x = this.left / 2 - this.top / 2 - cam.x;
+    const y = this.left / 4 + this.top / 4 - z - cam.y;
+    if (GAME_IS_DEV()) {
+      const TILE_W = 16;
+      const TILE_H = 8;
+      c.fillStyle = this.color + "50";
+      c.beginPath();
+      c.moveTo(x, y);
+      c.lineTo(x + TILE_W / 2, y + TILE_H / 2);
+      c.lineTo(x, y + TILE_H);
+      c.lineTo(x - TILE_W / 2, y + TILE_H / 2);
+      c.closePath();
+      c.fill();
+    }
+
     c.drawImage(
       this.image,
       this.frameX * this.frameWidth,
       this.frameY * this.frameHeight,
       this.frameWidth,
       this.frameHeight,
-      this.left / 2 - this.top / 2 - cam.x - this.moveFrameX,
-      this.left / 4 + this.top / 4 - z - cam.y - this.moveFrameY,
+      x - this.moveFrameX,
+      y - this.moveFrameY,
       20,
       20
     );

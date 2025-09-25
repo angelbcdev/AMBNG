@@ -135,8 +135,14 @@ class EntityManager {
     });
     // newElement.sideToPlay set by constructor
     // newElement.sideToPlay = player.side;
+    newElement.matrix = FLOOR_MANAGER.matrix;
+    newElement.calculateMatrix();
+    newElement.addbyPlayer = true;
+    ENTITY_MANAGER.npc.push(newElement);
+  }
 
-    ENTITY_MANAGER.effect.push(newElement);
+  hasEnemys() {
+    return this.npc.filter((_) => !_.addbyPlayer).length > 0;
   }
 }
 

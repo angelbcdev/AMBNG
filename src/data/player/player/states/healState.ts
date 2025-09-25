@@ -1,5 +1,5 @@
 import { PlayerState } from ".";
-import Player from "../player";
+import Player from "../Player";
 
 export class HealState extends PlayerState {
   constructor(player: Player) {
