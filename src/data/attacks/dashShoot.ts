@@ -1,4 +1,4 @@
-import { FLOOR_MANAGER } from "@/scenes/battleScene/sources/floorManager";
+import { FLOOR_MANAGER } from "@/core/floorManager";
 import Attack from "./attacks";
 
 export class DashShoot extends Attack {

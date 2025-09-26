@@ -8,17 +8,14 @@ import { BattleShip, IChips } from "@/data/player/player/chips/battleChip";
 import { allChipsA } from "@/data/player/player/chips/chipData";
 import { BattleScene } from "../../scenes/battleScene/battleScene";
 import { keyBindings } from "@/config/keyBindings";
-import { ENTITY_MANAGER } from "../../scenes/battleScene/sources/entityManager";
+import { ENTITY_MANAGER } from "../../core/entityManager";
 import {
   INPUT_MANAGER,
   InputState,
   inputStateKeys,
 } from "@/input/inputManager";
-import { BATTLE_MANAGER } from "../../scenes/battleScene/sources/battleManager";
-import {
-  GAME_SET_PAUSE,
-  GAME_SET_UNPAUSE,
-} from "../../scenes/battleScene/sources/gameState";
+import { BATTLE_MANAGER } from "../../core/battleManager";
+import { GAME_SET_PAUSE, GAME_SET_UNPAUSE } from "../../core/gameState";
 
 export class ShowChipAreaWithChip {
   nameScene: InputState = inputStateKeys.BATTLE_CHIP_AREA;

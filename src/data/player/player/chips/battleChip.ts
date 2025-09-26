@@ -1,8 +1,8 @@
-import PlayerBlue from "../playerBlue";
-import Attack from "../../attacks/attacks";
+import PlayerBlue from "@/data/player/player/Player";
+import Attack from "@/data/attacks/attacks";
 import { allChipsA, ChipData } from "./chipData";
-import { FLOOR_MANAGER } from "@/scenes/battleScene/sources/floorManager";
-import { ENTITY_MANAGER } from "@/scenes/battleScene/sources/entityManager";
+import { FLOOR_MANAGER } from "@/core/floorManager";
+import { ENTITY_MANAGER } from "@/core/entityManager";
 
 export const IChips = {
   maze: "maze",

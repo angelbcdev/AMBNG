@@ -6,7 +6,7 @@ import {
   GAME_SET_PAUSE,
   GAME_SET_UNPAUSE,
   GAME_TOGGLE_DEV,
-} from "@/scenes/battleScene/sources/gameState";
+} from "@/core/gameState";
 import { keyBindings } from "@/config/keyBindings";
 
 export class PauseMenu {
@@ -102,7 +102,7 @@ export class PauseMenu {
       }
     }
   }
-  checkKey = (e: KeyboardEvent) => {};
+  checkKey = (_: KeyboardEvent) => {};
   in() {
     this.showMenu = true;
     INPUT_MANAGER.setState(this.nameScene);
@@ -137,7 +137,7 @@ export class PauseMenu {
           options[e.key.toLowerCase()]();
         }
       },
-      onKeyUp: (e: KeyboardEvent) => {},
+      onKeyUp: (_: KeyboardEvent) => {},
     });
   }
 }

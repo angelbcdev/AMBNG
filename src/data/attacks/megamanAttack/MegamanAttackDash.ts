@@ -1,4 +1,4 @@
-import { Entity } from "../../player/entity";
+import { Entity } from "../../../entities/entity";
 import { Player } from "../../player/player/Player";
 import Attack from "../attacks";
 import { DashShoot } from "../dashShoot";
@@ -66,7 +66,6 @@ export class MegamanAttackDash extends Attack {
         //     y: this.possition.y,
         //   },
         //   sideToPlay: this.sideToPlay,
-        //   game: this.game,
         // });
       }
     }

@@ -1,5 +1,6 @@
+import { Entity } from "@/entities/entity";
 import Attack from "../../../attacks/attacks";
-import { Nodo } from "../../../master";
+
 import Fishy from "./fishy";
 
 export class FishyAttackDash extends Attack {
@@ -46,8 +47,8 @@ export class FishyAttackDash extends Attack {
       // this.attackOuwner.isVisible = true;
     }
   }
-  attackCollision(_: Nodo) {}
-  drawSprite(c: any): void {
+  attackCollision(_: Entity) {}
+  drawSprite(c: CanvasRenderingContext2D): void {
     c.drawImage(
       this.attackOuwner.image,
       this.frameX * this.frameWidth,

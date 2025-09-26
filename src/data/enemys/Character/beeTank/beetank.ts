@@ -1,7 +1,4 @@
-import {
-  GAME_IS_DEV,
-  GAME_IS_PAUSE,
-} from "@/scenes/battleScene/sources/gameState";
+import { GAME_IS_DEV, GAME_IS_PAUSE } from "@/core/gameState";
 import Attack from "../../../attacks/attacks";
 import { BasicBomb } from "../../../attacks/megamanAttack/basicBomp";
 

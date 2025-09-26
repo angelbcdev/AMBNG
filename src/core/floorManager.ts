@@ -1,7 +1,7 @@
 import { matrix } from "@/data/floor/matrixForFloor";
 import { FloorBase } from "@/data/floor";
 import { ubicateFloors } from "@/data/gameData/ubicateFloors";
-import { Entity } from "@/data/player/entity";
+import { Entity } from "@/entities/entity";
 
 export class MatrixManager {
   static instance: MatrixManager | null = null;

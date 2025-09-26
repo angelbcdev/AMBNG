@@ -5,9 +5,9 @@ import "./index.css";
 // import { DevFucntions } from "./components/DevFucntions";
 // import Joystick from "./components/joystick";
 // import { GameWorld } from "./world/gameWorld";
-import { GAME } from "./scenes/sceneManager";
-import { FLOOR_MANAGER } from "./scenes/battleScene/sources/floorManager";
-import { BATTLE_MANAGER } from "./scenes/battleScene/sources/battleManager";
+import { GAME } from "@/scenes/sceneManager";
+
+import { BATTLE_MANAGER } from "./core/battleManager";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -32,7 +32,7 @@ const c2 = canvas2.getContext("2d")!;
 canvas2.width = 430;
 canvas2.height = 430;
 
-const animage2 = (timeStap: number) => {
+const animage2 = () => {
   c2.clearRect(0, 0, canvas2.width, canvas2.height);
   c2.fillStyle = "white";
   c2.fillRect(0, 0, canvas2.width, canvas2.height);
@@ -79,7 +79,7 @@ const animage2 = (timeStap: number) => {
 
   requestAnimationFrame(animage2);
 };
-animage2(0);
+animage2();
 
 // document.getElementById("canvas").addEventListener("click", (e) => {
 //   const rect = canvas.getBoundingClientRect();

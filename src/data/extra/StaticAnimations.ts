@@ -1,4 +1,25 @@
+import { GAME_IS_DEV } from "@/core/gameState";
+
 class StaticAnimations {
+  possition: { x: number; y: number };
+  sideToPlay: boolean;
+  color: string;
+  frameX: number;
+  frameY: number;
+  faceToLeft: boolean;
+  frameTime: number;
+  frameInterval: number;
+  maxFrame: number;
+  incialFrameX: number;
+  incialFrameY: number;
+  ajustY: number;
+  image: HTMLImageElement;
+  frameWidth: number;
+  frameHeight: number;
+  blockSize: { h: number; w: number };
+  isDev: boolean;
+  possitionYLimit: number;
+  possitionYstart: number;
   constructor({ possition, sideToPlay, color }) {
     this.possition = {
       x: possition.x,
@@ -42,9 +63,9 @@ class StaticAnimations {
     this.drawSprite(c);
   }
 
-  draw(c) {}
+  draw(_: CanvasRenderingContext2D, __: number) {}
 
-  drawSprite(c) {
+  drawSprite(c: CanvasRenderingContext2D) {
     c.save(); // Guardar el estado actual del contexto
 
     // Invertir el eje X si `faceToLeft` es verdadero
@@ -75,8 +96,8 @@ class StaticAnimations {
 }
 
 export class BasicShoot extends StaticAnimations {
-  constructor({ possition, sideToPlay, color, isDev }) {
-    super({ possition, sideToPlay, color, isDev });
+  constructor({ possition, sideToPlay, color }) {
+    super({ possition, sideToPlay, color });
     this.frameWidth = 190;
     this.frameHeight = 169;
 
@@ -90,8 +111,8 @@ export class BasicShoot extends StaticAnimations {
 }
 
 export class ExplotionsEffect extends StaticAnimations {
-  constructor({ possition, sideToPlay, color, isDev }) {
-    super({ possition, sideToPlay, color, isDev });
+  constructor({ possition, sideToPlay, color }) {
+    super({ possition, sideToPlay, color });
     this.frameWidth = 180;
     this.frameHeight = 180;
     this.maxFrame = 6;
@@ -103,8 +124,7 @@ export class ExplotionsEffect extends StaticAnimations {
     this.possitionYLimit = this.possition.y - 10;
     this.possitionYstart = this.possition.y;
   }
-  update(_, __) {}
-  draw(c, deltaTime) {
+  update(c: CanvasRenderingContext2D, deltaTime: number) {
     // Animación del sprite
     if (this.frameTime > this.frameInterval) {
       this.frameTime = 0;
@@ -125,7 +145,7 @@ export class ExplotionsEffect extends StaticAnimations {
 
     this.drawSprite(c);
   }
-  drawSprite(c, deltaTime = 16.66) {
+  drawSprite(c: CanvasRenderingContext2D) {
     c.save(); // Guardar el estado actual del contexto
 
     // Invertir el eje X si `faceToLeft` es verdadero
@@ -164,8 +184,8 @@ export class ExplotionsBombs extends StaticAnimations {
   animationToDelete = 30;
   currentAnimation = 0;
   isFinished = false;
-  constructor({ possition, sideToPlay, color, isDev }) {
-    super({ possition, sideToPlay, color, isDev });
+  constructor({ possition, sideToPlay, color }) {
+    super({ possition, sideToPlay, color });
 
     this.image = new Image();
     this.frameWidth = 78;
@@ -182,7 +202,7 @@ export class ExplotionsBombs extends StaticAnimations {
     };
     this.image.src = `../../assects/attaks/explotionboomb.png`;
   }
-  draw(c, deltaTime) {
+  draw(c: CanvasRenderingContext2D, deltaTime: number) {
     if (this.frameTime > this.frameInterval) {
       this.frameTime = 0;
       if (this.currentAnimation < this.animationToDelete) {
@@ -198,8 +218,10 @@ export class ExplotionsBombs extends StaticAnimations {
 
     this.drawSprite(c);
   }
-  update(_, __) {}
-  drawSprite(c) {
+  update(c: CanvasRenderingContext2D, deltaTime: number) {
+    this.draw(c, deltaTime);
+  }
+  drawSprite(c: CanvasRenderingContext2D) {
     c.drawImage(
       this.image,
       this.frameX * this.frameWidth,

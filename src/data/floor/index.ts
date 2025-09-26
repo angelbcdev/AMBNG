@@ -1,7 +1,7 @@
-import { ENTITY_MANAGER } from "@/scenes/battleScene/sources/entityManager";
+import { ENTITY_MANAGER } from "@/core/entityManager";
 import Attack from "../attacks/attacks";
-import { Entity } from "../player/entity";
-import { FLOOR_MANAGER } from "@/scenes/battleScene/sources/floorManager";
+import { Entity } from "../../entities/entity";
+import { FLOOR_MANAGER } from "@/core/floorManager";
 
 const visualFloor = {
   0: {

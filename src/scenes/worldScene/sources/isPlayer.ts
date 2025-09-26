@@ -1,6 +1,6 @@
 import { keyBindings } from "@/config/keyBindings";
 import { mySquare } from "./isoEntitys";
-import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState";
+import { GAME_IS_DEV } from "@/core/gameState";
 
 export class PlayerIso extends mySquare {
   color: string = "#fff000";

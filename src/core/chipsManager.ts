@@ -1,5 +1,5 @@
-import { BattleShip } from "./battleChip";
-import { allChipsA, ChipData } from "./chipData";
+import { BattleShip } from "../data/player/player/chips/battleChip";
+import { allChipsA } from "../data/player/player/chips/chipData";
 
 export class ChipManager {
   static instance: ChipManager | null = null;
@@ -43,7 +43,7 @@ export class ChipManager {
   }
 }
 
-export const CHIPS_M = ChipManager.getInstance();
+export const CHIPS_MANAGER = ChipManager.getInstance();
 
 export const getRandomeIDforMove = () => {
   const charactes =

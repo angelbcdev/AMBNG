@@ -1,5 +1,5 @@
-import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState";
-import { Entity } from "../../player/entity";
+import { GAME_IS_DEV } from "@/core/gameState";
+import { Entity } from "../../../entities/entity";
 import Attack from "../attacks";
 
 export class BasicSword extends Attack {

@@ -4,7 +4,7 @@ import { keyBindings } from "@/config/keyBindings";
 
 import { GAME } from "@/scenes/sceneManager";
 
-import { ENTITY_MANAGER } from "@/scenes/battleScene/sources/entityManager";
+import { ENTITY_MANAGER } from "@/core/entityManager";
 
 // import { Dialogue } from "./dialoque";
 
@@ -162,7 +162,7 @@ export class BattleUI {
     );
     c.restore();
   }
-  checkClick(mouseX: number, mouseY: number) {}
+  checkClick(_: number, __: number) {}
   drawLivePlayer(c: CanvasRenderingContext2D) {
     const x = this.position.x - 70;
     const y = this.position.y + 25;

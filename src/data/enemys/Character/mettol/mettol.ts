@@ -1,9 +1,6 @@
-import {
-  GAME_IS_DEV,
-  GAME_IS_PAUSE,
-} from "@/scenes/battleScene/sources/gameState";
+import { GAME_IS_DEV, GAME_IS_PAUSE } from "@/core/gameState";
 import { DashShoot } from "../../../attacks/dashShoot";
-import { Entity } from "../../../player/entity";
+import { Entity } from "../../../../entities/entity";
 
 import Enemy from "../../enemys";
 import {
@@ -55,7 +52,7 @@ export class Mettols extends Enemy {
     attack: 2,
     hit: 3,
   };
-  states = {};
+  states: Record<string, number> = {};
   constructor({ possition, sideToPlay, level = 1 }) {
     super({ possition, sideToPlay });
     this.image.src = levelsInfo[level].img;

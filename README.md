@@ -112,7 +112,7 @@ npm run preview
   - Exposes `drawFullImage(...)` and `drawName(...)` to render chip visuals.
   - Has `id` (base) and `idForMove` (ephemeral for moving within Folder).
 - **`ChipManager`**: `src/data/player/player/chips/chipsManager.ts`
-  - Single-instance via `CHIPS_M`.
+  - Single-instance via `CHIPS_MANAGER`.
   - Collections: `chipsSack`, `chipsFolder`, `chipsForBattle`.
   - Methods: `addChipToFolder(id)`, `removeChipFromFolder(idForMove)`, `addChip(chip)`, `clearShips()`.
 - **Chips scene navigation** (`src/scenes/chipsScene/chipsScene.ts`)

@@ -6,9 +6,9 @@ import {
   GAME_IS_BATTLE,
   GAME_IS_PAUSE,
   GAME_TOGGLE_PAUSE,
-} from "@/scenes/battleScene/sources/gameState";
+} from "@/core/gameState";
 import { keyBindings } from "@/config/keyBindings";
-import { BATTLE_MANAGER } from "@/scenes/battleScene/sources/battleManager";
+import { BATTLE_MANAGER } from "@/core/battleManager";
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 
 const canvas = {

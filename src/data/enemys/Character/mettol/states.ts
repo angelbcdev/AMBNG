@@ -1,5 +1,7 @@
+import { GAME_IS_PAUSE } from "@/core/gameState";
 import Enemy from "../../enemys";
 import { Mettols } from "./mettol";
+import { Entity } from "@/entities/entity";
 
 export class Mettolstates {
   state = "no state";
@@ -15,7 +17,7 @@ export class Mettolstates {
     this.enemy.frameX = 0;
   }
   update(_: number) {}
-  onCollision(player: any): void {
+  onCollision(player: Entity): void {
     if (this.enemy.side === player.side) {
       return;
     }
@@ -71,7 +73,8 @@ export class MettolstatesMove extends Mettolstates {
       }
       const random =
         this.enemy.move[Math.floor(Math.random() * this.enemy.move.length)];
-      if (this.enemy.canMove && !this.enemy?.game?.gameIsPaused) {
+      if (this.enemy.canMove && !GAME_IS_PAUSE()) {
+        //* STOP WHEN IS PAUSE
         this.enemy.acctionKeyDown(random);
         // this.enemy.changeState(this.enemy.finiteStates.idle);
       }

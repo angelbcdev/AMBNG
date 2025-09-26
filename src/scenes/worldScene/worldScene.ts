@@ -1,10 +1,7 @@
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 import SceneRoot from "../sceneROOT";
 import { GameIso } from "./sources/gameiso";
-import {
-  GAME_TOGGLE_DEV,
-  GAME_IS_PAUSE,
-} from "../battleScene/sources/gameState";
+import { GAME_TOGGLE_DEV, GAME_IS_PAUSE } from "../../core/gameState";
 
 export class WorldScene extends SceneRoot {
   isoWorld = new GameIso();

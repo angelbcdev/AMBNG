@@ -1,5 +1,6 @@
-import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState";
+import { GAME_IS_DEV } from "@/core/gameState";
 import Attack from "../attacks";
+import { Entity } from "@/entities/entity";
 
 export class BasicPunch extends Attack {
   backMove = 1;

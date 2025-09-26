@@ -1,4 +1,4 @@
-import { Entity } from "../../player/entity";
+import { Entity } from "../../../entities/entity";
 import Attack from "../attacks";
 
 export class MegamanAttackDashShoot extends Attack {
@@ -51,7 +51,6 @@ export class MegamanAttackDashShoot extends Attack {
     //         y: this.possition.y,
     //       },
     //       sideToPlay: this.sideToPlay,
-    //       game: this.game,
     //     });
     //   }
     // }

@@ -1,6 +1,5 @@
-import { FLOOR_MANAGER } from "@/scenes/battleScene/sources/floorManager.js";
-import Attack from "../attacks/attacks.js";
-import { ExplotionsBombs } from "../extra/StaticAnimations.js";
+import Attack from "../data/attacks/attacks.js";
+import { ExplotionsBombs } from "../data/extra/StaticAnimations.js";
 
 export class Entity {
   matrixX: number;
@@ -39,7 +38,7 @@ export class Entity {
   canShoot: boolean;
   addbyPlayer = false;
   explosion: ExplotionsBombs; // ExplotionsEffect |
-  proyoectile: Attack;
+  proyoectile: any;
   width: number;
   height: number;
   frameWidth = 70;

@@ -1,4 +1,4 @@
-import { Entity } from "../../player/entity";
+import { Entity } from "../../../entities/entity";
 import Attack from "../attacks";
 
 export class MegamanAttackBasic extends Attack {

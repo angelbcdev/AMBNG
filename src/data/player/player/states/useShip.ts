@@ -1,4 +1,4 @@
-import { FLOOR_MANAGER } from "@/scenes/battleScene/sources/floorManager";
+import { FLOOR_MANAGER } from "@/core/floorManager";
 import { PlayerState } from ".";
 import Player from "../Player";
 

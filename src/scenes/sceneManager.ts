@@ -16,7 +16,7 @@ export class SceneManager {
   canvas: HTMLCanvasElement;
   static instance: SceneManager | null = null;
 
-  currentSceneIndex = "world";
+  currentSceneIndex = "home";
   previousScene = "home";
   statesKeys = {
     home: "home",

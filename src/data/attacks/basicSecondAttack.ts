@@ -1,8 +1,7 @@
+import { Entity } from "../../entities/entity.js";
 import Attack from "./attacks.js";
 
-import { DashShoot } from "./dashShoot.js";
-
-class BasicMovedAttack extends Attack {
+export class BasicMovedAttack extends Attack {
   initialPosition = { x: 0, y: 0 };
   finalPosition = { x: 140, y: 0 };
   gravity = 9.8;
@@ -94,7 +93,7 @@ class BasicMovedAttack extends Attack {
     // }
   }
 }
-class BasicGiraMove extends Attack {
+export class BasicGiraMove extends Attack {
   initialPosition = { x: 0, y: 0 };
   finalPosition = { x: 140, y: 0 };
   gravity = 9.8;

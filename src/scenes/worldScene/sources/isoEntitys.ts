@@ -1,4 +1,4 @@
-import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState";
+import { GAME_IS_DEV } from "@/core/gameState";
 
 export class mySquare {
   left: number = 0;

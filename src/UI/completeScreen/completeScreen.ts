@@ -1,7 +1,7 @@
 import { InputState, inputStateKeys } from "@/input/inputManager";
 
 import { colorsCanvas, keyBindings } from "@/config/keyBindings";
-import { BATTLE_MANAGER } from "@/scenes/battleScene/sources/battleManager";
+import { BATTLE_MANAGER } from "@/core/battleManager";
 import { INPUT_MANAGER } from "@/input/inputManager";
 import { GAME } from "@/scenes/sceneManager";
 

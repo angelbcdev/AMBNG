@@ -1,4 +1,4 @@
-import { Entity } from "@/data/player/entity";
+import { Entity } from "@/entities/entity";
 import { FLOOR_MANAGER } from "./floorManager";
 import PlayerBlue from "@/data/player/player/Player";
 import { GAME_IS_PAUSE } from "./gameState";
@@ -143,6 +143,16 @@ class EntityManager {
 
   hasEnemys() {
     return this.npc.filter((_) => !_.addbyPlayer).length > 0;
+  }
+  addNewEffect({ effect, possition, sideToPlay, color, origin, damage }) {
+    const newEffect = new effect({
+      possition: possition,
+      sideToPlay: sideToPlay,
+      color: color,
+      origin: origin,
+      damage: damage,
+    });
+    this.effect.push(newEffect);
   }
 }
 

@@ -6,12 +6,12 @@ import {
   GAME_SET_UNPAUSE,
   GAME_IS_PAUSE,
 } from "./gameState";
-import { GAME } from "../../sceneManager";
-import { FLOOR_MANAGER } from "../sources/floorManager";
-import { ENTITY_MANAGER } from "../sources/entityManager";
+import { GAME } from "@/scenes/sceneManager";
+import { FLOOR_MANAGER } from "./floorManager";
+import { ENTITY_MANAGER } from "./entityManager";
 import { Mettols } from "@/data/enemys/Character/mettol/mettol";
-import { PauseMenu } from "../../../UI/menu/pauseMenu";
-import { ShowChipAreaWithChip } from "../../../UI/chipAreaSelect/chipAreaSelect";
+import { PauseMenu } from "../UI/menu/pauseMenu";
+import { ShowChipAreaWithChip } from "../UI/chipAreaSelect/chipAreaSelect";
 import { BattleUI } from "@/UI/battleUI/batleUi";
 import { BackGround } from "@/UI/backGround/backGroundShow";
 import { Dialogue } from "@/UI/dialoge/dialoge";
@@ -148,7 +148,7 @@ class BattleManager {
   showDialogue(c: CanvasRenderingContext2D, deltaTime: number) {
     this.dialogue.draw(c, deltaTime);
   }
-  update(deltaTime: number, c: CanvasRenderingContext2D) {
+  update(deltaTime: number, _: CanvasRenderingContext2D) {
     if (!this.isCompletedBarShip && this.timeForBattleStart == 0) {
       this.currentTimeForSelectShip += deltaTime;
       if (this.currentTimeForSelectShip >= this.timeForSelectShip) {

@@ -1,6 +1,7 @@
 import BeeTank from "../../enemys/Character/beeTank/beetank";
 import Attack from "../attacks";
 import { ExplotionsBombs } from "../../extra/StaticAnimations.js";
+import { Entity } from "@/entities/entity";
 
 export class BasicBomb extends Attack {
   initialPosition = { x: 0, y: 0 };
@@ -92,7 +93,7 @@ export class BasicBomb extends Attack {
           this.explosion = new ExplotionsBombs({
             possition: { x: this.possition.x + 30, y: this.possition.y + 10 },
             sideToPlay: this.sideToPlay,
-            game: this.game,
+            color: "red",
           });
         }
       }
@@ -149,9 +150,8 @@ export class BasicBomb extends Attack {
         } else {
           this.possition.y = this.finalPosition.y + 20;
           if (this.explosion == null) {
-            this.explosion = {
-              draw(_: CanvasRenderingContext2D, __: number) {},
-            };
+            this.explosion.draw = () => {};
+
             if (this.attackOuwner instanceof BeeTank) {
               this.attackOuwner.addMultiAttack(
                 this.possition.x + 30,

@@ -4,15 +4,15 @@ import SceneRoot from "../sceneROOT";
 // import { Mettols } from "@/data/enemys/Character/mettol/mettol";
 import { GAME } from "../sceneManager";
 
-import { ENTITY_MANAGER } from "./sources/entityManager";
+import { ENTITY_MANAGER } from "../../core/entityManager";
 import {
   INPUT_MANAGER,
   InputState,
   inputStateKeys,
 } from "@/input/inputManager";
 import { keyBindings } from "@/config/keyBindings";
-import { GAME_TOGGLE_DEV, GAME_TOGGLE_PAUSE } from "./sources/gameState";
-import { BATTLE_MANAGER } from "./sources/battleManager";
+import { GAME_TOGGLE_DEV, GAME_TOGGLE_PAUSE } from "../../core/gameState";
+import { BATTLE_MANAGER } from "../../core/battleManager";
 
 export class BattleScene extends SceneRoot {
   nameScene: InputState = inputStateKeys.BATTLE;

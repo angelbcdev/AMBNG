@@ -1,8 +1,5 @@
-import {
-  GAME_IS_DEV,
-  GAME_IS_PAUSE,
-} from "@/scenes/battleScene/sources/gameState";
-import { Entity } from "../player/entity";
+import { GAME_IS_DEV, GAME_IS_PAUSE } from "@/core/gameState";
+import { Entity } from "../../entities/entity";
 
 class Enemy extends Entity {
   canAttack = true;
@@ -11,12 +8,13 @@ class Enemy extends Entity {
 
   possitionShowLiveX = 0;
   possitionShowLiveY: number;
-  states = {
+  states: Record<string, number> = {
     idle: 0,
     moveDown: 0,
     moveUp: 0,
     attack: 1,
     hit: 0,
+    shoot: 0,
   };
 
   constructor({

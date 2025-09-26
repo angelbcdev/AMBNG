@@ -1,10 +1,10 @@
-import { ENTITY_MANAGER } from "@/scenes/battleScene/sources/entityManager";
+import { ENTITY_MANAGER } from "@/core/entityManager";
 
 import { StaticEnemy } from "../../staticEnemy";
 
 import { CannonDumpAttack } from "./cannonDumpAttacl";
 import Player from "@/data/player/player/Player";
-import { GAME_IS_PAUSE } from "@/scenes/battleScene/sources/gameState";
+import { GAME_IS_PAUSE } from "@/core/gameState";
 
 const levelsInfo = {
   1: {

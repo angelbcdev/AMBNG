@@ -1,7 +1,7 @@
 import { GAME } from "../sceneManager";
 import SceneRoot from "../sceneROOT";
 
-import { CHIPS_M } from "@/data/player/player/chips/chipsManager";
+import { CHIPS_MANAGER } from "@/core/chipsManager";
 
 import { BattleShip } from "@/data/player/player/chips/battleChip";
 import { keyBindings } from "@/config/keyBindings";
@@ -69,7 +69,7 @@ export class FolderScene extends SceneRoot {
 
   keySelectChip = () => {
     if (this.viewSack) {
-      CHIPS_M.addChipToFolder(this.moveToFolderID);
+      CHIPS_MANAGER.addChipToFolder(this.moveToFolderID);
     } else {
       if (this.globalFolderIndex - 1 > 0) {
         this.globalFolderIndex -= 1;
@@ -77,15 +77,16 @@ export class FolderScene extends SceneRoot {
       this.folderIndex = this.folderIndex - 1 > 0 ? this.folderIndex - 1 : 0;
       this.sliceIndexFolder =
         this.sliceIndexFolder - 1 > 0 ? this.sliceIndexFolder - 1 : 0;
-      CHIPS_M.removeChipFromFolder(this.removeFolderID);
-      this.removeFolderID = CHIPS_M.chipsFolder[this.folderIndex].idForMove;
+      CHIPS_MANAGER.removeChipFromFolder(this.removeFolderID);
+      this.removeFolderID =
+        CHIPS_MANAGER.chipsFolder[this.folderIndex].idForMove;
     }
   };
   upIndex = () => {
     if (this.viewSack) {
       this.updateNavigationUp({
         globalIndex: this.globalSackIndex,
-        allChips: CHIPS_M.chipsSack,
+        allChips: CHIPS_MANAGER.chipsSack,
         moveId: (id: string) => {
           this.moveToFolderID = id;
         },
@@ -105,7 +106,7 @@ export class FolderScene extends SceneRoot {
     } else {
       this.updateNavigationUp({
         globalIndex: this.globalFolderIndex,
-        allChips: CHIPS_M.chipsFolder,
+        allChips: CHIPS_MANAGER.chipsFolder,
         moveId: (id: string) => {
           this.removeFolderID = id;
         },
@@ -128,7 +129,7 @@ export class FolderScene extends SceneRoot {
     if (this.viewSack) {
       this.updateNavigationDown({
         globalIndex: this.globalSackIndex,
-        allChips: CHIPS_M.chipsSack,
+        allChips: CHIPS_MANAGER.chipsSack,
         moveId: (id: string) => {
           this.moveToFolderID = id;
         },
@@ -148,7 +149,7 @@ export class FolderScene extends SceneRoot {
     } else {
       this.updateNavigationDown({
         globalIndex: this.globalFolderIndex,
-        allChips: CHIPS_M.chipsFolder,
+        allChips: CHIPS_MANAGER.chipsFolder,
         moveId: (id: string) => {
           this.removeFolderID = id;
         },
@@ -286,7 +287,7 @@ export class FolderScene extends SceneRoot {
       xGreenArronws: 190,
       xtextNameChips: 223,
       xBigImage: 50,
-      chipsToShow: CHIPS_M.chipsFolder,
+      chipsToShow: CHIPS_MANAGER.chipsFolder,
     });
     //TODO: sacks chips
     this.drawChipsCategory({
@@ -297,7 +298,7 @@ export class FolderScene extends SceneRoot {
       xGreenArronws: 450,
       xtextNameChips: 480,
       xBigImage: 730,
-      chipsToShow: CHIPS_M.chipsSack, //CHIPS_M.randomChip,
+      chipsToShow: CHIPS_MANAGER.chipsSack, //CHIPS_MANAGER.randomChip,
     });
     c.restore();
   }
@@ -351,8 +352,8 @@ export class FolderScene extends SceneRoot {
   }
 
   in() {
-    this.moveToFolderID = CHIPS_M.chipsSack[0].id;
-    this.removeFolderID = CHIPS_M.chipsFolder[0]?.idForMove || "N/A";
+    this.moveToFolderID = CHIPS_MANAGER.chipsSack[0].id;
+    this.removeFolderID = CHIPS_MANAGER.chipsFolder[0]?.idForMove || "N/A";
   }
   out() {
     this.viewSack = false;

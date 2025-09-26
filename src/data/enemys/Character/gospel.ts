@@ -1,7 +1,8 @@
+import { Entity } from "@/entities/entity.js";
 import { FireShoot } from "../../attacks/fireShoot.js";
 import { StaticEnemy } from "../staticEnemy.js";
 
-import { Nodo } from "../../master.js";
+import { ENTITY_MANAGER } from "@/core/entityManager.js";
 
 export class GospelWolfEnemy extends StaticEnemy {
   timeForChangeWorld: any;
@@ -33,7 +34,7 @@ export class GospelWolfEnemy extends StaticEnemy {
       open: 2,
       close: 2,
     };
-    this.proyoectile = FireShoot;
+    this.proyoectile = FireShoot as any;
     this.frameY = this.states.idle;
     this.timeToDie = 8000;
 
@@ -77,7 +78,7 @@ export class GospelWolfEnemy extends StaticEnemy {
     if (!this.goingToShoot) {
       this.goingToShoot = true;
       this.frameY = this.states.shoot;
-      let margin = { start: 1500, end: 600 };
+      const margin = { start: 1500, end: 600 };
 
       const randomNumber =
         Math.floor(Math.random() * (margin.start - margin.end + 1)) +
@@ -113,7 +114,7 @@ export class GospelWolfEnemy extends StaticEnemy {
   //   }
   // }
 
-  collisionArea(player: Nodo) {
+  collisionArea(player: Entity) {
     if (this.side === player.side) {
       return;
     }
@@ -145,7 +146,7 @@ export class GospelWolfEnemy extends StaticEnemy {
       const randomY =
         variationsY[Math.floor(Math.random() * variationsY.length)];
 
-      this.game.addNewEffect({
+      ENTITY_MANAGER.addNewEffect({
         effect: proyoectile,
         possition: {
           x: sideToPlay ? position.x - 140 : position.x + 170, // Calcula la posición X dependiendo del lado
@@ -159,7 +160,7 @@ export class GospelWolfEnemy extends StaticEnemy {
       });
     }
   }
-  onDetectedPlayer(player) {
+  onDetectedPlayer(player: Entity) {
     if (this.side === player.side || this.delete || !this.canMove) {
       return;
     }

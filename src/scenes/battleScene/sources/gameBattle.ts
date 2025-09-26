@@ -1,8 +1,12 @@
-import { FLOOR_MANAGER } from "./floorManager";
-import { GAME } from "../../sceneManager";
-import { ENTITY_MANAGER } from "./entityManager";
-import { GAME_IS_BATTLE, GAME_SET_PAUSE, GAME_SET_UNBATTLE } from "./gameState";
-import { BATTLE_MANAGER } from "./battleManager";
+import { FLOOR_MANAGER } from "@/core/floorManager";
+import { GAME } from "@/scenes/sceneManager";
+import { ENTITY_MANAGER } from "@/core/entityManager";
+import {
+  GAME_IS_BATTLE,
+  GAME_SET_PAUSE,
+  GAME_SET_UNBATTLE,
+} from "@/core/gameState";
+import { BATTLE_MANAGER } from "@/core/battleManager";
 
 export class BatleGame {
   tembleCanvas = 0;
@@ -50,7 +54,7 @@ export class BatleGame {
     FLOOR_MANAGER.drawFloors(c, deltaTime, ENTITY_MANAGER.effect);
 
     // draw entities and effects per row
-    FLOOR_MANAGER.matrix.forEach((_, indexY) => {
+    FLOOR_MANAGER.matrix?.forEach((_, indexY) => {
       ENTITY_MANAGER.levelToPaint(c, deltaTime, indexY);
       ENTITY_MANAGER.levelToPaintAttack(c, deltaTime, indexY);
     });
@@ -96,7 +100,7 @@ export class BatleGame {
     FLOOR_MANAGER.updateFloors(c, deltaTime);
   }
 
-  checkClick(mouseX: number, mouseY: number) {
+  checkClick(_: number, __: number) {
     // this.gameUI.checkClick(mouseX, mouseY);
   }
 }

@@ -1,4 +1,4 @@
-import { GAME_IS_DEV } from "@/scenes/battleScene/sources/gameState";
+import { GAME_IS_DEV } from "@/core/gameState";
 import Attack from "./attacks";
 
 export class StaticAttack extends Attack {
