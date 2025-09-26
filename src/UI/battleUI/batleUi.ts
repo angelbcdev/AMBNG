@@ -162,33 +162,7 @@ export class BattleUI {
     );
     c.restore();
   }
-  checkClick(mouseX: number, mouseY: number) {
-    //   const result = botton.checkClick(mouseX, mouseY);
-    //   if (result && !isPress) {
-    //     switch (result) {
-    //       case "Chips":
-    //         // this.game.showAreaSelecteShip();
-    //         this.chipSelected.showArea();
-    //         break;
-    //       case "ADD Enemy":
-    //         isPress = true;
-    //         const randomeEnemy =
-    //           allEnemies[Math.floor(Math.random() * allEnemies.length)];
-    //         const randomPosition = {
-    //           x: Math.floor(Math.random() * 2),
-    //           y: Math.floor(Math.random() * 2),
-    //         };
-    //         const randomLevel = Math.floor(Math.random() * 3);
-    //         this.game.addNewEnemy({
-    //           newEnemy: randomeEnemy,
-    //           position: randomPosition,
-    //           level: randomLevel,
-    //         });
-    //         break;
-    //     }
-    //   }
-    // });
-  }
+  checkClick(mouseX: number, mouseY: number) {}
   drawLivePlayer(c: CanvasRenderingContext2D) {
     const x = this.position.x - 70;
     const y = this.position.y + 25;
@@ -203,6 +177,7 @@ export class BattleUI {
     c.fillRect(x, y, w, h);
     c.fillStyle = "blue";
 
+    //*PAIN CURRENT LIVE OF PLAYER
     this.showText(c, ENTITY_MANAGER.player.live, {
       x: x + 30,
       y: y + 16,

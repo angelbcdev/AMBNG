@@ -1,7 +1,7 @@
 import { FLOOR_MANAGER } from "./floorManager";
 import { GAME } from "../../sceneManager";
 import { ENTITY_MANAGER } from "./entityManager";
-import { GAME_IS_BATTLE, GAME_SET_PAUSE } from "./gameState";
+import { GAME_IS_BATTLE, GAME_SET_PAUSE, GAME_SET_UNBATTLE } from "./gameState";
 import { BATTLE_MANAGER } from "./battleManager";
 
 export class BatleGame {
@@ -77,7 +77,8 @@ export class BatleGame {
     if (!ENTITY_MANAGER.hasEnemys()) {
       //* this.gameUI.clearStateImg(c, deltaTime, this.totalTimeInBattle);
       if (GAME_IS_BATTLE()) {
-        BATTLE_MANAGER.outBattle();
+        GAME_SET_UNBATTLE();
+        BATTLE_MANAGER.completeScreen.showScreen();
       }
     } else {
       if (this.timeInBattle > 1000) {
@@ -87,6 +88,7 @@ export class BatleGame {
         this.timeInBattle += deltaTime;
       }
       if (!ENTITY_MANAGER.playerIsLive()) {
+        //* IS DEATH
         GAME.changeScene(GAME.statesKeys.home);
       }
     }

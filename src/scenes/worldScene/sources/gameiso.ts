@@ -207,7 +207,28 @@ export class GameIso {
     BATTLE_MANAGER.draw(ctx, deltaTime);
     // Debug last key pressed
     ctx.fillStyle = "#fff";
-    ctx.fillText(this.data_world_maps[this.currentMap].name, 4, 20);
+    //*PAINT MAP NAME
+    this.painLevelName(ctx, 0, 20);
+  }
+  painLevelName(c: CanvasRenderingContext2D, x: number, y: number) {
+    // c.fillStyle = "#fff";
+    // c.fillRect(x, y, 162, 33);
+    c.fillStyle = "#000";
+    c.textAlign = "right";
+    c.font = `20px Arial`;
+    c.fillText(
+      ` ${this.data_world_maps[this.currentMap].name}  `,
+      x + 81,
+      y + 26
+    );
+    c.fillStyle = "#fff";
+    c.textAlign = "right";
+    c.font = `20px Arial`;
+    c.fillText(
+      ` ${this.data_world_maps[this.currentMap].name}  `,
+      x + 80,
+      y + 24
+    );
   }
   fillIsoMap(ctx: CanvasRenderingContext2D) {
     this.wall

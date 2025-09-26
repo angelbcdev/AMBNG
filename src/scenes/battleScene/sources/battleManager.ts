@@ -15,21 +15,22 @@ import { ShowChipAreaWithChip } from "../../../UI/chipAreaSelect/chipAreaSelect"
 import { BattleUI } from "@/UI/battleUI/batleUi";
 import { BackGround } from "@/UI/backGround/backGroundShow";
 import { Dialogue } from "@/UI/dialoge/dialoge";
+import { CompleteScreen } from "@/UI/completeScreen/completeScreen";
+import gameSettings from "@/config/gameSettings";
 
 class BattleManager {
   static instance: BattleManager;
-
   menuScreen = new PauseMenu();
   chipAreaSelect = new ShowChipAreaWithChip();
   battleUI = new BattleUI();
   bg = new BackGround(3);
   dialogue = new Dialogue();
+  completeScreen = new CompleteScreen();
   isCompletedBarShip = false;
   currentTimeForSelectShip = 0;
-  timeForSelectShip = 2000;
+  timeForSelectShip = gameSettings.timeForSelectShip;
   localIsBattle = false;
   timeForBattleStart = 2;
-
   flashBarTime = 0;
 
   sizeBar = 256;
@@ -102,7 +103,7 @@ class BattleManager {
     GAME_SET_UNBATTLE();
     GAME_SET_UNPAUSE();
     setTimeout(() => {
-      GAME.changeScene(GAME.statesKeys.world);
+      // GAME.changeScene(GAME.statesKeys.world);
       FLOOR_MANAGER.matrix = null;
       // ENTITY_MANAGER.player = null;
       FLOOR_MANAGER.floors = [];
@@ -115,7 +116,6 @@ class BattleManager {
     this.update(deltaTime, c);
 
     this.menuScreen.draw(c, deltaTime);
-    this.showMessage(c, "Battle UI", 150);
 
     if (this.localIsBattle) {
       this.showMessage(c, "BATTLE START", 50);
@@ -138,6 +138,7 @@ class BattleManager {
 
     this.showDialogue(c, deltaTime);
     this.fillBar(c);
+    this.completeScreen.draw(c, deltaTime);
   }
 
   showMessage(c: CanvasRenderingContext2D, message: string, head: number) {

@@ -47,7 +47,6 @@ export class BattleScene extends SceneRoot {
       onKeyUp: (e: KeyboardEvent) => {
         ENTITY_MANAGER.player.handleKeyUp(e);
       },
-      // onKeyUp
     });
   }
   in() {

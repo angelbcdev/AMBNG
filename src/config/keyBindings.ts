@@ -5,3 +5,8 @@ export const keyBindings = {
   showDialogue: "q",
   openPauseMenu: "enter",
 };
+
+export const colorsCanvas = {
+  background: "#fdfddf",
+  textColor: "#484848",
+};
