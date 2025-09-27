@@ -1,6 +1,8 @@
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetSources";
 export const mapDetails = [
   {
-    img: "/assects/background/bgfull0.png",
+    assetKey: "bg:full:0",
     width: 240,
     height: 159,
     maxFrame: 11,
@@ -11,7 +13,7 @@ export const mapDetails = [
     moveX: false,
   },
   {
-    img: "/assects/background/bgfull1.png",
+    assetKey: "bg:full:1",
     width: 255,
     height: 255,
     maxFrame: 3,
@@ -23,7 +25,7 @@ export const mapDetails = [
     moveX: true,
   },
   {
-    img: "/assects/background/bgfull2.png",
+    assetKey: "bg:full:2",
     width: 508,
     height: 511,
     maxFrame: 5,
@@ -35,7 +37,7 @@ export const mapDetails = [
     moveX: true,
   },
   {
-    img: "/assects/background/bgfull3.png",
+    assetKey: "bg:full:3",
     width: 128,
     height: 192,
     maxFrame: 24,
@@ -47,7 +49,7 @@ export const mapDetails = [
     moveX: true,
   },
   {
-    img: "/assects/background/bgfull4.png",
+    assetKey: "bg:full:4",
     width: 264,
     height: 264,
     maxFrame: 3,
@@ -59,7 +61,7 @@ export const mapDetails = [
     moveX: true,
   },
   {
-    img: "/assects/background/bgfull5.png",
+    assetKey: "bg:full:5",
     width: 240,
     height: 160,
     maxFrame: 15,
@@ -71,7 +73,7 @@ export const mapDetails = [
     moveX: false,
   },
   {
-    img: "/assects/background/bgfull6.png",
+    assetKey: "bg:full:6",
     width: 238,
     height: 157,
     maxFrame: 11,
@@ -102,9 +104,22 @@ export class BackGround {
   moveX = true;
   canMove = true;
 
+  private resolveImageByKey(key: string): HTMLImageElement {
+    // Prefer preloaded image from manager when available
+    if (ASSET_MANAGER.has(key)) {
+      return ASSET_MANAGER.get(key);
+    }
+    // Fallback: use URL from manifest to construct an Image immediately
+    const def = (ASSET_SOURCES.background || []).find((d) => d.key === key);
+    const img = new Image();
+    if (def) {
+      img.src = def.url;
+    }
+    return img;
+  }
+
   constructor(mapa = 0) {
-    this.img = new Image();
-    this.img.src = mapDetails[mapa].img;
+    this.img = this.resolveImageByKey(mapDetails[mapa].assetKey);
     this.moveY = mapDetails[mapa].moveY;
     this.moveX = mapDetails[mapa].moveX;
 
@@ -125,7 +140,7 @@ export class BackGround {
   }
   updateBackGround(newMapa: number) {
     this.mapa = newMapa;
-    this.img.src = mapDetails[newMapa].img;
+    this.img = this.resolveImageByKey(mapDetails[newMapa].assetKey);
     this.frameInterval = mapDetails[newMapa].fps;
     this.maxFrame = mapDetails[newMapa].maxFrame;
     this.initialFrameX = 0;

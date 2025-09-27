@@ -1,7 +1,7 @@
 import { EnemyZone, mySquare, WalkPath, Wall } from "./isoEntitys";
 import { PlayerIso } from "./isPlayer";
 import { testWorld } from "./utils";
-import { BackGround } from "@/UI/backGround/backGroundShow";
+import { BackGround, mapDetails } from "@/UI/backGround/backGroundShow";
 import {
   GAME_IS_BATTLE,
   GAME_IS_PAUSE,

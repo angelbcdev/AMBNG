@@ -68,6 +68,7 @@ const animage2 = () => {
 
 // Bootstrap: register manifest and preload before starting loops
 ASSET_MANAGER.registerManifest(ASSET_SOURCES);
+console.log("ASSET_MANAGER", ASSET_MANAGER);
 
 const drawLoading = (loaded: number, total: number) => {
   const w = canvas.width - 40;

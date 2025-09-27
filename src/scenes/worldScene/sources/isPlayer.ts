@@ -47,7 +47,7 @@ export class PlayerIso extends mySquare {
 
   constructor(x: number, y: number, width: number, height: number) {
     super(x, y, width / 3, height / 3);
-    this.image.src = "/assects/megaman/ sprite_mega_world.png";
+    this.image.src = "/assects/megaman/sprite_mega_world.png";
   }
 
   update(deltaTime: number) {
