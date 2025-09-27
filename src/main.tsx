@@ -8,6 +8,8 @@ import "./index.css";
 import { GAME } from "@/scenes/sceneManager";
 
 import { BATTLE_MANAGER } from "./core/battleManager";
+import { ASSET_MANAGER } from "./core/assetManager";
+import { ASSET_SOURCES } from "./core/assetSources";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -25,8 +27,6 @@ const animage = (timeStap: number) => {
   requestAnimationFrame(animage);
 };
 
-animage(0);
-
 const canvas2 = document.getElementById("canvas2") as HTMLCanvasElement;
 const c2 = canvas2.getContext("2d")!;
 canvas2.width = 430;
@@ -36,20 +36,6 @@ const animage2 = () => {
   c2.clearRect(0, 0, canvas2.width, canvas2.height);
   c2.fillStyle = "white";
   c2.fillRect(0, 0, canvas2.width, canvas2.height);
-  // print matrix
-
-  // if (FLOOR_MANAGER.matrix) {
-  //   FLOOR_MANAGER.matrix.forEach((row, indexY) => {
-  //     row.forEach((floor, indexX) => {
-  //       c2.fillStyle = floor.ocupated ? "blue" : "red";
-  //       c2.fillRect(indexX * 51, indexY * 51, 50, 50);
-  //     });
-  //   });
-  // }
-  //  print floors
-  // FLOOR_MANAGER.floors.forEach((floor) => {
-  //   floor.draw(c2, 16.66);
-  // });
 
   BATTLE_MANAGER.chipAreaSelect.availableChip.forEach((chip, index) => {
     const colSize = 5; // how many chips per row
@@ -79,7 +65,31 @@ const animage2 = () => {
 
   requestAnimationFrame(animage2);
 };
-animage2();
+
+// Bootstrap: register manifest and preload before starting loops
+ASSET_MANAGER.registerManifest(ASSET_SOURCES);
+
+const drawLoading = (loaded: number, total: number) => {
+  const w = canvas.width - 40;
+  const x = 20;
+  const y = canvas.height / 2 - 10;
+  const progress = total > 0 ? loaded / total : 0;
+  c.clearRect(0, 0, canvas.width, canvas.height);
+  c.fillStyle = "#222";
+  c.fillRect(x, y, w, 20);
+  c.fillStyle = "#4ade80"; // green
+  c.fillRect(x, y, w * progress, 20);
+  c.fillStyle = "#fff";
+  c.font = "14px Arial";
+  c.fillText(`Loading ${loaded}/${total}`, x, y + 40);
+};
+
+(async () => {
+  await ASSET_MANAGER.preloadAll(drawLoading);
+  // Start loops when ready
+  requestAnimationFrame(animage);
+  requestAnimationFrame(animage2);
+})();
 
 // document.getElementById("canvas").addEventListener("click", (e) => {
 //   const rect = canvas.getBoundingClientRect();
