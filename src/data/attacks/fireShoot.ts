@@ -1,4 +1,6 @@
 import Attack from "./attacks";
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
 
 export class FireShoot extends Attack {
   constructor(data) {
@@ -23,7 +25,14 @@ export class FireShoot extends Attack {
     this.isToLeft = data.sideToPlay ? "left" : "right";
     this.delete = false;
     this.speed = 1;
-    this.image.src = `../../assects/attaks/fireShoot.png`;
+    {
+      const key = "attack:fireShoot";
+      if (ASSET_MANAGER.has(key)) this.image = ASSET_MANAGER.get(key);
+      else {
+        const def = (ASSET_SOURCES.attacks || []).find((d) => d.key === key);
+        if (def) this.image.src = def.url;
+      }
+    }
     this.drawxStings = {
       xl: 50,
       rl: 10,

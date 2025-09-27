@@ -1,4 +1,6 @@
 import { GAME_IS_DEV } from "@/core/gameState";
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
 
 class StaticAnimations {
   possition: { x: number; y: number };
@@ -63,7 +65,10 @@ class StaticAnimations {
     this.drawSprite(c);
   }
 
-  draw(_: CanvasRenderingContext2D, __: number) {}
+  draw(c: CanvasRenderingContext2D, deltaTime: number) {
+    void c;
+    void deltaTime;
+  }
 
   drawSprite(c: CanvasRenderingContext2D) {
     c.save(); // Guardar el estado actual del contexto
@@ -106,7 +111,14 @@ export class BasicShoot extends StaticAnimations {
       h: 30,
       w: 33,
     };
-    this.image.src = `assects/basicShoot.png`;
+    {
+      const key = "attack:basicShootEffect";
+      if (ASSET_MANAGER.has(key)) this.image = ASSET_MANAGER.get(key);
+      else {
+        const def = (ASSET_SOURCES.attacks || []).find((d) => d.key === key);
+        if (def) this.image.src = def.url;
+      }
+    }
   }
 }
 
@@ -120,7 +132,14 @@ export class ExplotionsEffect extends StaticAnimations {
       h: 100,
       w: 100,
     };
-    this.image.src = `../../assects/attaks/explotion1.png`;
+    {
+      const key = "attack:explosion1";
+      if (ASSET_MANAGER.has(key)) this.image = ASSET_MANAGER.get(key);
+      else {
+        const def = (ASSET_SOURCES.attacks || []).find((d) => d.key === key);
+        if (def) this.image.src = def.url;
+      }
+    }
     this.possitionYLimit = this.possition.y - 10;
     this.possitionYstart = this.possition.y;
   }
@@ -200,7 +219,14 @@ export class ExplotionsBombs extends StaticAnimations {
       h: 50,
       w: 70,
     };
-    this.image.src = `../../assects/attaks/explotionboomb.png`;
+    {
+      const key = "attack:explosionBomb";
+      if (ASSET_MANAGER.has(key)) this.image = ASSET_MANAGER.get(key);
+      else {
+        const def = (ASSET_SOURCES.attacks || []).find((d) => d.key === key);
+        if (def) this.image.src = def.url;
+      }
+    }
   }
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
     if (this.frameTime > this.frameInterval) {

@@ -1,5 +1,7 @@
 import { Entity } from "../../entities/entity.js";
 import Attack from "./attacks.js";
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetshandler/assetSources.js";
 
 export class BasicMovedAttack extends Attack {
   initialPosition = { x: 0, y: 0 };
@@ -30,7 +32,14 @@ export class BasicMovedAttack extends Attack {
     this.delete = false;
     this.speed = 0.5;
     this.maxFrame = 7;
-    this.image.src = `/assects/attaks/boomb.png`;
+    {
+      const key = "attack:boomb";
+      if (ASSET_MANAGER.has(key)) this.image = ASSET_MANAGER.get(key);
+      else {
+        const def = (ASSET_SOURCES.attacks || []).find((d) => d.key === key);
+        if (def) this.image.src = def.url;
+      }
+    }
     this.frameAjustY = 20;
     this.frameAjustX = 20;
     this.heightSprite = 64;
@@ -122,7 +131,14 @@ export class BasicGiraMove extends Attack {
     this.delete = false;
     this.speed = 5;
     this.maxFrame = 7;
-    this.image.src = `/assects/attaks/boomb.png`;
+    {
+      const key = "attack:boomb";
+      if (ASSET_MANAGER.has(key)) this.image = ASSET_MANAGER.get(key);
+      else {
+        const def = (ASSET_SOURCES.attacks || []).find((d) => d.key === key);
+        if (def) this.image.src = def.url;
+      }
+    }
     this.frameAjustY = 20;
     this.frameAjustX = 20;
     this.heightSprite = 64;

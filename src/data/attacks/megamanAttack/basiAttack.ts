@@ -1,4 +1,6 @@
 import Attack from "../attacks";
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
 
 export class BasicAttack extends Attack {
   constructor(data: any) {
@@ -11,7 +13,14 @@ export class BasicAttack extends Attack {
 
     this.delete = false;
     this.speed = 0.5;
-    this.image.src = `/assects/attaks/basibulet.png`;
+    {
+      const key = "attack:basicBullet";
+      if (ASSET_MANAGER.has(key)) this.image = ASSET_MANAGER.get(key);
+      else {
+        const def = (ASSET_SOURCES.attacks || []).find((d) => d.key === key);
+        if (def) this.image.src = def.url;
+      }
+    }
     this.frameAjustY = 10;
     this.frameAjustX = 10;
     this.heightSprite = 40;

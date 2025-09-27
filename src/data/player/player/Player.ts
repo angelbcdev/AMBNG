@@ -19,7 +19,7 @@ import { ShieldState } from "./states/shieldState.ts";
 import { ShootState } from "./states/shootState.ts";
 import { UseShip } from "./states/useShip.ts";
 import { ASSET_MANAGER } from "@/core/assetManager";
-import { ASSET_SOURCES } from "@/core/assetSources";
+import { ASSET_SOURCES } from "@/core/assetshandler/assetSources.ts";
 
 export class Player extends Entity {
   state: number;

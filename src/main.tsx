@@ -9,7 +9,7 @@ import { GAME } from "@/scenes/sceneManager";
 
 import { BATTLE_MANAGER } from "./core/battleManager";
 import { ASSET_MANAGER } from "./core/assetManager";
-import { ASSET_SOURCES } from "./core/assetSources";
+import { ASSET_SOURCES } from "./core/assetshandler/assetSources";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -76,20 +76,23 @@ const drawLoading = (loaded: number, total: number) => {
   const y = canvas.height / 2 - 10;
   const progress = total > 0 ? loaded / total : 0;
   c.clearRect(0, 0, canvas.width, canvas.height);
+  c.fillStyle = "white";
+  c.font = "24px Arial";
+  c.fillText("Another Megaman BT fan game", x + 20, y - 50);
   c.fillStyle = "#222";
   c.fillRect(x, y, w, 20);
   c.fillStyle = "#4ade80"; // green
   c.fillRect(x, y, w * progress, 20);
   c.fillStyle = "#fff";
   c.font = "14px Arial";
-  c.fillText(`Loading ${loaded}/${total}`, x, y + 40);
+  c.fillText(`Loading assets ${loaded}/${total}`, x + 130, y + 70);
 };
 
 (async () => {
   await ASSET_MANAGER.preloadAll(drawLoading);
   // Start loops when ready
-  requestAnimationFrame(animage);
-  requestAnimationFrame(animage2);
+  // requestAnimationFrame(animage);
+  // requestAnimationFrame(animage2);
 })();
 
 // document.getElementById("canvas").addEventListener("click", (e) => {

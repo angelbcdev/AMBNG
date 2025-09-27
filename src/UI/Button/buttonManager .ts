@@ -1,4 +1,5 @@
 import { keyBindings } from "@/config/keyBindings";
+import { getImageFromAssetsManager } from "@/core/assetshandler/assetHelpers";
 
 export class ButtonManager {
   arrowImage = new Image();
@@ -24,7 +25,8 @@ export class ButtonManager {
       height?: number;
     }[]
   ) {
-    this.arrowImage.src = "./public/assects/UI/GreenArrow.png";
+    // Resolve arrow image even if assets haven't been preloaded yet
+    this.arrowImage = getImageFromAssetsManager("ui:arrowGreen");
     this.buttons = configs.map((cfg) => ({
       position: cfg.position,
       title: cfg.title,

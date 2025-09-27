@@ -1,7 +1,7 @@
 import { keyBindings } from "@/config/keyBindings";
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 import { ASSET_MANAGER } from "@/core/assetManager";
-import { ASSET_SOURCES } from "@/core/assetSources";
+import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
 
 export class Dialogue {
   nameScene = inputStateKeys.DIALOGUE;
@@ -161,7 +161,7 @@ export class Dialogue {
     }
   }
 
-  update(deltaTime: number) {
+  update(_: number) {
     if (!this.canTalk) return;
 
     if (this.timeforCharacter > this.maxTimeforCharacter) {

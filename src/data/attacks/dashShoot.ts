@@ -1,5 +1,7 @@
 import { FLOOR_MANAGER } from "@/core/floorManager";
 import Attack from "./attacks";
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
 
 export class DashShoot extends Attack {
   isPlayer: boolean;
@@ -33,7 +35,14 @@ export class DashShoot extends Attack {
     };
     this.delete = false;
     this.speed = 0.15;
-    this.image.src = `../../assects/attaks/dashShoot2.png`;
+    {
+      const key = "attack:dashShoot2";
+      if (ASSET_MANAGER.has(key)) this.image = ASSET_MANAGER.get(key);
+      else {
+        const def = (ASSET_SOURCES.attacks || []).find((d) => d.key === key);
+        if (def) this.image.src = def.url;
+      }
+    }
     this.drawxStings = {
       xl: 50,
       rl: 40,

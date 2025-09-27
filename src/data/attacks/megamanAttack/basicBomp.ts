@@ -2,6 +2,8 @@ import BeeTank from "../../enemys/Character/beeTank/beetank";
 import Attack from "../attacks";
 import { ExplotionsBombs } from "../../extra/StaticAnimations.js";
 import { Entity } from "@/entities/entity";
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetshandler/assetSources.js";
 
 export class BasicBomb extends Attack {
   initialPosition = { x: 0, y: 0 };
@@ -55,7 +57,14 @@ export class BasicBomb extends Attack {
     this.delete = false;
     this.speed = 2.2;
     this.maxFrame = 7;
-    this.image.src = `/assects/attaks/boomb.png`;
+    {
+      const key = "attack:boomb";
+      if (ASSET_MANAGER.has(key)) this.image = ASSET_MANAGER.get(key);
+      else {
+        const def = (ASSET_SOURCES.attacks || []).find((d) => d.key === key);
+        if (def) this.image.src = def.url;
+      }
+    }
     this.frameAjustY = 10;
     this.frameAjustX = 20;
     this.heightSprite = 30;

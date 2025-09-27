@@ -2,7 +2,7 @@ export interface InputHandler {
   onKeyDown: (event: KeyboardEvent) => void;
   onKeyUp?: (event: KeyboardEvent) => void;
 }
-// nameScene = inputStateKeys.WORLD_SCENE;
+// nameInputScene = inputStateKeys.WORLD_SCENE;
 export type InputState =
   | "OPTION_SCENE"
   | "HOME_SCENE"

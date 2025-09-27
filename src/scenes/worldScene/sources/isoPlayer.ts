@@ -2,7 +2,7 @@ import { keyBindings } from "@/config/keyBindings";
 import { mySquare } from "./isoEntitys";
 import { GAME_IS_DEV } from "@/core/gameState";
 import { ASSET_MANAGER } from "@/core/assetManager";
-import { ASSET_SOURCES } from "@/core/assetSources";
+import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
 
 export class PlayerIso extends mySquare {
   color: string = "#fff000";

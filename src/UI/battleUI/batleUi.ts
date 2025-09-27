@@ -5,18 +5,9 @@ import { keyBindings } from "@/config/keyBindings";
 import { GAME } from "@/scenes/sceneManager";
 
 import { ENTITY_MANAGER } from "@/core/entityManager";
-import { ASSET_MANAGER } from "@/core/assetManager";
-import { ASSET_SOURCES } from "@/core/assetSources";
+import { getImageFromAssetsManager } from "@/core/assetshandler/assetHelpers";
 
 // import { Dialogue } from "./dialoque";
-
-const resolveUI = (key: string): HTMLImageElement => {
-  if (ASSET_MANAGER.has(key)) return ASSET_MANAGER.get(key);
-  const def = (ASSET_SOURCES.ui || []).find((d) => d.key === key);
-  const img = new Image();
-  if (def) img.src = def.url;
-  return img;
-};
 
 export class BattleUI {
   img = new Image();
@@ -43,12 +34,12 @@ export class BattleUI {
   clearImagePosition = { x: 5, y: 50 };
 
   constructor() {
-    this.img = resolveUI("ui:barWait");
+    this.img = getImageFromAssetsManager("ui:barWait");
     this.position = {
       x: 90,
       y: -10,
     };
-    this.clearImage = resolveUI("ui:clearBattle");
+    this.clearImage = getImageFromAssetsManager("ui:clearBattle");
     this.clearImagePosition = { x: -this.clearImageViewPort, y: 50 };
   }
   clearStateImg(

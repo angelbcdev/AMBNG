@@ -1,8 +1,10 @@
-import { AssetManifest } from "./assetManager";
+import { AssetManifest } from "../assetManager";
 
 // Single entry point for all images used by the app.
 // Extend and keep in sync as you add new art.
 // Root path for all asset URLs (change here to move asset base path)
+
+//public/assects/block.png
 export const URLROOT = "/assects";
 export const ASSET_SOURCES: AssetManifest = {
   // UI and HUD elements
@@ -16,7 +18,10 @@ export const ASSET_SOURCES: AssetManifest = {
     { key: "ui:arrowBlackUp", url: `${URLROOT}/UI/BlackArrowup.png` },
     { key: "ui:arrowBlackDown", url: `${URLROOT}/UI/BlackArrowdown.png` },
     // Chip selection UI pieces
-    { key: "ui:chipSelectorBase", url: `${URLROOT}/selectedchip/chipSelector.png` },
+    {
+      key: "ui:chipSelectorBase",
+      url: `${URLROOT}/selectedchip/chipSelector.png`,
+    },
     { key: "ui:logoRoll", url: `${URLROOT}/selectedchip/logoRoll.png` },
     { key: "ui:addButton", url: `${URLROOT}/selectedchip/addButon.png` },
     { key: "ui:selectedChip", url: `${URLROOT}/selectedchip/selectedChip.png` },
@@ -100,6 +105,13 @@ export const ASSET_SOURCES: AssetManifest = {
       key: "attack:explosionBomb",
       url: `${URLROOT}/attaks/explotionboomb.png`,
     },
+    // projectiles used by attacks
+    { key: "attack:boomb", url: `${URLROOT}/attaks/boomb.png` },
+    { key: "attack:basicBullet", url: `${URLROOT}/attaks/basibulet.png` },
+    { key: "attack:fireShoot", url: `${URLROOT}/attaks/fireShoot.png` },
+    { key: "attack:dashShoot2", url: `${URLROOT}/attaks/dashShoot2.png` },
+    // static effects used by attacks
+    { key: "attack:basicShootEffect", url: `${URLROOT}/basicShoot.png` },
   ],
 
   // Battle chip icons (from chipData)

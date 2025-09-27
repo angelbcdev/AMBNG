@@ -1,5 +1,5 @@
 import { ASSET_MANAGER } from "@/core/assetManager";
-import { ASSET_SOURCES } from "@/core/assetSources";
+import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
 export const mapDetails = [
   {
     assetKey: "bg:0",
