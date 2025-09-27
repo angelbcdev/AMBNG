@@ -1,5 +1,7 @@
 import { GAME_IS_DEV } from "@/core/gameState";
 
+//TODO channge the name to ISOEntity
+
 export class mySquare {
   left: number = 0;
   top: number = 0;

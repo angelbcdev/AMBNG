@@ -19,22 +19,25 @@ export const ASSET_SOURCES: AssetManifest = {
 
   // Backgrounds (animated sheets in backGroundShow.ts)
   background: [
-    { key: "bg:full:0", url: `${URLROOT}/background/bgfull0.png` },
-    { key: "bg:full:1", url: `${URLROOT}/background/bgfull1.png` },
-    { key: "bg:full:2", url: `${URLROOT}/background/bgfull2.png` },
-    { key: "bg:full:3", url: `${URLROOT}/background/bgfull3.png` },
-    { key: "bg:full:4", url: `${URLROOT}/background/bgfull4.png` },
-    { key: "bg:full:5", url: `${URLROOT}/background/bgfull5.png` },
-    { key: "bg:full:6", url: `${URLROOT}/background/bgfull6.png` },
+    { key: "bg:0", url: `${URLROOT}/background/bgfull0.png` },
+    { key: "bg:1", url: `${URLROOT}/background/bgfull1.png` },
+    { key: "bg:2", url: `${URLROOT}/background/bgfull2.png` },
+    { key: "bg:3", url: `${URLROOT}/background/bgfull3.png` },
+    { key: "bg:4", url: `${URLROOT}/background/bgfull4.png` },
+    { key: "bg:5", url: `${URLROOT}/background/bgfull5.png` },
+    { key: "bg:6", url: `${URLROOT}/background/bgfull6.png` },
   ],
 
   // Player sprites
   player: [
-    { key: "player:megamanAll", url: `${URLROOT}/megaman/megamanAllStates.png` },
+    {
+      key: "player:megamanAll",
+      url: `${URLROOT}/megaman/megamanAllStates.png`,
+    },
     // Note: source path has a space in repo (" sprite_mega_world.png"). Keep as-is unless you rename the file.
     {
       key: "player:worldSprite",
-      url: `${URLROOT}/megaman/ sprite_mega_world.png`,
+      url: `${URLROOT}/megaman/sprite_mega_world.png`,
     },
   ],
 
@@ -83,7 +86,10 @@ export const ASSET_SOURCES: AssetManifest = {
   // Attack effects and projectiles
   attacks: [
     { key: "attack:explosion1", url: `${URLROOT}/attaks/explotion1.png` },
-    { key: "attack:explosionBomb", url: `${URLROOT}/attaks/explotionboomb.png` },
+    {
+      key: "attack:explosionBomb",
+      url: `${URLROOT}/attaks/explotionboomb.png`,
+    },
   ],
 
   // Battle chip icons (from chipData)
@@ -129,4 +135,3 @@ export const ASSET_SOURCES: AssetManifest = {
     { key: "floor:all8", url: `${URLROOT}/floor/allFloor8.png` },
   ],
 };
-

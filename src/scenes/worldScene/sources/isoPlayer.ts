@@ -1,6 +1,8 @@
 import { keyBindings } from "@/config/keyBindings";
 import { mySquare } from "./isoEntitys";
 import { GAME_IS_DEV } from "@/core/gameState";
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetSources";
 
 export class PlayerIso extends mySquare {
   color: string = "#fff000";
@@ -47,7 +49,14 @@ export class PlayerIso extends mySquare {
 
   constructor(x: number, y: number, width: number, height: number) {
     super(x, y, width / 3, height / 3);
-    this.image.src = "/assects/megaman/sprite_mega_world.png";
+    // Resolve world/iso player sprite via AssetManager, fallback to manifest URL
+    const key = "player:worldSprite";
+    if (ASSET_MANAGER.has(key)) {
+      this.image = ASSET_MANAGER.get(key);
+    } else {
+      const def = (ASSET_SOURCES.player || []).find((d) => d.key === key);
+      if (def) this.image.src = def.url;
+    }
   }
 
   update(deltaTime: number) {

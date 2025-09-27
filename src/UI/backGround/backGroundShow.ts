@@ -2,7 +2,7 @@ import { ASSET_MANAGER } from "@/core/assetManager";
 import { ASSET_SOURCES } from "@/core/assetSources";
 export const mapDetails = [
   {
-    assetKey: "bg:full:0",
+    assetKey: "bg:0",
     width: 240,
     height: 159,
     maxFrame: 11,
@@ -13,7 +13,7 @@ export const mapDetails = [
     moveX: false,
   },
   {
-    assetKey: "bg:full:1",
+    assetKey: "bg:1",
     width: 255,
     height: 255,
     maxFrame: 3,
@@ -25,7 +25,7 @@ export const mapDetails = [
     moveX: true,
   },
   {
-    assetKey: "bg:full:2",
+    assetKey: "bg:2",
     width: 508,
     height: 511,
     maxFrame: 5,
@@ -37,7 +37,7 @@ export const mapDetails = [
     moveX: true,
   },
   {
-    assetKey: "bg:full:3",
+    assetKey: "bg:3",
     width: 128,
     height: 192,
     maxFrame: 24,
@@ -49,7 +49,7 @@ export const mapDetails = [
     moveX: true,
   },
   {
-    assetKey: "bg:full:4",
+    assetKey: "bg:4",
     width: 264,
     height: 264,
     maxFrame: 3,
@@ -61,7 +61,7 @@ export const mapDetails = [
     moveX: true,
   },
   {
-    assetKey: "bg:full:5",
+    assetKey: "bg:5",
     width: 240,
     height: 160,
     maxFrame: 15,
@@ -73,7 +73,7 @@ export const mapDetails = [
     moveX: false,
   },
   {
-    assetKey: "bg:full:6",
+    assetKey: "bg:6",
     width: 238,
     height: 157,
     maxFrame: 11,

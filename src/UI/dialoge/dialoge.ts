@@ -36,14 +36,16 @@ export class Dialogue {
   frameInterval = 0;
 
   timeforCharacter = 0;
-  maxTimeforCharacter = 1000;
+  maxTimeforCharacter = 10;
   currentCharacterToShowIndex = 0;
   currentLineToShowIndex = 0;
   linesToShow: string[] = [];
   canTalk = false;
   state: "talking" | "idle" = "idle";
 
-  speed = 40;
+  speed = 5;
+  normalSpeed = 5;
+  maxSpeed = 9.8;
 
   constructor() {
     this.imagen.src = "assects/person/lan.png";
@@ -58,7 +60,7 @@ export class Dialogue {
       onKeyDown: (e: KeyboardEvent) => {
         const options = {
           [keyBindings.useChip]: () => {
-            this.speed += 120;
+            this.speed = this.maxSpeed;
           },
           [keyBindings.singleShoot]: () => {
             if (this.isFinished()) {
@@ -73,7 +75,7 @@ export class Dialogue {
       onKeyUp: (e: KeyboardEvent) => {
         const options = {
           [keyBindings.useChip]: () => {
-            this.speed = 40;
+            this.speed = this.normalSpeed;
           },
         };
         if (options[e.key.toLowerCase()]) {
@@ -174,7 +176,7 @@ export class Dialogue {
         }
       }
     } else {
-      this.timeforCharacter += deltaTime * this.speed;
+      this.timeforCharacter += this.speed;
     }
   }
 
@@ -205,9 +207,7 @@ export class Dialogue {
     );
   }
 
-  showDialogue(
-    newLines: string[] = ["Send a message", "to show", "in this screen"]
-  ) {
+  showDialogue(newLines: string[] = ["message", "no", "added "]) {
     this.isHidden = false;
 
     // 🔑 reset, pero esperar a que suba antes de hablar
@@ -216,7 +216,7 @@ export class Dialogue {
     this.currentCharacterToShowIndex = 0;
     this.currentLineToShowIndex = 0;
     this.timeforCharacter = 0;
-    INPUT_MANAGER.setState(inputStateKeys.DIALOGUE);
+    // INPUT_MANAGER.setState(inputStateKeys.DIALOGUE);
     this.canTalk = false;
     this.setState("idle"); // espera en idle mientras sube
   }
@@ -231,7 +231,7 @@ export class Dialogue {
     this.currentCharacterToShowIndex = 0;
     this.currentLineToShowIndex = 0;
     this.linesToShow = this.lines.map(() => "");
-    this.speed = 40;
+    this.speed = this.normalSpeed;
     this.canTalk = false;
     this.setState("idle");
   }

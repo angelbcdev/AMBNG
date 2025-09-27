@@ -18,6 +18,8 @@ import { MoveState } from "./states/moveState.ts";
 import { ShieldState } from "./states/shieldState.ts";
 import { ShootState } from "./states/shootState.ts";
 import { UseShip } from "./states/useShip.ts";
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetSources";
 
 export class Player extends Entity {
   state: number;
@@ -106,8 +108,18 @@ export class Player extends Entity {
     this.liveTotal = this.live;
     this.defense = 30;
     this.damage = 1000;
-    this.image = new Image();
-    this.image.src = `assects/megaman/megamanAllStates.png`;
+    // Resolve player battle sprite via AssetManager, fallback to manifest URL
+    {
+      const key = "player:megamanAll";
+      if (ASSET_MANAGER.has(key)) {
+        this.image = ASSET_MANAGER.get(key);
+      } else {
+        const def = (ASSET_SOURCES.player || []).find((d) => d.key === key);
+        const img = new Image();
+        if (def) img.src = def.url;
+        this.image = img;
+      }
+    }
     this.collisionAttacks = [];
     this.blockSize = {
       h: 110,
@@ -122,7 +134,7 @@ export class Player extends Entity {
     if (!this.isVisible && this.AllattackToShow.length == 0) {
       this.isVisible = true;
     }
-    this.showAnimation(c, deltaTime);
+    this.showAnimation(c);
   }
 
   onCollision(attack: Attack) {
@@ -139,9 +151,9 @@ export class Player extends Entity {
 
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
     super.draw(c, deltaTime);
-    // this.showAnimation(c, deltaTime);
+    // this.showAnimation(c);
   }
-  showAnimation(c: CanvasRenderingContext2D, _: number) {
+  showAnimation(c: CanvasRenderingContext2D) {
     if (!this.isVisible || !this.canShowEffect) {
       return;
     }
@@ -170,7 +182,7 @@ export class Player extends Entity {
       chip.draw(c, x, deltaTime);
     });
   }
-  paintLive(_: CanvasRenderingContext2D) {}
+  paintLive() {}
 
   drawSprite(c: CanvasRenderingContext2D) {
     if (GAME_IS_DEV()) {

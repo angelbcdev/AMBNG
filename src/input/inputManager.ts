@@ -52,19 +52,23 @@ class InputStateMachine {
     return InputStateMachine.instance;
   }
 
-  addState(name: keyof typeof inputStateKeys, handlers: InputHandler) {
-    console.log(`Adding state: ${name}`);
-    this.states[name] = handlers;
+  addState(nameInput: keyof typeof inputStateKeys, handlers: InputHandler) {
+    console.log(`Adding state: ${nameInput}`);
+    this.states[nameInput] = handlers;
   }
 
-  setState(name: keyof typeof inputStateKeys) {
-    if (!this.states[name]) {
-      console.log(`State ${name} not defined`);
+  setState(nameInput: keyof typeof inputStateKeys) {
+    if (!this.states[nameInput]) {
+      console.log(`State ${nameInput} not defined`);
+      return;
+    }
+    if (this.currentState === nameInput) {
+      console.log(`State ${nameInput} is already active`);
       return;
     }
     this.oldState = this.currentState;
-    this.currentState = name;
-    console.log(`Transitioned from ${this.oldState} to -> ${name}`);
+    this.currentState = nameInput;
+    console.log(`Transitioned from ${this.oldState} to -> ${nameInput}`);
   }
 
   handleKeyDown(event: KeyboardEvent) {

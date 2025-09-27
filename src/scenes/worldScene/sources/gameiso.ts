@@ -1,7 +1,7 @@
 import { EnemyZone, mySquare, WalkPath, Wall } from "./isoEntitys";
-import { PlayerIso } from "./isPlayer";
+import { PlayerIso } from "./isoPlayer";
 import { testWorld } from "./utils";
-import { BackGround, mapDetails } from "@/UI/backGround/backGroundShow";
+import { BackGround } from "@/UI/backGround/backGroundShow";
 import {
   GAME_IS_BATTLE,
   GAME_IS_PAUSE,
@@ -10,6 +10,7 @@ import {
 import { keyBindings } from "@/config/keyBindings";
 import { BATTLE_MANAGER } from "@/core/battleManager";
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
+import { isoLanDialogue } from "./isoLanDialogue";
 
 const canvas = {
   width: 240,
@@ -85,11 +86,11 @@ export class GameIso {
       },
       [keyBindings.showDialogue]: () => {
         if (BATTLE_MANAGER.dialogue.isHidden) {
-          BATTLE_MANAGER.dialogue.showDialogue([
-            "This msj  ",
-            "This is added  ",
-            "is this long enough?",
-          ]);
+          const msj =
+            isoLanDialogue[
+              Math.floor(Math.random() * isoLanDialogue.length - 1)
+            ];
+          BATTLE_MANAGER.dialogue.showDialogue(msj);
           this.player.returnIdle();
           this.player.pressKey = [];
           INPUT_MANAGER.setState(inputStateKeys.DIALOGUE);
