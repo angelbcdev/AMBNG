@@ -1,5 +1,7 @@
 import { keyBindings } from "@/config/keyBindings";
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetSources";
 
 export class Dialogue {
   nameScene = inputStateKeys.DIALOGUE;
@@ -48,7 +50,14 @@ export class Dialogue {
   maxSpeed = 9.8;
 
   constructor() {
-    this.imagen.src = "assects/person/lan.png";
+    // Resolve portrait via AssetManager with fallback
+    const key = "ui:lanPortrait";
+    if (ASSET_MANAGER.has(key)) {
+      this.imagen = ASSET_MANAGER.get(key);
+    } else {
+      const def = (ASSET_SOURCES.ui || []).find((d) => d.key === key);
+      if (def) this.imagen.src = def.url;
+    }
     this.lines = [
       "This msj has tu be long enough ",
       "This msj has tu be long enough ",
@@ -216,7 +225,7 @@ export class Dialogue {
     this.currentCharacterToShowIndex = 0;
     this.currentLineToShowIndex = 0;
     this.timeforCharacter = 0;
-    // INPUT_MANAGER.setState(inputStateKeys.DIALOGUE);
+    INPUT_MANAGER.setState(inputStateKeys.DIALOGUE);
     this.canTalk = false;
     this.setState("idle"); // espera en idle mientras sube
   }

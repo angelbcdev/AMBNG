@@ -8,6 +8,16 @@ import {
   GAME_TOGGLE_DEV,
 } from "@/core/gameState";
 import { keyBindings } from "@/config/keyBindings";
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetSources";
+
+const resolveUI = (key: string): HTMLImageElement => {
+  if (ASSET_MANAGER.has(key)) return ASSET_MANAGER.get(key);
+  const def = (ASSET_SOURCES.ui || []).find((d) => d.key === key);
+  const img = new Image();
+  if (def) img.src = def.url;
+  return img;
+};
 
 export class PauseMenu {
   nameScene = inputStateKeys.WORLD_PAUSE;
@@ -40,8 +50,8 @@ export class PauseMenu {
   ]);
 
   constructor() {
-    this.menuImage.src = "/assects/chipsMenu/menuWindos.png";
-    this.moneyImage.src = "/assects/chipsMenu/moneywindos.png";
+    this.menuImage = resolveUI("ui:pauseMenu");
+    this.moneyImage = resolveUI("ui:moneyWindow");
     this.setInputManager();
   }
   draw(ctx: CanvasRenderingContext2D, deltaTime: number) {
@@ -102,7 +112,7 @@ export class PauseMenu {
       }
     }
   }
-  checkKey = (_: KeyboardEvent) => {};
+  checkKey = () => {};
   in() {
     this.showMenu = true;
     INPUT_MANAGER.setState(this.nameScene);
@@ -137,7 +147,7 @@ export class PauseMenu {
           options[e.key.toLowerCase()]();
         }
       },
-      onKeyUp: (_: KeyboardEvent) => {},
+      onKeyUp: () => {},
     });
   }
 }

@@ -1,3 +1,13 @@
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetSources";
+
+const resolveUI = (key: string) => {
+  if (ASSET_MANAGER.has(key)) return ASSET_MANAGER.get(key);
+  const def = (ASSET_SOURCES.ui || []).find((d) => d.key === key);
+  const img = new Image();
+  if (def) img.src = def.url;
+  return img;
+};
 // BaseImageComponent.ts
 export class BaseImageComponent {
   private image = new Image();
@@ -5,7 +15,7 @@ export class BaseImageComponent {
   height = 420;
 
   constructor() {
-    this.image.src = "assects/selectedchip/chipSelector.png";
+    this.image = resolveUI("ui:chipSelectorBase");
   }
 
   draw(c: CanvasRenderingContext2D, x: number, y: number): void {
@@ -21,7 +31,7 @@ export class LogoRollComponent {
   maxFrame = 3;
 
   constructor() {
-    this.image.src = "assects/selectedchip/logoRoll.png";
+    this.image = resolveUI("ui:logoRoll");
   }
 
   draw(
@@ -51,7 +61,7 @@ export class AddButtonComponent {
   height = 62;
 
   constructor() {
-    this.image.src = "assects/selectedchip/addButon.png";
+    this.image = resolveUI("ui:addButton");
   }
 
   draw(c: CanvasRenderingContext2D, x: number, y: number): void {
@@ -66,7 +76,7 @@ export class ChipSelectorComponent {
   height = 46;
 
   constructor() {
-    this.image.src = "assects/selectedchip/selectedChip.png";
+    this.image = resolveUI("ui:selectedChip");
   }
 
   draw(
@@ -96,7 +106,7 @@ export class AddSelectorComponent {
   height = 53;
 
   constructor() {
-    this.image.src = "assects/selectedchip/selectAcept.png";
+    this.image = resolveUI("ui:selectAccept");
   }
 
   draw(

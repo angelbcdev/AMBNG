@@ -15,6 +15,16 @@ export const ASSET_SOURCES: AssetManifest = {
     { key: "ui:arrowGreen", url: `${URLROOT}/UI/GreenArrow.png` },
     { key: "ui:arrowBlackUp", url: `${URLROOT}/UI/BlackArrowup.png` },
     { key: "ui:arrowBlackDown", url: `${URLROOT}/UI/BlackArrowdown.png` },
+    // Chip selection UI pieces
+    { key: "ui:chipSelectorBase", url: `${URLROOT}/selectedchip/chipSelector.png` },
+    { key: "ui:logoRoll", url: `${URLROOT}/selectedchip/logoRoll.png` },
+    { key: "ui:addButton", url: `${URLROOT}/selectedchip/addButon.png` },
+    { key: "ui:selectedChip", url: `${URLROOT}/selectedchip/selectedChip.png` },
+    { key: "ui:selectAccept", url: `${URLROOT}/selectedchip/selectAcept.png` },
+    // Battle UI bar
+    { key: "ui:barWait", url: `${URLROOT}/UI/barWait.png` },
+    // Dialogue portraits
+    { key: "ui:lanPortrait", url: `${URLROOT}/person/lan.png` },
   ],
 
   // Backgrounds (animated sheets in backGroundShow.ts)

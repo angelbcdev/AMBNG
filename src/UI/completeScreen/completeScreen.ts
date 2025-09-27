@@ -4,6 +4,8 @@ import { colorsCanvas, keyBindings } from "@/config/keyBindings";
 import { BATTLE_MANAGER } from "@/core/battleManager";
 import { INPUT_MANAGER } from "@/input/inputManager";
 import { GAME } from "@/scenes/sceneManager";
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetSources";
 
 export class CompleteScreen {
   nameScene: InputState = inputStateKeys.COMPLETE_SCREEN;
@@ -23,7 +25,14 @@ export class CompleteScreen {
   level = "no data";
 
   constructor() {
-    this.image.src = "/assects/clearSatage.png";
+    // Resolve image via AssetManager with fallback to manifest
+    const key = "ui:completeScreen";
+    if (ASSET_MANAGER.has(key)) {
+      this.image = ASSET_MANAGER.get(key);
+    } else {
+      const def = (ASSET_SOURCES.ui || []).find((d) => d.key === key);
+      if (def) this.image.src = def.url;
+    }
 
     INPUT_MANAGER.addState(this.nameScene, {
       onKeyDown: (e: KeyboardEvent) => {

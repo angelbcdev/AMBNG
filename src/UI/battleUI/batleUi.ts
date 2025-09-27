@@ -5,8 +5,18 @@ import { keyBindings } from "@/config/keyBindings";
 import { GAME } from "@/scenes/sceneManager";
 
 import { ENTITY_MANAGER } from "@/core/entityManager";
+import { ASSET_MANAGER } from "@/core/assetManager";
+import { ASSET_SOURCES } from "@/core/assetSources";
 
 // import { Dialogue } from "./dialoque";
+
+const resolveUI = (key: string): HTMLImageElement => {
+  if (ASSET_MANAGER.has(key)) return ASSET_MANAGER.get(key);
+  const def = (ASSET_SOURCES.ui || []).find((d) => d.key === key);
+  const img = new Image();
+  if (def) img.src = def.url;
+  return img;
+};
 
 export class BattleUI {
   img = new Image();
@@ -23,7 +33,7 @@ export class BattleUI {
   frameTime = 0;
   frameInterval = 1000 / 6;
 
-  toCheckDev: any[] = [];
+  toCheckDev: Array<{ title: string; data: string | number }> = [];
   // chipSelected = new ShowChipAreaWithChip(this);
   clearImage = new Image();
   clearImageViewPort = 420;
@@ -33,12 +43,12 @@ export class BattleUI {
   clearImagePosition = { x: 5, y: 50 };
 
   constructor() {
-    this.img.src = "assects/UI/barWait.png";
+    this.img = resolveUI("ui:barWait");
     this.position = {
       x: 90,
       y: -10,
     };
-    this.clearImage.src = "/assects/clearBattleImg.png";
+    this.clearImage = resolveUI("ui:clearBattle");
     this.clearImagePosition = { x: -this.clearImageViewPort, y: 50 };
   }
   clearStateImg(
@@ -162,7 +172,10 @@ export class BattleUI {
     );
     c.restore();
   }
-  checkClick(_: number, __: number) {}
+  checkClick(x: number, y: number): void {
+    void x;
+    void y;
+  }
   drawLivePlayer(c: CanvasRenderingContext2D) {
     const x = this.position.x - 70;
     const y = this.position.y + 25;
