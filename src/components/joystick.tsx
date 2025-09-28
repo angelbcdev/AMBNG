@@ -1,181 +1,75 @@
-// import { useEffect, useState } from "react";
+export const Joystick = () => {
+  return (
+    <main className="bg-blue-900 w-full h-full  text-xl">
+      <section className="w-[430px] h-[300px] relative bg-slate-900 py-2 text-white capitalize">
+        <div className="w-full flex flex-row justify-evenly  ">
+          <JTButon title="L" tipe="up" />
+          <JTButon title="R" tipe="up" />
+        </div>
+        <section className=" h-[70%] w-full flex px-2">
+          <div className=" relative w-1/2 h-full justify-center  items-center flex ">
+            <div className="bg-gray-700 w-[60px] h-[180px] border-4 border-gray-600  absolute flex flex-col justify-between items-center rounded-md">
+              <JTButon title="up" tipe="cruz" cruz={true} />
+              <JTButon title="down" tipe="cruz" cruz={true} />
+            </div>
+            <div className="absolute bg-gray-700 w-[60px] h-[60px] flex justify-center items-center">
+              <span className="text-xs absolute size-9 rounded-full bg-gray-800"></span>
+            </div>
+            <div className="bg-gray-700 w-[180px] h-[60px] border-4 border-gray-600 flex justify-between  items-center rounded-md">
+              <JTButon title="left" tipe="cruz" cruz={true} />
+              <JTButon title="right" tipe="cruz" cruz={true} />
+            </div>
+          </div>
 
-// // const Joystick = ({ game }: { game: Game }) => {
+          <div className="w-full flex flex-row justify-center gap-8  pl-8 items-center  ">
+            <JTButon title="B" tipe="middle" />
+            <JTButon title="A" tipe="middle" />
+          </div>
+        </section>
 
-//   function pressButton(key: string) {
+        <div className="w-full flex flex-row justify-center gap-8 text-white text-sm ">
+          <JTButon title="Select" tipe="down" />
+          <JTButon title="Start" tipe="down" />
+        </div>
+      </section>
+    </main>
+  );
+};
 
-//     if (game.gameIsPaused && game.gameUI.chipSelected.position.x > 0) {
-//       game.gameUI.chipSelected.addEvent(key);
-//       return
-//     }
+const JTButon = ({
+  title,
+  tipe,
+  cruz = false,
+}: {
+  title: string;
+  tipe: string;
+  cruz?: boolean;
+}) => {
+  let style = "";
+  if (tipe === "down") {
+    style = "bg-gray-700  w-20 h-10 rounded-3xl border-4 border-gray-600 ";
+  } else if (tipe === "middle") {
+    style = "bg-gray-700  w-16 h-16 rounded-full border-4 border-gray-600   ";
+  } else if (tipe === "up") {
+    style = "bg-gray-700 w-40 h-8 rounded-t-3xl border-4 border-gray-600 mx-4 ";
+  } else if (tipe === "cruz") {
+    style = "p-2";
+  }
+  const iconCruz = {
+    up: "▲",
+    down: "▼",
+    left: "◀",
+    right: "▶",
+  };
 
-//     if (!game.gameIsPaused && game.gameUI.chipSelected.position.x < -300) {
-//       game.players.forEach((player: any) => {
-//         player.currentState.acctionKeyDown(key);
-//       });
-//     }
-
-//   }
-//   const releaseButton = (key: string) => {
-
-//     game.players.forEach((player: any) => {
-//       player.currentState.acctionKeyUp(key);
-//     });
-//   }
-
-//   return (
-//     <section className="flex flex-row  justify-between items-center">
-//       <Cruz {...{ pressButton, releaseButton }} />
-
-//       <ActionsButtons  {...{ game, pressButton, releaseButton }} />
-//     </section>
-//   )
-// };
-
-// export default Joystick;
-
-// const ActionsButtons = ({ pressButton, releaseButton }) => {
-//   // Usamos el estado para realizar un seguimiento de la presión
-//   const [isPressed, setIsPressed] = useState(false);
-//   const [actionCurrent, setAction] = useState("nada");
-
-//   const handleMouseDown = (e, action) => {
-//     e.preventDefault();
-//     setIsPressed(true);  // Establece el estado cuando el botón es presionado
-//     pressButton(action); // Ejecuta la acción correspondiente
-//     setAction(action)
-
-//   };
-
-//   const handleMouseUp = () => {
-//     releaseButton(actionCurrent);
-//     // setAction("nada")
-
-//     setIsPressed(false);  // Cambia el estado cuando se suelta el botón
-//   };
-
-//   useEffect(() => {
-//     let interval = null;
-
-//     if (isPressed) {
-//       interval = setInterval(() => {
-
-//         pressButton(actionCurrent);
-//       }, 0); // Ejecuta cada 0ms mientras el botón esté presionado
-//     } else {
-//       releaseButton(actionCurrent);
-//       clearInterval(interval); // Detenemos el intervalo cuando se deja de presionar
-//     }
-
-//     return () => clearInterval(interval);
-//   }, [isPressed]);
-
-//   return (
-//     <div className="flex flex-row gap-6 justify-between  h-[60px] mr-2">
-//       <button
-//         onMouseDown={(e) => handleMouseDown(e, "g")}
-//         onTouchStart={(e) => handleMouseDown(e, "g")}
-//         onTouchEnd={handleMouseUp}
-//         onMouseUp={handleMouseUp}
-//         onClick={() => pressButton("g")}
-//         className={"button button-acion relative mt-5"}
-//       >
-//         a
-//       </button>
-
-//       <button
-//         onMouseDown={(e) => handleMouseDown(e, "f")}
-//         onTouchStart={(e) => handleMouseDown(e, "f")}
-//         onTouchEnd={handleMouseUp}
-//         onMouseUp={handleMouseUp}
-//         onClick={() => pressButton("f")}
-//         className="button button-acion"
-//       >
-//         b
-//       </button>
-//     </div>
-//   );
-// }
-
-// const Cruz = ({ pressButton, releaseButton }) => {
-
-//   return (
-//     <section className=" relative h-[300px] mt-6">
-//       <div className="joystick !my-14 ">
-//         <div
-//           onMouseUp={() => releaseButton("ArrowUp")}
-//           onClick={() => pressButton("ArrowUp")} className="direction up">
-//           <svg
-//             xmlns="http://www.w3.org/2000/svg"
-//             width="24"
-//             height="24"
-//             viewBox="0 0 24 24"
-//             fill="currentColor"
-//             className="icon icon-tabler icons-tabler-filled icon-tabler-arrow-badge-up"
-//           >
-//             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-//             <path
-//               d="M11.375 6.22l-5 4a1 1 0 0 0 -.375 .78v6l.006 .112a1 1 0 0 0 1.619 .669l4.375 -3.501l4.375 3.5a1 1 0 0 0 1.625 -.78v-6a1 1 0 0 0 -.375 -.78l-5 -4a1 1 0 0 0 -1.25 0z"
-//             />
-//           </svg>
-//         </div>
-//         <div className="flex gap-3 my-5">
-//           <div
-//             onMouseUp={() => releaseButton("ArrowLeft")}
-//             onClick={() => pressButton("ArrowLeft")} className="direction left">
-//             <svg
-//               xmlns="http://www.w3.org/2000/svg"
-//               width="24"
-//               height="24"
-//               viewBox="0 0 24 24"
-//               fill="currentColor"
-//               className="icon icon-tabler icons-tabler-filled icon-tabler-arrow-badge-left"
-//             >
-//               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-//               <path
-//                 d="M17 6h-6a1 1 0 0 0 -.78 .375l-4 5a1 1 0 0 0 0 1.25l4 5a1 1 0 0 0 .78 .375h6l.112 -.006a1 1 0 0 0 .669 -1.619l-3.501 -4.375l3.5 -4.375a1 1 0 0 0 -.78 -1.625z"
-//               />
-//             </svg>
-//           </div>
-//           <div
-//             onMouseUp={() => releaseButton("ArrowRight")}
-//             onClick={() => pressButton("ArrowRight")} className="direction right">
-//             <svg
-//               xmlns="http://www.w3.org/2000/svg"
-//               width="24"
-//               height="24"
-//               viewBox="0 0 24 24"
-//               fill="currentColor"
-//               className="icon icon-tabler icons-tabler-filled icon-tabler-arrow-badge-right"
-//             >
-//               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-//               <path
-//                 d="M7 6l-.112 .006a1 1 0 0 0 -.669 1.619l3.501 4.375l-3.5 4.375a1 1 0 0 0 .78 1.625h6a1 1 0 0 0 .78 -.375l4 -5a1 1 0 0 0 0 -1.25l-4 -5a1 1 0 0 0 -.78 -.375h-6z"
-//               />
-//             </svg>
-//           </div>
-
-//         </div>
-//         <div
-//           onMouseUp={() => releaseButton("ArrowDown")}
-//           onClick={() => pressButton("ArrowDown")} className="direction down">
-//           <svg
-//             xmlns="http://www.w3.org/2000/svg"
-//             width="24"
-//             height="24"
-//             viewBox="0 0 24 24"
-//             fill="currentColor"
-//             className="icon icon-tabler icons-tabler-filled icon-tabler-arrow-badge-down"
-//           >
-//             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-//             <path
-//               d="M16.375 6.22l-4.375 3.498l-4.375 -3.5a1 1 0 0 0 -1.625 .782v6a1 1 0 0 0 .375 .78l5 4a1 1 0 0 0 1.25 0l5 -4a1 1 0 0 0 .375 -.78v-6a1 1 0 0 0 -1.625 -.78z"
-//             />
-//           </svg>
-//         </div>
-
-//       </div>
-//     </section>
-
-//   )
-// }
+  return (
+    <div
+      onClick={() => {
+        alert(title);
+      }}
+      className={`justify-center items-center flex  ${style}`}
+    >
+      {cruz ? iconCruz[title] : title}
+    </div>
+  );
+};

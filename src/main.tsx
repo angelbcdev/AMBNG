@@ -1,19 +1,16 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import { Joystick } from "@/components/joystick";
 
 // import { DevFucntions } from "./components/DevFucntions";
 // import Joystick from "./components/joystick";
 // import { GameWorld } from "./world/gameWorld";
 import { GAME } from "@/scenes/sceneManager";
 
-import { BATTLE_MANAGER } from "./core/battleManager";
+// import { BATTLE_MANAGER } from "./core/battleManager";
 import { ASSET_MANAGER } from "./core/assetManager";
 import { ASSET_SOURCES } from "./core/assetshandler/assetSources";
-
-const Joystick = () => {
-  return <div className="bg-white w-[430px] h-[300px] rounded-full"></div>;
-};
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -111,7 +108,7 @@ const drawLoading = (loaded: number, total: number) => {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     {/* <main className="bg-blue-200 w-[430px] "><DevFucntions /></main> */}
-    {/* <Joystick /> */}
+    <Joystick />
   </StrictMode>
 );
 
