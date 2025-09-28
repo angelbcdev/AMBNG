@@ -14,9 +14,37 @@
     </div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      document.getElementById("game").addEventListener("touchmove", (e) => {
-        e.preventDefault();
-      });
+      const game = document.getElementById("game");
+
+      game?.addEventListener(
+        "touchmove",
+        (e) => {
+          if (e.touches.length === 1) {
+            // One finger → block scrolling
+            e.preventDefault();
+          }
+          // Two or more fingers → allow pinch zoom
+        },
+        { passive: false }
+      );
+
+      // Prevent double-tap zoom
+      let lastTap = 0;
+      game?.addEventListener(
+        "touchend",
+        (e) => {
+          const now = Date.now();
+          const delta = now - lastTap;
+
+          if (delta > 0 && delta < 300) {
+            // Block the browser’s double-tap zoom
+            e.preventDefault();
+          }
+
+          lastTap = now;
+        },
+        { passive: false }
+      );
     </script>
   </body>
 </html>
