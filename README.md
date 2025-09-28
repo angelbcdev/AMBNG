@@ -1,4 +1,4 @@
-#  MegaMan Battle Network-inspired Game (Vite + React + TypeScript)
+#  Another MegaMan Battle Network fan game
 
 A canvas-based game inspired by MegaMan Battle Network, built with Vite, React (SWC), and TypeScript. The game renders to a fixed 430x430 canvas and is driven by a scene manager that switches between Home, World (isometric), Battle, Options, and Chips management scenes.
 

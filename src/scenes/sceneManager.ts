@@ -50,11 +50,19 @@ export class SceneManager {
     // this.currentScene.in();
     document.getElementById("canvas").addEventListener("click", (e) => {
       const rect = this.canvas.getBoundingClientRect();
-      const scaleX = this.canvas.width / rect.width;
-      const scaleY = this.canvas.height / rect.height;
-      const x = (e.clientX - rect.left) * scaleX;
-      const y = (e.clientY - rect.top) * scaleY;
-      this.currentScene.checkClick(x, y);
+      // Convert from client coords -> device pixels
+      const deviceScaleX = this.canvas.width / rect.width; // ~ dpr
+      const deviceScaleY = this.canvas.height / rect.height; // ~ dpr
+
+      const dx = (e.clientX - rect.left) * deviceScaleX;
+      const dy = (e.clientY - rect.top) * deviceScaleY;
+
+      // Now invert the canvas transform (we set it with ctx.setTransform(scale * dpr, 0, 0, scale * dpr, 0, 0))
+      const m = this.c.getTransform();
+      const logicalX = dx / m.a; // m.a = scaleX * dpr
+      const logicalY = dy / m.d; // m.d = scaleY * dpr
+
+      this.currentScene.checkClick(logicalX, logicalY);
     });
     INPUT_MANAGER.in();
 
