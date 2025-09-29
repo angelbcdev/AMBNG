@@ -325,14 +325,14 @@ export class ShowChipAreaWithChip {
       },
       [keyBindings.pressR]: () => {
         if (this.chipSelected.length < 1) {
-          BATTLE_MANAGER.dialogue.pressR([
+          BATTLE_MANAGER.dialogue.showMessage([
             "We can do this   ",
             "right MEGAMAN!    ",
             "             ",
             "LEST GO!!!!",
           ]);
         } else {
-          BATTLE_MANAGER.dialogue.pressR([
+          BATTLE_MANAGER.dialogue.showMessage([
             "Hey MEGAMAN!   ",
             "Hurry finish this   ",
             "a piece a key     ",
@@ -414,7 +414,7 @@ export class ShowChipAreaWithChip {
 
         this.chipInView = { viewX: 0, viewY: 0 };
 
-        BATTLE_MANAGER.dialogue.pressR([
+        BATTLE_MANAGER.dialogue.showMessage([
           "Hey MEGAMAN!   ",
           "let me way for",
           "more chips ",
@@ -430,12 +430,10 @@ export class ShowChipAreaWithChip {
   }
 
   showArea() {
-    console.log("showArea", this.chipInView);
     INPUT_MANAGER.setState(this.nameScene);
 
     this.showChipArea = true;
     GAME_SET_PAUSE();
-    console.log("this.chipUsed", this.chipUsed);
     this.showChipInTurn();
     // BATTLE_MANAGER.isCompletedBarShip = true;
 

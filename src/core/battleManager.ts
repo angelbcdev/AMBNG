@@ -57,7 +57,7 @@ class BattleManager {
     this.localIsBattle = true;
 
     if (!GAME_IS_BATTLE()) {
-      GAME.changeScene(GAME.statesKeys.battle);
+      GAME.changeScene(GAME.statesKeys.battleScene);
 
       this.bg.updateBackGround(backGround);
 
@@ -136,18 +136,16 @@ class BattleManager {
     }
     this.chipAreaSelect.draw(c, deltaTime);
 
-    this.pressR(c, deltaTime);
     this.fillBar(c);
     this.completeScreen.draw(c, deltaTime);
+    this.dialogue.draw(c, deltaTime);
   }
 
   showMessage(c: CanvasRenderingContext2D, message: string, head: number) {
     c.textAlign = "center";
     c.fillText(message, 430 / 2, 430 / 2 - (head || 0));
   }
-  pressR(c: CanvasRenderingContext2D, deltaTime: number) {
-    this.dialogue.draw(c, deltaTime);
-  }
+
   update(deltaTime: number, _: CanvasRenderingContext2D) {
     if (!this.isCompletedBarShip && this.timeForBattleStart == 0) {
       this.currentTimeForSelectShip += deltaTime;

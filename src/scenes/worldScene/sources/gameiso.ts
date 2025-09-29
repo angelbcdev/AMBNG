@@ -9,7 +9,7 @@ import {
 } from "@/core/gameState";
 import { keyBindings } from "@/config/keyBindings";
 import { BATTLE_MANAGER } from "@/core/battleManager";
-import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
+
 import { isoLanDialogue } from "./isoLanDialogue";
 
 const canvas = {
@@ -90,10 +90,9 @@ export class GameIso {
             isoLanDialogue[
               Math.floor(Math.random() * isoLanDialogue.length - 1)
             ];
-          BATTLE_MANAGER.dialogue.pressR(msj);
+          BATTLE_MANAGER.dialogue.showMessage(msj);
           this.player.returnIdle();
           this.player.pressKey = [];
-          INPUT_MANAGER.setState(inputStateKeys.DIALOGUE);
         }
       },
       // z: () => {

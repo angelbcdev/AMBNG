@@ -93,7 +93,7 @@ export class BatleGame {
       }
       if (!ENTITY_MANAGER.playerIsLive()) {
         //* IS DEATH
-        GAME.changeScene(GAME.statesKeys.home);
+        GAME.changeScene(GAME.statesKeys.homeScene);
       }
     }
 

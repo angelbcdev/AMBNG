@@ -9,11 +9,11 @@ export const URLROOT = "/assects";
 export const ASSET_SOURCES: AssetManifest = {
   // UI and HUD elements
   ui: [
-    { key: "ui:completeScreen", url: `${URLROOT}/clearSatage.png` },
-    { key: "ui:clearBattle", url: `${URLROOT}/clearBattleImg.png` },
-    { key: "ui:chipsMenu", url: `${URLROOT}/chipsMenu/chipsMenus.png` },
-    { key: "ui:pauseMenu", url: `${URLROOT}/chipsMenu/menuWindos.png` },
-    { key: "ui:moneyWindow", url: `${URLROOT}/chipsMenu/moneywindos.png` },
+    { key: "ui:completeScreen", url: `${URLROOT}/UI/clearSatage.png` },
+    { key: "ui:clearBattle", url: `${URLROOT}/UI/clearBattleImg.png` },
+    { key: "ui:chipsMenu", url: `${URLROOT}/UI/menuWindos.png` },
+    { key: "ui:pauseWindow", url: `${URLROOT}/UI/menuWindos.png` },
+    { key: "ui:moneyWindow", url: `${URLROOT}/UI/moneywindos.png` },
     { key: "ui:arrowGreen", url: `${URLROOT}/UI/GreenArrow.png` },
     { key: "ui:arrowBlackUp", url: `${URLROOT}/UI/BlackArrowup.png` },
     { key: "ui:arrowBlackDown", url: `${URLROOT}/UI/BlackArrowdown.png` },

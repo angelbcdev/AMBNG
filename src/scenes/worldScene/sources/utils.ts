@@ -1,7 +1,5 @@
 import data from "@/utils/testt.json";
 
-console.log("data", data);
-
 export class FloorRoad {
   width = 32;
   height = 32;

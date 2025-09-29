@@ -219,7 +219,7 @@ export class Dialogue {
     );
   }
 
-  pressR(newLines: string[] = ["message", "no", "added "]) {
+  showMessage(newLines: string[] = ["message", "no", "added "]) {
     this.isHidden = false;
 
     // 🔑 reset, pero esperar a que suba antes de hablar

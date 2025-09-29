@@ -163,8 +163,6 @@ class CanvasJoystick {
       this.activeKeys.set(-1, key);
       const ev = new KeyboardEvent("keydown", { key, code: "MyKey" });
       INPUT_MANAGER.handleKeyDown(ev);
-
-      console.log(`Button down: ${key}`);
     }
   };
 

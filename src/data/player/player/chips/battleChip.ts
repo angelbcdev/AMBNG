@@ -112,7 +112,6 @@ export class BattleShip {
     c.fillText(live, realX + 8, realY + 6);
   }
   userMakeAttack(player: PlayerBlue) {
-    console.log("this.actionForChip", this.actionForChip);
     this.changeFMS(player);
     switch (this.actionForChip) {
       case "attack":
@@ -162,15 +161,19 @@ export class BattleShip {
     c: CanvasRenderingContext2D,
     x: number,
     y: number,
-    extraX: string = ""
+    extraX: string = "",
+    isSelected: boolean = true
   ) {
+    c.save();
+    c.textAlign = "right";
     c.font = "16px 'Mega-Man-Battle-Network-Regular'";
 
     c.fillStyle = "black";
     c.fillText(this.name + (extraX ? `-${extraX}` : ""), x, y);
 
-    c.fillStyle = "white";
-    c.fillText(this.name + (extraX ? `-${extraX}` : ""), x - 3, y - 3);
+    c.fillStyle = isSelected ? "white" : "#5b6768";
+    c.fillText(this.name + (extraX ? `-${extraX}` : ""), x - 1, y - 1);
+    c.restore();
   }
 }
 

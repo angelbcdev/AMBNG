@@ -83,7 +83,6 @@ export class PlayerState {
     if (moves.includes(key.toLowerCase())) {
       this.player.changeState(this.player.stateReference.MOVE);
     }
-    console.log(key);
     const handleEvents = {
       arrowup: () => {
         newMatrixY -= 1;

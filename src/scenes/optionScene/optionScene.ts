@@ -1,5 +1,5 @@
 import { keyBindings } from "@/config/keyBindings";
-import { GAME } from "../sceneManager";
+import { GAME } from "@/scenes/sceneManager";
 import { ButtonManager } from "@/UI/Button/buttonManager ";
 import { BackGround } from "@/UI/backGround/backGroundShow";
 import SceneRoot from "../sceneROOT";
@@ -32,7 +32,7 @@ export class OptionScene extends SceneRoot {
     {
       position: { x: 250, y: 360 },
       title: "Back Home",
-      action: () => GAME.changeScene(GAME.statesKeys.home),
+      action: () => GAME.changeScene(GAME.statesKeys.homeScene),
     },
   ]);
 
@@ -46,13 +46,13 @@ export class OptionScene extends SceneRoot {
         this.optionsButtons.keyDown(e);
         switch (e.key) {
           case "9":
-            GAME.changeScene(GAME.statesKeys.home);
+            GAME.changeScene(GAME.statesKeys.homeScene);
             break;
           case "8":
-            GAME.changeScene(GAME.statesKeys.world);
+            GAME.changeScene(GAME.statesKeys.worldScene);
             break;
           case "7":
-            GAME.changeScene(GAME.statesKeys.chips);
+            GAME.changeScene(GAME.statesKeys.folderScene);
             break;
         }
       },
@@ -62,8 +62,6 @@ export class OptionScene extends SceneRoot {
 
   // ✅ function to start key rebinding
   rebindKey(actionName: keyof typeof keyBindings) {
-    console.log(`Press a new key for ${actionName}...`);
-
     const listener = (e: KeyboardEvent) => {
       const forbidden = ["arrowup", "arrowdown", "arrowleft", "arrowright"];
       const newKey = e.key.toLowerCase();
@@ -115,7 +113,7 @@ export class OptionScene extends SceneRoot {
     canvas: HTMLCanvasElement
   ) {
     super.draw(deltaTime, c, canvas);
-    this.optionsButtons.draw(c);
+    this.optionsButtons.draw(c, deltaTime);
   }
   checkClick(mouseX: number, mouseY: number) {
     this.optionsButtons.checkClick(mouseX, mouseY);

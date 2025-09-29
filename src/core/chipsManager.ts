@@ -17,6 +17,7 @@ export class ChipManager {
     this.chipsSack = allChipsA.map((chip) => {
       return new BattleShip({ title: chip.title });
     });
+    this.chipsFolder = this.randomChip.slice(0, 5);
   }
 
   static getInstance() {
@@ -34,24 +35,12 @@ export class ChipManager {
   addChipToFolder(id: string) {
     const chip = this.chipsSack.find((c) => c.id === id);
     if (chip) {
-      chip.idForMove = getRandomeIDforMove();
       this.chipsFolder.push(chip);
     }
   }
   removeChipFromFolder(id: string) {
-    this.chipsFolder = this.chipsFolder.filter((c) => c.idForMove !== id);
+    this.chipsFolder = this.chipsFolder.filter((c) => c.id !== id);
   }
 }
 
 export const CHIPS_MANAGER = ChipManager.getInstance();
-
-export const getRandomeIDforMove = () => {
-  const charactes =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let randomID = "";
-  for (let i = 0; i < 10; i++) {
-    const randomIndex = Math.floor(Math.random() * charactes.length);
-    randomID += charactes.charAt(randomIndex);
-  }
-  return randomID;
-};

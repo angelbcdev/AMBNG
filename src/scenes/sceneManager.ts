@@ -6,6 +6,7 @@ import { FolderScene } from "./folderScene/folderScene";
 
 import { INPUT_MANAGER } from "../input/inputManager";
 import { JOYSTICK_MANAGER } from "./joysTickManager";
+import { BATTLE_MANAGER } from "@/core/battleManager";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -17,21 +18,21 @@ export class SceneManager {
   canvas: HTMLCanvasElement;
   static instance: SceneManager | null = null;
 
-  currentSceneIndex = "home";
-  previousScene = "home";
+  currentSceneIndex = "homeScene";
+  previousScene = "homeScene";
   statesKeys = {
-    home: "home",
-    world: "world",
-    battle: "battle",
-    option: "option",
-    chips: "chips",
+    homeScene: "homeScene",
+    worldScene: "worldScene",
+    battleScene: "battleScene",
+    optionScene: "optionScene",
+    folderScene: "folderScene",
   };
   scenes = {
-    home: new HomeScene(),
-    world: new WorldScene(),
-    battle: new BattleScene(),
-    option: new OptionScene(),
-    chips: new FolderScene(),
+    homeScene: new HomeScene(),
+    worldScene: new WorldScene(),
+    battleScene: new BattleScene(),
+    optionScene: new OptionScene(),
+    folderScene: new FolderScene(),
   };
   currentScene = this.scenes[this.currentSceneIndex];
 
@@ -79,6 +80,7 @@ export class SceneManager {
 
   draw(deltaTime: number) {
     this.currentScene.draw(deltaTime, this.c, this.canvas);
+    // BATTLE_MANAGER.draw(this.c, deltaTime);
     //
   }
   changeScene(newScene: string) {
@@ -90,7 +92,7 @@ export class SceneManager {
       this.currentScene.out();
       this.previousScene = this.currentSceneIndex;
       this.currentSceneIndex = newScene;
-      this.currentScene = this.scenes[this.currentSceneIndex];
+      this.currentScene = this.scenes[newScene];
 
       INPUT_MANAGER.setState(this.currentScene.nameScene);
       this.currentScene.in();

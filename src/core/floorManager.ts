@@ -31,7 +31,6 @@ export class MatrixManager {
     this.floors.forEach((floor) => {
       floor.updateImageFloor(floorImage);
     });
-    console.log("floors", floorImage);
   }
   drawFloors(c: CanvasRenderingContext2D, deltaTime: number, effects: any[]) {
     this.floors

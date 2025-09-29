@@ -1,9 +1,8 @@
 import { keyBindings } from "@/config/keyBindings";
-import { getImageFromAssetsManager } from "@/core/assetshandler/assetHelpers";
-import { ARRAY_KEYS } from "@/components/joystick";
+import { GreenArrow } from "../greenArrow";
 
 export class ButtonManager {
-  arrowImage = new Image();
+  greenArrow = new GreenArrow();
   currentButtonIndex = 0;
   buttons: {
     position: { x: number; y: number };
@@ -27,7 +26,7 @@ export class ButtonManager {
     }[]
   ) {
     // Resolve arrow image even if assets haven't been preloaded yet
-    this.arrowImage = getImageFromAssetsManager("ui:arrowGreen");
+
     this.buttons = configs.map((cfg) => ({
       position: cfg.position,
       title: cfg.title,
@@ -40,20 +39,7 @@ export class ButtonManager {
     }));
   }
   pressDown() {
-    if (ARRAY_KEYS.includes("ArrowUp")) {
-      this.currentButtonIndex =
-        (this.currentButtonIndex - 1 + this.buttons?.length) %
-        this.buttons?.length;
-    } else if (ARRAY_KEYS.includes("ArrowDown")) {
-      this.currentButtonIndex =
-        (this.currentButtonIndex + 1) % this.buttons?.length;
-    } else if (ARRAY_KEYS.includes(keyBindings.pressA)) {
-      try {
-        this.buttons[this.currentButtonIndex]?.action();
-      } catch {
-        // console.log("button not found");
-      }
-    }
+    this.buttons[this.currentButtonIndex]?.action();
   }
 
   keyDown(e: KeyboardEvent) {
@@ -83,7 +69,7 @@ export class ButtonManager {
     document.removeEventListener("keydown", this.keyDown);
   }
 
-  draw(c: CanvasRenderingContext2D) {
+  draw(c: CanvasRenderingContext2D, deltaTime: number) {
     this.buttons.forEach((btn, index) => {
       // box
       // c.fillStyle = btn.isAvailable ? "red" : "green";
@@ -91,12 +77,13 @@ export class ButtonManager {
       // paint arow for button
 
       if (index === this.currentButtonIndex) {
-        c.drawImage(
-          this.arrowImage,
-          btn.position.x - 22,
-          btn.position.y + 8,
-          32,
-          32
+        this.greenArrow.draw(
+          c,
+          {
+            x: btn.position.x,
+            y: btn.position.y,
+          },
+          deltaTime
         );
       }
 

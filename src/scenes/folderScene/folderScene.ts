@@ -1,4 +1,4 @@
-import { GAME } from "../sceneManager";
+import { GAME } from "@/scenes/sceneManager";
 import SceneRoot from "../sceneROOT";
 
 import { CHIPS_MANAGER } from "@/core/chipsManager";
@@ -6,12 +6,14 @@ import { CHIPS_MANAGER } from "@/core/chipsManager";
 import { BattleShip } from "@/data/player/player/chips/battleChip";
 import { keyBindings } from "@/config/keyBindings";
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
+import { GreenArrow } from "@/UI/greenArrow";
+import { BATTLE_MANAGER } from "@/core/battleManager";
 
 export class FolderScene extends SceneRoot {
   bg = null;
   nameScene = inputStateKeys.FOLDER_SCENE;
   image = new Image();
-  arrowImage = new Image();
+  greenArrow: GreenArrow;
   arrowBlackImageup = new Image();
   arrowBlackImagedown = new Image();
   x = 0;
@@ -33,7 +35,7 @@ export class FolderScene extends SceneRoot {
   constructor() {
     super();
     this.image.src = "/assects/chipsMenu/chipsMenus.png";
-    this.arrowImage.src = "/assects/UI/GreenArrow.png";
+    this.greenArrow = new GreenArrow();
     this.arrowBlackImageup.src = "/assects/UI/BlackArrowup.png";
     this.arrowBlackImagedown.src = "/assects/UI/BlackArrowdown.png";
 
@@ -52,11 +54,19 @@ export class FolderScene extends SceneRoot {
           arrowright: () => {
             this.viewSack = true;
           },
-          [keyBindings.pressB]: () => {
+          [keyBindings.pressA]: () => {
             this.keySelectChip();
           },
-          [keyBindings.pressA]: () => {
-            GAME.returnToPreviousScene();
+          [keyBindings.pressB]: () => {
+            if (CHIPS_MANAGER.chipsFolder.length >= 29) {
+              GAME.returnToPreviousScene();
+            } else {
+              BATTLE_MANAGER.dialogue.showMessage([
+                "No is a good idea",
+                "go with least 30 chips",
+                "in the folder",
+              ]);
+            }
           },
         };
         if (options[e.key.toLowerCase()]) {
@@ -78,8 +88,7 @@ export class FolderScene extends SceneRoot {
       this.sliceIndexFolder =
         this.sliceIndexFolder - 1 > 0 ? this.sliceIndexFolder - 1 : 0;
       CHIPS_MANAGER.removeChipFromFolder(this.removeFolderID);
-      this.removeFolderID =
-        CHIPS_MANAGER.chipsFolder[this.folderIndex].idForMove;
+      this.removeFolderID = CHIPS_MANAGER.chipsFolder[this.folderIndex]?.id;
     }
   };
   upIndex = () => {
@@ -276,6 +285,8 @@ export class FolderScene extends SceneRoot {
       430 * 2,
       430
     );
+
+    c.fillText(`${CHIPS_MANAGER.chipsFolder.length}`, 320, 30);
     // this.optionsButtons.draw(c);
     //TODO: Folder chips
 
@@ -285,9 +296,11 @@ export class FolderScene extends SceneRoot {
       indexToShow: this.folderIndex,
       xBlackArronws: 280,
       xGreenArronws: 190,
-      xtextNameChips: 223,
+      xtextNameChips: 415,
       xBigImage: 50,
       chipsToShow: CHIPS_MANAGER.chipsFolder,
+      deltaTime,
+      category: "folder",
     });
     //TODO: sacks chips
     this.drawChipsCategory({
@@ -296,15 +309,18 @@ export class FolderScene extends SceneRoot {
       indexToShow: this.sackIndex,
       xBlackArronws: 550,
       xGreenArronws: 450,
-      xtextNameChips: 480,
+      xtextNameChips: 675,
       xBigImage: 730,
-      chipsToShow: CHIPS_MANAGER.chipsSack, //CHIPS_MANAGER.randomChip,
+      chipsToShow: CHIPS_MANAGER.chipsSack,
+      deltaTime,
+      //CHIPS_MANAGER.randomChip,
+      category: "sack",
     });
     c.restore();
+    BATTLE_MANAGER.dialogue.draw(c, deltaTime);
   }
   drawChipsCategory({
     c,
-
     indexSlice,
     indexToShow,
     xBlackArronws,
@@ -312,6 +328,8 @@ export class FolderScene extends SceneRoot {
     xtextNameChips,
     xBigImage,
     chipsToShow,
+    deltaTime,
+    category,
   }: {
     c: CanvasRenderingContext2D;
     indexSlice: number;
@@ -321,6 +339,8 @@ export class FolderScene extends SceneRoot {
     xtextNameChips: number;
     xBigImage: number;
     chipsToShow: BattleShip[];
+    deltaTime: number;
+    category: "folder" | "sack";
   }) {
     const chips = chipsToShow.slice(indexSlice, indexSlice + 7);
     // Arrows
@@ -337,10 +357,23 @@ export class FolderScene extends SceneRoot {
         chips[indexToShow].drawFullImage(c, xBigImage, 50);
 
         //green arrow
-        c.drawImage(this.arrowImage, xGreenArronws, 94 + index * 44, 28, 28);
+        this.greenArrow.draw(
+          c,
+          { x: xGreenArronws + 5, y: 85 + index * 44 },
+          deltaTime
+        );
+        // c.drawImage(this.arrowImage, xGreenArronws, 94 + index * 44, 28, 28);
       }
       //name
-      chip.drawName(c, xtextNameChips, 113 + index * 44);
+      if (category === "folder") {
+        chip.drawName(c, xtextNameChips, 113 + index * 44);
+      } else {
+        const isSelected = CHIPS_MANAGER.chipsFolder
+          .map((chip) => chip.name)
+          .includes(chip.name);
+        // console.log("xtextNameChips", chip.name);
+        chip.drawName(c, xtextNameChips, 113 + index * 44, "", !isSelected);
+      }
     });
   }
 
@@ -354,6 +387,7 @@ export class FolderScene extends SceneRoot {
   in() {
     this.moveToFolderID = CHIPS_MANAGER.chipsSack[0].id;
     this.removeFolderID = CHIPS_MANAGER.chipsFolder[0]?.idForMove || "N/A";
+    INPUT_MANAGER.setState(this.nameScene);
   }
   out() {
     this.viewSack = false;

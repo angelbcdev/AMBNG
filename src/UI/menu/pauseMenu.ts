@@ -16,12 +16,9 @@ export class PauseMenu {
   moneyImage = new Image();
   menulimitWidth = 180;
   menuImageX = -180;
-
   menuImageWidth = 544;
   menuImageHeight = 862;
-
   moneyImageX = 430;
-
   moneyImageWidth = 375;
   moneylimitWidth = 120;
   moneyImageHeight = 172;
@@ -29,23 +26,48 @@ export class PauseMenu {
   speed = 1;
   optionsButtons = new ButtonManager([
     {
-      position: { x: 40, y: 40 },
+      position: { x: 40, y: 60 },
       title: "Folder",
-      action: () => GAME.changeScene(GAME.statesKeys.chips),
+      action: () => GAME.changeScene(GAME.statesKeys.folderScene),
     },
     {
-      position: { x: 40, y: 70 },
+      position: { x: 40, y: 90 },
       title: `dev `,
-      action: () => GAME_TOGGLE_DEV(),
+      action: () => {
+        // INPUT_MANAGER.setState(inputStateKeys.WORLD_SCENE);
+        GAME_TOGGLE_DEV();
+      },
+    },
+    {
+      position: { x: 40, y: 350 },
+
+      title: `return`,
+      action: () => {
+        INPUT_MANAGER.setState(inputStateKeys.WORLD_SCENE);
+        this.out();
+      },
+    },
+    {
+      position: { x: 40, y: 380 },
+
+      title: `exit`,
+      action: () => {
+        GAME.changeScene(GAME.statesKeys.homeScene);
+        this.out();
+      },
     },
   ]);
 
   constructor() {
-    this.menuImage = getImageFromAssetsManager("ui:pauseMenu");
+    this.menuImage = getImageFromAssetsManager("ui:pauseWindow");
     this.moneyImage = getImageFromAssetsManager("ui:moneyWindow");
     this.setInputManager();
   }
   draw(ctx: CanvasRenderingContext2D, deltaTime: number) {
+    if (!this.showMenu) {
+      return;
+    }
+
     this.swapMenu(deltaTime);
 
     ctx.save();
@@ -62,10 +84,10 @@ export class PauseMenu {
       this.menulimitWidth,
       430
     );
-    this.optionsButtons.draw(ctx);
+    this.optionsButtons.draw(ctx, deltaTime);
     ctx.font = "12px 'Mega-Man-Battle-Network-Regular'"; // Nombre que has definido en @font-face
     ctx.fillStyle = "#fff";
-    ctx.fillText(` ${GAME_IS_DEV() ? "on" : "off"}`, 110, 95);
+    ctx.fillText(` ${GAME_IS_DEV() ? "on" : "off"}`, 110, 115);
     ctx.restore();
     ctx.save();
     ctx.translate(this.moneyImageX, 0);
@@ -128,8 +150,9 @@ export class PauseMenu {
 
             INPUT_MANAGER.setState(inputStateKeys.WORLD_SCENE);
           },
-          [keyBindings.pressA || keyBindings.pressB]: () => {
+          [keyBindings.pressB]: () => {
             this.out();
+
             INPUT_MANAGER.setState(inputStateKeys.WORLD_SCENE);
           },
         };

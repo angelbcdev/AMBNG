@@ -1,5 +1,5 @@
 import { BackGround } from "@/UI/backGround/backGroundShow";
-import { GAME } from "../sceneManager";
+import { GAME } from "@/scenes/sceneManager";
 import SceneRoot from "../sceneROOT";
 import { ButtonManager } from "@/UI/Button/buttonManager ";
 import {
@@ -15,17 +15,17 @@ export class HomeScene extends SceneRoot {
     {
       position: { x: 50, y: 150 },
       title: "Play",
-      action: () => GAME.changeScene(GAME.statesKeys.world),
+      action: () => GAME.changeScene(GAME.statesKeys.worldScene),
     },
     {
       position: { x: 50, y: 210 },
       title: "Options",
-      action: () => GAME.changeScene(GAME.statesKeys.option),
+      action: () => GAME.changeScene(GAME.statesKeys.optionScene),
     },
     {
       position: { x: 50, y: 270 },
       title: "Chips",
-      action: () => GAME.changeScene(GAME.statesKeys.chips),
+      action: () => GAME.changeScene(GAME.statesKeys.folderScene),
     },
   ]);
 
@@ -38,19 +38,18 @@ export class HomeScene extends SceneRoot {
         this.optionsButtons.keyDown(e);
         switch (e.key) {
           case "1":
-            GAME.changeScene(GAME.statesKeys.world);
+            GAME.changeScene(GAME.statesKeys.worldScene);
             break;
           case "2":
-            GAME.changeScene(GAME.statesKeys.option);
+            GAME.changeScene(GAME.statesKeys.optionScene);
             break;
           case "3":
-            GAME.changeScene(GAME.statesKeys.chips);
+            GAME.changeScene(GAME.statesKeys.folderScene);
             break;
         }
       },
       // onKeyUp
     });
-    INPUT_MANAGER.setState(this.nameScene);
   }
 
   draw(
@@ -59,7 +58,7 @@ export class HomeScene extends SceneRoot {
     canvas: HTMLCanvasElement
   ) {
     super.draw(deltaTime, c, canvas);
-    this.optionsButtons.draw(c);
+    this.optionsButtons.draw(c, deltaTime);
   }
   checkClick(mouseX: number, mouseY: number) {
     this.optionsButtons.checkClick(mouseX, mouseY);

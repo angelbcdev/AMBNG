@@ -137,7 +137,7 @@ export class CompleteScreen {
   }
   hideScreen() {
     // INPUT_MANAGER.setState(inputStateKeys.WORLD_SCENE);
-    GAME.changeScene(GAME.statesKeys.world);
+    GAME.changeScene(GAME.statesKeys.worldScene);
     this.resetOptions();
     BATTLE_MANAGER.outBattle();
     this.isHidden = true;

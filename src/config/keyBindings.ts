@@ -1,6 +1,6 @@
 export const keyBindings = {
-  pressB: "a",
-  pressA: "s",
+  pressB: "s",
+  pressA: "a",
   pressR: "q",
   pressL: "w",
   pressSelect: " ",

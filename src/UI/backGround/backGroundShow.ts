@@ -170,7 +170,7 @@ export class BackGround {
       this.position.y = 0;
     }
 
-    if (document.hasFocus() && this.canMove) {
+    if (document.hasFocus()) {
       if (this.frameTime > this.frameInterval) {
         // Actualización de la animación del sprite (si la tienes)
         this.frameTime = 0;
