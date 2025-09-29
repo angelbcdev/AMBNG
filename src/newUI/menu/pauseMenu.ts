@@ -1,5 +1,5 @@
 import { GAME } from "@/scenes/sceneManager";
-import { ButtonManager } from "../Button/buttonManager ";
+import { ButtonManager } from "@/UI/Button/buttonManager ";
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 import {
   GAME_IS_DEV,
@@ -8,7 +8,6 @@ import {
   GAME_TOGGLE_DEV,
 } from "@/core/gameState";
 import { keyBindings } from "@/config/keyBindings";
-import { getImageFromAssetsManager } from "@/core/assetshandler/assetHelpers";
 
 export class PauseMenu {
   nameScene = inputStateKeys.WORLD_PAUSE;
@@ -41,8 +40,8 @@ export class PauseMenu {
   ]);
 
   constructor() {
-    this.menuImage = getImageFromAssetsManager("ui:pauseMenu");
-    this.moneyImage = getImageFromAssetsManager("ui:moneyWindow");
+    this.menuImage.src = "/assects/chipsMenu/menuWindos.png";
+    this.moneyImage.src = "/assects/chipsMenu/moneywindos.png";
     this.setInputManager();
   }
   draw(ctx: CanvasRenderingContext2D, deltaTime: number) {
@@ -103,7 +102,7 @@ export class PauseMenu {
       }
     }
   }
-  checkKey = () => {};
+  checkKey = (_: KeyboardEvent) => {};
   in() {
     this.showMenu = true;
     INPUT_MANAGER.setState(this.nameScene);
@@ -138,7 +137,7 @@ export class PauseMenu {
           options[e.key.toLowerCase()]();
         }
       },
-      onKeyUp: () => {},
+      onKeyUp: (_: KeyboardEvent) => {},
     });
   }
 }

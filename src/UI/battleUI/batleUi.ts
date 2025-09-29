@@ -85,8 +85,6 @@ export class BattleUI {
     this.showAllAlerts(c);
 
     this.showDetails(c);
-
-    //TODO this.dialogue.draw(c, deltaTime);
   }
 
   showDetails(c: CanvasRenderingContext2D) {
@@ -146,21 +144,14 @@ export class BattleUI {
     c.fillStyle = this.frameX == 0 ? "#ff0000" : "#000fff"; // Color del texto
     c.textAlign = "center"; // Alineación horizontal
     c.textBaseline = "middle"; // Alineación vertical
-    c.fillText(
-      `Press ${
-        keyBindings.openChipsMenu == " " ? "Space" : keyBindings.openChipsMenu
-      }`,
-      140,
-      this.position.y + 38.5
-    );
+
+    const msj = `
+      ${keyBindings.pressL}
+      Press
+      ${keyBindings.pressR}`;
+    c.fillText(msj, 140, this.position.y + 38.5);
     c.fillStyle = this.frameX == 0 ? "#d6d6d6" : "#fdfddf"; // Color del texto
-    c.fillText(
-      `Press ${
-        keyBindings.openChipsMenu == " " ? "Space" : keyBindings.openChipsMenu
-      }`,
-      142,
-      this.position.y + 38
-    );
+    c.fillText(msj, 142, this.position.y + 38);
     c.restore();
   }
   checkClick(x: number, y: number): void {

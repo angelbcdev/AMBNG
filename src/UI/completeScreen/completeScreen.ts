@@ -29,7 +29,7 @@ export class CompleteScreen {
     INPUT_MANAGER.addState(this.nameScene, {
       onKeyDown: (e: KeyboardEvent) => {
         const opions = {
-          [keyBindings.singleShoot]: () => {
+          [keyBindings.pressA]: () => {
             const interval = setTimeout(() => {
               this.hideScreen();
             }, 3000);
@@ -42,7 +42,7 @@ export class CompleteScreen {
               clearInterval(interval);
             }
           },
-          [keyBindings.useChip]: () => {
+          [keyBindings.pressB]: () => {
             //
           },
         };
@@ -97,7 +97,7 @@ export class CompleteScreen {
     // c.font = "16px 'Mega-Man-Battle-Network-Regular'";
     this.paintText(
       c,
-      `Press ${keyBindings.singleShoot} to continue`,
+      `Press ${keyBindings.pressB} to continue`,
       x + 110,
       y + 20
     );

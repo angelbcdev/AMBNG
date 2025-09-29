@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import { Joystick } from "@/components/joystick";
+// import { Joystick } from "@/components/joystick";
 
 // import { DevFucntions } from "./components/DevFucntions";
 // import Joystick from "./components/joystick";
@@ -25,6 +25,7 @@ const animage = (timeStap: number) => {
 
   GAME.draw(deltaTime);
   GAME.update(deltaTime);
+
   requestAnimationFrame(animage);
 };
 
@@ -69,7 +70,6 @@ const animage = (timeStap: number) => {
 
 // Bootstrap: register manifest and preload before starting loops
 ASSET_MANAGER.registerManifest(ASSET_SOURCES);
-console.log("ASSET_MANAGER", ASSET_MANAGER);
 
 const drawLoading = (loaded: number, total: number) => {
   const w = canvas.width - 40;
@@ -108,9 +108,11 @@ const drawLoading = (loaded: number, total: number) => {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     {/* <main className="bg-blue-200 w-[430px] "><DevFucntions /></main> */}
-    <Joystick />
+    {/* <CanvasJoystick /> */}
   </StrictMode>
 );
+
+// //**--------------------------- */
 
 const LOGICAL_WIDTH = 430;
 const LOGICAL_HEIGHT = 430;

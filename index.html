@@ -8,7 +8,11 @@
   </head>
   <body id="game" class="bg-black flesx justify-center items-center">
     <div class="w-[430px] h-[430px] relative flex flex-col">
-      <canvas id="canvas" class="mx-auto"></canvas>
+      <canvas id="canvas" class="h-[430px] w-[430px]"></canvas>
+      <canvas
+        id="canvasJoystick"
+        class="h-[430px] w-[430px] md:hidden"
+      ></canvas>
       <!-- <canvas id="canvas2">ww</canvas> -->
       <div id="root"></div>
     </div>

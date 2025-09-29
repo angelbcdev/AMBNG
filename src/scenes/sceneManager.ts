@@ -5,6 +5,7 @@ import { OptionScene } from "./optionScene/optionScene";
 import { FolderScene } from "./folderScene/folderScene";
 
 import { INPUT_MANAGER } from "../input/inputManager";
+import { JOYSTICK_MANAGER } from "./joysTickManager";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -47,6 +48,7 @@ export class SceneManager {
     this.canvas = canvas;
     this.c = c;
     INPUT_MANAGER.setState(this.currentScene.nameScene);
+    JOYSTICK_MANAGER.draw();
     // this.currentScene.in();
     document.getElementById("canvas").addEventListener("click", (e) => {
       const rect = this.canvas.getBoundingClientRect();
@@ -62,18 +64,13 @@ export class SceneManager {
       const logicalX = dx / m.a; // m.a = scaleX * dpr
       const logicalY = dy / m.d; // m.d = scaleY * dpr
 
+      // entry of my aplicacions
+      //-------------
+
       this.currentScene.checkClick(logicalX, logicalY);
+      //-------------
     });
     INPUT_MANAGER.in();
-
-    // window.addEventListener("keydown", (e) => {
-    //   this.currentScene.checkKey(e);
-    //   const options = this.statesKeys;
-    //   const nextID = this.scenes[options[e.key.toLowerCase()]];
-    //   if (nextID !== undefined) {
-    //     this.changeScene(nextID);
-    //   }
-    // });
   }
 
   update(deltaTime: number) {
@@ -82,6 +79,7 @@ export class SceneManager {
 
   draw(deltaTime: number) {
     this.currentScene.draw(deltaTime, this.c, this.canvas);
+    //
   }
   changeScene(newScene: string) {
     if (!this.scenes[newScene]) {

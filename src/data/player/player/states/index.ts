@@ -66,12 +66,12 @@ export class PlayerState {
   }
   acctionKeyUp(key: string) {
     const handleEvents = {
-      [keyBindings.singleShoot]: () => {
+      [keyBindings.pressB]: () => {
         if (!this.player.canShoot) {
           this.player.canShoot = true;
         }
       },
-      [keyBindings.useChip]: () => {
+      [keyBindings.pressA]: () => {
         return;
       },
     };
@@ -97,7 +97,7 @@ export class PlayerState {
       arrowright: () => {
         newMatrixX += 1;
       },
-      [keyBindings.singleShoot]: () => {
+      [keyBindings.pressB]: () => {
         if (this.player.canShoot) {
           this.player.changeState(this.player.stateReference.SHOOT);
           setTimeout(() => {
@@ -106,7 +106,7 @@ export class PlayerState {
         }
       },
 
-      [keyBindings.useChip]: () => {
+      [keyBindings.pressA]: () => {
         if (this.player.canShoot) {
           this.useShip();
         }

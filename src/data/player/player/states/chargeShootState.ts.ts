@@ -42,7 +42,7 @@ export class ShootStateCharge extends PlayerState {
 
   acctionKeyUp(key: string): void {
     const handleEvents = {
-      [keyBindings.singleShoot]: () => {
+      [keyBindings.pressB]: () => {
         this.player.frameY = this.player.states.shoot;
         this.player.makeShoot = true;
         this.player.canShoot = true;
@@ -75,7 +75,7 @@ export class ShootStateCharge extends PlayerState {
       ArrowRight: () => {
         newMatrixX += 1;
       },
-      [keyBindings.singleShoot]: () => {
+      [keyBindings.pressB]: () => {
         this.canCountTimer = true;
       },
     };

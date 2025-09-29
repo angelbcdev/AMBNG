@@ -14,22 +14,20 @@ export class OptionScene extends SceneRoot {
   optionsButtons = new ButtonManager([
     {
       position: { x: 50, y: 150 },
-      title: "Single shoot / select chips   " + keyBindings.singleShoot,
-      action: () => this.rebindKey("singleShoot"),
+      title: "Single shoot / select chips   " + keyBindings.pressB,
+      action: () => this.rebindKey("pressB"),
     },
     {
       position: { x: 50, y: 190 },
-      title: "Use chips / cancel chip    " + keyBindings.useChip,
-      action: () => this.rebindKey("useChip"),
+      title: "Use chips / cancel chip    " + keyBindings.pressA,
+      action: () => this.rebindKey("pressA"),
     },
     {
       position: { x: 50, y: 230 },
       title:
         "Open chips menu    " +
-        (keyBindings.openChipsMenu === " "
-          ? "Space"
-          : keyBindings.openChipsMenu),
-      action: () => this.rebindKey("openChipsMenu"),
+        (keyBindings.pressSelect === " " ? "Space" : keyBindings.pressSelect),
+      action: () => this.rebindKey("pressSelect"),
     },
     {
       position: { x: 250, y: 360 },
@@ -101,12 +99,12 @@ export class OptionScene extends SceneRoot {
   // ✅ refresh button labels after rebinding
   refreshButtonLabels() {
     this.optionsButtons.buttons[0].title =
-      "Single shoot / select chips   " + keyBindings.singleShoot;
+      "Single shoot / select chips   " + keyBindings.pressB;
     this.optionsButtons.buttons[1].title =
-      "Use chips / cancel chip    " + keyBindings.useChip;
+      "Use chips / cancel chip    " + keyBindings.pressA;
     this.optionsButtons.buttons[2].title =
       "Open chips menu    " +
-      (keyBindings.openChipsMenu === " " ? "Space" : keyBindings.openChipsMenu);
+      (keyBindings.pressSelect === " " ? "Space" : keyBindings.pressSelect);
   }
 
   in() {}

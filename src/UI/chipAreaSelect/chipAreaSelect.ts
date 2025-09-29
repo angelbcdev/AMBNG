@@ -323,16 +323,16 @@ export class ShowChipAreaWithChip {
           this.showAddChip = false;
         }
       },
-      [keyBindings.showDialogue]: () => {
+      [keyBindings.pressR]: () => {
         if (this.chipSelected.length < 1) {
-          BATTLE_MANAGER.dialogue.showDialogue([
+          BATTLE_MANAGER.dialogue.pressR([
             "We can do this   ",
             "right MEGAMAN!    ",
             "             ",
             "LEST GO!!!!",
           ]);
         } else {
-          BATTLE_MANAGER.dialogue.showDialogue([
+          BATTLE_MANAGER.dialogue.pressR([
             "Hey MEGAMAN!   ",
             "Hurry finish this   ",
             "a piece a key     ",
@@ -340,16 +340,16 @@ export class ShowChipAreaWithChip {
           ]);
         }
       },
-      [keyBindings.singleShoot]: () => {
+      [keyBindings.pressA]: () => {
         this.addChip();
       },
-      [keyBindings.useChip]: () => {
+      [keyBindings.pressB]: () => {
         // deselect chip
         this.chipSelected.pop();
         this.chipSelecteInTurn.pop();
         this.validateAddButton();
       },
-      [keyBindings.openPauseMenu]: () => {
+      [keyBindings.pressStart]: () => {
         // move to OK or ADD
 
         if (this.currentRawChip != 2) {
@@ -414,7 +414,7 @@ export class ShowChipAreaWithChip {
 
         this.chipInView = { viewX: 0, viewY: 0 };
 
-        BATTLE_MANAGER.dialogue.showDialogue([
+        BATTLE_MANAGER.dialogue.pressR([
           "Hey MEGAMAN!   ",
           "let me way for",
           "more chips ",

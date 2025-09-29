@@ -1,9 +1,10 @@
 export const keyBindings = {
-  singleShoot: "a",
-  useChip: "s",
-  openChipsMenu: " ",
-  showDialogue: "q",
-  openPauseMenu: "enter",
+  pressB: "a",
+  pressA: "s",
+  pressR: "q",
+  pressL: "w",
+  pressSelect: " ",
+  pressStart: "enter",
 };
 
 export const colorsCanvas = {

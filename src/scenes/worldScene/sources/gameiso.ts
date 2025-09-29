@@ -81,16 +81,16 @@ export class GameIso {
     //ADD move to isoPlayer
     this.player.checkKeyDown(e);
     const options = {
-      [keyBindings.openPauseMenu]: () => {
+      [keyBindings.pressStart]: () => {
         BATTLE_MANAGER.menuScreen.in();
       },
-      [keyBindings.showDialogue]: () => {
+      [keyBindings.pressR]: () => {
         if (BATTLE_MANAGER.dialogue.isHidden) {
           const msj =
             isoLanDialogue[
               Math.floor(Math.random() * isoLanDialogue.length - 1)
             ];
-          BATTLE_MANAGER.dialogue.showDialogue(msj);
+          BATTLE_MANAGER.dialogue.pressR(msj);
           this.player.returnIdle();
           this.player.pressKey = [];
           INPUT_MANAGER.setState(inputStateKeys.DIALOGUE);

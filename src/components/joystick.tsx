@@ -1,11 +1,12 @@
 import { useRef } from "react";
 
 // Keep pressed keys in a global Set
-const pressedKeys = new Set<string>();
+export const ARRAY_KEYS = ["ArrowDown"];
 
-export function isKeyPressed(key: string) {
-  return pressedKeys.has(key);
-}
+// Function your game can call to check key states
+// export function isKeyPressed(key: string) {
+//   return pressedKeys.has(key);
+// }
 
 export const Joystick = () => {
   return (
@@ -86,19 +87,21 @@ const JTButton = ({
 
   const pressedRef = useRef(false);
 
+  // When pressed
   const onDown = () => {
     if (!pressedRef.current) {
       pressedRef.current = true;
-      pressedKeys.add(keyRepresent);
-      console.log("PRESS:", keyRepresent); // 🔥 log when pressed
+      ARRAY_KEYS.push(keyRepresent);
+      console.log("PRESS:", keyRepresent); // Debug
     }
   };
 
+  // When released
   const onUp = () => {
     if (pressedRef.current) {
       pressedRef.current = false;
-      pressedKeys.delete(keyRepresent);
-      console.log("RELEASE:", keyRepresent); // 🔥 log when released
+      ARRAY_KEYS.splice(ARRAY_KEYS.indexOf(keyRepresent), 1);
+      console.log("RELEASE:", keyRepresent); // Debug
     }
   };
 
@@ -106,7 +109,7 @@ const JTButton = ({
     <div
       onMouseDown={onDown}
       onMouseUp={onUp}
-      onMouseLeave={onUp}
+      onMouseLeave={onUp} // ensures release if cursor leaves button
       onTouchStart={onDown}
       onTouchEnd={onUp}
       className={`justify-center items-center flex ${style[className]}`}

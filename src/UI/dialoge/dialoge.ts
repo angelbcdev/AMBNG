@@ -68,10 +68,13 @@ export class Dialogue {
     INPUT_MANAGER.addState(this.nameScene, {
       onKeyDown: (e: KeyboardEvent) => {
         const options = {
-          [keyBindings.useChip]: () => {
+          [keyBindings.pressA]: () => {
             this.speed = this.maxSpeed;
+            if (this.isFinished()) {
+              this.hideDialogue();
+            }
           },
-          [keyBindings.singleShoot]: () => {
+          [keyBindings.pressB]: () => {
             if (this.isFinished()) {
               this.hideDialogue();
             }
@@ -83,7 +86,7 @@ export class Dialogue {
       },
       onKeyUp: (e: KeyboardEvent) => {
         const options = {
-          [keyBindings.useChip]: () => {
+          [keyBindings.pressA]: () => {
             this.speed = this.normalSpeed;
           },
         };
@@ -216,7 +219,7 @@ export class Dialogue {
     );
   }
 
-  showDialogue(newLines: string[] = ["message", "no", "added "]) {
+  pressR(newLines: string[] = ["message", "no", "added "]) {
     this.isHidden = false;
 
     // 🔑 reset, pero esperar a que suba antes de hablar

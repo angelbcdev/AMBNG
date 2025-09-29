@@ -136,7 +136,7 @@ class BattleManager {
     }
     this.chipAreaSelect.draw(c, deltaTime);
 
-    this.showDialogue(c, deltaTime);
+    this.pressR(c, deltaTime);
     this.fillBar(c);
     this.completeScreen.draw(c, deltaTime);
   }
@@ -145,7 +145,7 @@ class BattleManager {
     c.textAlign = "center";
     c.fillText(message, 430 / 2, 430 / 2 - (head || 0));
   }
-  showDialogue(c: CanvasRenderingContext2D, deltaTime: number) {
+  pressR(c: CanvasRenderingContext2D, deltaTime: number) {
     this.dialogue.draw(c, deltaTime);
   }
   update(deltaTime: number, _: CanvasRenderingContext2D) {

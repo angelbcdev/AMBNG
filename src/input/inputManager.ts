@@ -72,6 +72,7 @@ class InputStateMachine {
   }
 
   handleKeyDown(event: KeyboardEvent) {
+    console.log("keyup", event);
     const state = this.states[this.currentState];
     if (state && state.onKeyDown) {
       state.onKeyDown(event);

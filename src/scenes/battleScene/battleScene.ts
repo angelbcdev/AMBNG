@@ -28,7 +28,12 @@ export class BattleScene extends SceneRoot {
         ENTITY_MANAGER.player.handleKeyDown(e);
         // this.optionsButtons.keyDown(e);
         const opions = {
-          [keyBindings.openChipsMenu]: () => {
+          [keyBindings.pressL]: () => {
+            if (BATTLE_MANAGER.isCompletedBarShip) {
+              BATTLE_MANAGER.chipAreaSelect.showArea();
+            }
+          },
+          [keyBindings.pressR]: () => {
             if (BATTLE_MANAGER.isCompletedBarShip) {
               BATTLE_MANAGER.chipAreaSelect.showArea();
             }
@@ -36,7 +41,7 @@ export class BattleScene extends SceneRoot {
           v: () => {
             GAME_TOGGLE_DEV();
           },
-          [keyBindings.openPauseMenu]: () => {
+          [keyBindings.pressStart]: () => {
             GAME_TOGGLE_PAUSE();
           },
         };

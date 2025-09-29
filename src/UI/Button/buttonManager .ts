@@ -1,5 +1,6 @@
 import { keyBindings } from "@/config/keyBindings";
 import { getImageFromAssetsManager } from "@/core/assetshandler/assetHelpers";
+import { ARRAY_KEYS } from "@/components/joystick";
 
 export class ButtonManager {
   arrowImage = new Image();
@@ -38,6 +39,22 @@ export class ButtonManager {
       clickPoint: { x: 0, y: 0 },
     }));
   }
+  pressDown() {
+    if (ARRAY_KEYS.includes("ArrowUp")) {
+      this.currentButtonIndex =
+        (this.currentButtonIndex - 1 + this.buttons?.length) %
+        this.buttons?.length;
+    } else if (ARRAY_KEYS.includes("ArrowDown")) {
+      this.currentButtonIndex =
+        (this.currentButtonIndex + 1) % this.buttons?.length;
+    } else if (ARRAY_KEYS.includes(keyBindings.pressA)) {
+      try {
+        this.buttons[this.currentButtonIndex]?.action();
+      } catch {
+        // console.log("button not found");
+      }
+    }
+  }
 
   keyDown(e: KeyboardEvent) {
     if (e.key === "ArrowUp") {
@@ -48,8 +65,8 @@ export class ButtonManager {
       this.currentButtonIndex =
         (this.currentButtonIndex + 1) % this.buttons?.length;
     } else if (
-      e.key === keyBindings.singleShoot ||
-      keyBindings.singleShoot === e.key.toLowerCase()
+      e.key === keyBindings.pressA ||
+      keyBindings.pressA === e.key.toLowerCase()
     ) {
       try {
         this.buttons[this.currentButtonIndex]?.action();
@@ -99,6 +116,7 @@ export class ButtonManager {
   }
 
   checkClick(x: number, y: number) {
+    this.pressDown();
     this.buttons.forEach((btn) => {
       if (
         x + 16 > btn.position.x &&

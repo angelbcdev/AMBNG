@@ -24,7 +24,7 @@ export class ShootStateMax extends PlayerState {
 
   acctionKeyUp(key: string): void {
     const handleEvents = {
-      [keyBindings.singleShoot]: () => {
+      [keyBindings.pressB]: () => {
         if (!this.player.makeShoot) {
           this.player.frameY = this.player.states.shoot;
           this.player.makeShoot = true;

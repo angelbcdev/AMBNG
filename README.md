@@ -100,7 +100,7 @@ npm run preview
 
 ### UI Components
 - **`ButtonManager`** (`src/newUI/Button/buttonManager.ts`)
-  - Keyboard navigation: ArrowUp/ArrowDown to change selection, Enter or `keyBindings.singleShoot` to activate.
+  - Keyboard navigation: ArrowUp/ArrowDown to change selection, Enter or `keyBindings.pressB` to activate.
   - Draws a green arrow indicator next to the active button.
 - **`PauseMenu`** (`src/newUI/menu/pauseMenu.ts`)
   - Sliding side panels (left menu, right money panel) animated by `swapMenu()`.
@@ -118,8 +118,8 @@ npm run preview
 - **Chips scene navigation** (`src/scenes/chipsScene/chipsScene.ts`)
   - Two panes (Folder and Sack) with paging of 7 items each.
   - ArrowUp/ArrowDown moves the cursor; ArrowLeft/Right switches panes.
-  - `keyBindings.singleShoot` moves from Sack -> Folder (adds); same key on Folder removes and shifts selection.
-  - `keyBindings.useChip` returns to the previous scene.
+  - `keyBindings.pressB` moves from Sack -> Folder (adds); same key on Folder removes and shifts selection.
+  - `keyBindings.pressA` returns to the previous scene.
 
 ### World (Isometric)
 - Entities in `src/scenes/worldScene/sources/isoEntitys.ts` render as isometric diamonds.
@@ -131,8 +131,8 @@ Keybindings are defined in `src/config/keyBindings.ts` and can be changed at run
 
 **Default Controls** (names may vary depending on your current config):
 - **Arrow keys**: Navigate menus, move player in world, move selection in Chips scene
-- **Enter** or `singleShoot`: Activate menu buttons; add/remove chips in Chips scene
-- **`useChip`**: Confirm/return to previous scene from Chips scene
+- **Enter** or `pressB`: Activate menu buttons; add/remove chips in Chips scene
+- **`pressA`**: Confirm/return to previous scene from Chips scene
 - **Escape**: Toggle pause menu in world scene
 
 *Note: If you customized `keyBindings.ts`, the Options scene allows rebinding to new keys (avoids arrow keys by default).*

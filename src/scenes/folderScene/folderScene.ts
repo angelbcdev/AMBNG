@@ -52,10 +52,10 @@ export class FolderScene extends SceneRoot {
           arrowright: () => {
             this.viewSack = true;
           },
-          [keyBindings.singleShoot]: () => {
+          [keyBindings.pressB]: () => {
             this.keySelectChip();
           },
-          [keyBindings.useChip]: () => {
+          [keyBindings.pressA]: () => {
             GAME.returnToPreviousScene();
           },
         };
