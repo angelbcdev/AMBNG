@@ -1,5 +1,5 @@
 const gameSettings = {
-  timeForSelectShip: 30000,
+  timeForSelectShip: 10000,
 };
 
 export default gameSettings;

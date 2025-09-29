@@ -4,8 +4,7 @@ import { AddButtonComponent } from "./Component/extraImage";
 import { ChipSelectorComponent } from "./Component/extraImage";
 import { AddSelectorComponent } from "./Component/extraImage";
 
-import { BattleShip, IChips } from "@/data/player/player/chips/battleChip";
-import { allChipsA } from "@/data/player/player/chips/chipData";
+import { BattleShip } from "@/data/chips/battleChip";
 import { BattleScene } from "../../scenes/battleScene/battleScene";
 import { keyBindings } from "@/config/keyBindings";
 import { ENTITY_MANAGER } from "../../core/entityManager";
@@ -16,6 +15,7 @@ import {
 } from "@/input/inputManager";
 import { BATTLE_MANAGER } from "../../core/battleManager";
 import { GAME_SET_PAUSE, GAME_SET_UNPAUSE } from "../../core/gameState";
+import { CHIPS_MANAGER } from "@/core/chipsManager";
 
 export class ShowChipAreaWithChip {
   nameScene: InputState = inputStateKeys.BATTLE_CHIP_AREA;
@@ -42,14 +42,10 @@ export class ShowChipAreaWithChip {
 
   speed = 0.5;
   battleScene: BattleScene;
-  chipArea: BattleShip[][] = [[]];
-  chipSelected: BattleShip[] = [];
-  chipSelecteInTurn: string[] = [];
-  chipUsed: string[] = [];
+
   chipInView = { viewX: 0, viewY: 0 };
   showAddChip = true;
   currentRawChip = 1;
-  availableChip: BattleShip[] = [];
 
   // Component instances - only for drawing
   private baseImage = new BaseImageComponent();
@@ -141,14 +137,14 @@ export class ShowChipAreaWithChip {
   }
 
   drawChipArea(c: CanvasRenderingContext2D) {
-    this.chipArea.forEach((row, y) => {
+    CHIPS_MANAGER.chipArea.forEach((row, y) => {
       row.forEach((chip, x) => {
         const squareX = this.position.x + 1 + x * 42;
         const squareY = this.position.y + 278 + y * 40;
 
         c.save();
 
-        if (this.chipSelected.includes(chip)) {
+        if (CHIPS_MANAGER.chipSelected.includes(chip)) {
           c.globalAlpha = 0.7;
           c.fillStyle = "black";
           c.fillRect(squareX, squareY, 36, 35);
@@ -156,7 +152,7 @@ export class ShowChipAreaWithChip {
 
         try {
           chip.drawIcon(c as CanvasRenderingContext2D, squareX, squareY);
-        } catch (e) {}
+        } catch (_) {}
 
         c.restore();
 
@@ -168,7 +164,7 @@ export class ShowChipAreaWithChip {
   }
 
   drawChipSelected(c: CanvasRenderingContext2D) {
-    this.chipSelected.forEach((chip, y) => {
+    CHIPS_MANAGER.chipSelected.forEach((chip, y) => {
       let gap = 0;
       switch (y) {
         case 0:
@@ -197,7 +193,10 @@ export class ShowChipAreaWithChip {
 
       chip.drawIcon(c, squareX, squareY);
 
-      if (chip == this.chipArea[this.chipInView.viewY][this.chipInView.viewX]) {
+      if (
+        chip ==
+        CHIPS_MANAGER.chipArea[this.chipInView.viewY][this.chipInView.viewX]
+      ) {
         this.chipSelector.draw(c, squareX, squareY, this.chipSelectorFrameX);
       }
     });
@@ -224,13 +223,14 @@ export class ShowChipAreaWithChip {
   }
 
   drawChipBigImage(c: CanvasRenderingContext2D) {
-    if (this.chipArea.length < 1) {
+    if (CHIPS_MANAGER.chipArea.length < 1) {
       return;
     }
 
     let chip;
     try {
-      chip = this.chipArea[this.chipInView.viewY][this.chipInView.viewX];
+      chip =
+        CHIPS_MANAGER.chipArea[this.chipInView.viewY][this.chipInView.viewX];
     } catch (_) {}
 
     if (this.chipInView.viewX < 5 && chip) {
@@ -241,7 +241,7 @@ export class ShowChipAreaWithChip {
   }
 
   noChipSelected(c: CanvasRenderingContext2D) {
-    const hasChip = this.chipSelected.length > 0;
+    const hasChip = CHIPS_MANAGER.chipSelected.length > 0;
     const noChip = {
       titleA: "NO DATA",
       titleB: "SELECTED ",
@@ -263,7 +263,7 @@ export class ShowChipAreaWithChip {
 
     let currentMSJ = hasChip ? withChip : noChip;
 
-    if (this.chipSelected.length == 0 && !this.showAddChip) {
+    if (CHIPS_MANAGER.chipSelected.length == 0 && !this.showAddChip) {
       currentMSJ = addMSJ;
     }
 
@@ -280,7 +280,7 @@ export class ShowChipAreaWithChip {
   }
 
   validateAddButton() {
-    if (this.chipSelected.length > 0 || this.currentRawChip == 3) {
+    if (CHIPS_MANAGER.chipSelected.length > 0 || this.currentRawChip == 3) {
       this.showADDButon = false;
     } else {
       this.showADDButon = true;
@@ -310,7 +310,7 @@ export class ShowChipAreaWithChip {
       },
       arrowdown: () => {
         if (
-          this.chipInView.viewY < this.chipArea.length - 1 &&
+          this.chipInView.viewY < CHIPS_MANAGER.chipArea.length - 1 &&
           this.chipInView.viewX < 5
         ) {
           this.chipInView.viewY++;
@@ -324,7 +324,7 @@ export class ShowChipAreaWithChip {
         }
       },
       [keyBindings.pressR]: () => {
-        if (this.chipSelected.length < 1) {
+        if (CHIPS_MANAGER.chipSelected.length < 1) {
           BATTLE_MANAGER.dialogue.showMessage([
             "We can do this   ",
             "right MEGAMAN!    ",
@@ -345,8 +345,8 @@ export class ShowChipAreaWithChip {
       },
       [keyBindings.pressB]: () => {
         // deselect chip
-        this.chipSelected.pop();
-        this.chipSelecteInTurn.pop();
+        CHIPS_MANAGER.chipSelected.pop();
+        CHIPS_MANAGER.chipSelecteInTurn.pop();
         this.validateAddButton();
       },
       [keyBindings.pressStart]: () => {
@@ -365,12 +365,12 @@ export class ShowChipAreaWithChip {
   }
 
   sendChipToPlayer() {
-    if (this.chipSelected.length > 0) {
-      ENTITY_MANAGER.player.addChip(this.chipSelected);
+    if (CHIPS_MANAGER.chipSelected.length > 0) {
+      ENTITY_MANAGER.player.addChip(CHIPS_MANAGER.chipSelected);
       this.currentRawChip = 1;
     }
 
-    this.chipSelected = [];
+    CHIPS_MANAGER.chipSelected = [];
     this.hiddenArea();
   }
 
@@ -378,17 +378,18 @@ export class ShowChipAreaWithChip {
     const timeForDialoge = 1700;
 
     if (this.chipInView.viewX < 5) {
-      if (this.chipSelected.length > 5) {
+      if (CHIPS_MANAGER.chipSelected.length > 5) {
         return;
       }
-      const chip = this.chipArea[this.chipInView.viewY][this.chipInView.viewX];
+      const chip =
+        CHIPS_MANAGER.chipArea[this.chipInView.viewY][this.chipInView.viewX];
 
-      if (!this.chipSelected.includes(chip) && chip != null) {
-        this.chipSelected.push(chip);
-        this.chipSelecteInTurn.push(chip.id);
+      if (!CHIPS_MANAGER.chipSelected.includes(chip) && chip != null) {
+        CHIPS_MANAGER.chipSelected.push(chip);
+        CHIPS_MANAGER.chipSelecteInTurn.push(chip.id);
         this.addNewChip = true;
 
-        if (this.chipSelected.length == 5) {
+        if (CHIPS_MANAGER.chipSelected.length == 5) {
           this.chipInView.viewX = 5;
           this.chipInView.viewY = 0;
         } else {
@@ -402,8 +403,11 @@ export class ShowChipAreaWithChip {
       this.validateAddButton();
     } else {
       // INPUT_MANAGER.setState(inputStateKeys.NO_INPUT);
-      this.chipUsed = [...this.chipSelecteInTurn, ...this.chipUsed];
-      this.chipSelecteInTurn = [];
+      CHIPS_MANAGER.chipUsed = [
+        ...CHIPS_MANAGER.chipSelecteInTurn,
+        ...CHIPS_MANAGER.chipUsed,
+      ];
+      CHIPS_MANAGER.chipSelecteInTurn = [];
       ENTITY_MANAGER.player.allChips = [];
 
       if (this.showAddChip) {
@@ -450,8 +454,8 @@ export class ShowChipAreaWithChip {
   }
   showChipInTurn() {
     const chipToPlay: BattleShip[][] = [];
-    const availableChips = this.availableChip.filter((chip) => {
-      return !this.chipUsed.includes(chip.id);
+    const availableChips = CHIPS_MANAGER.chipsFolder.filter((chip) => {
+      return !CHIPS_MANAGER.chipUsed.includes(chip.id);
     });
 
     let x = 0;
@@ -464,25 +468,11 @@ export class ShowChipAreaWithChip {
       }
     }
 
-    this.chipArea = chipToPlay.slice(0, this.currentRawChip);
+    CHIPS_MANAGER.chipArea = chipToPlay.slice(0, this.currentRawChip);
   }
 
   prepareChipArea() {
-    this.availableChip = this.shuffleChip();
-  }
-  getChipDontUse() {
-    // return t
-  }
-  shuffleChip() {
-    return allChipsA
-      .sort(() => Math.random() - 0.5)
-      .map((chip) => {
-        return new BattleShip({ title: chip.title });
-      });
-  }
-  getSpecificChip() {
-    return allChipsA.map((_) => {
-      return new BattleShip({ title: IChips.block });
-    });
+    //TODO this has to be in the chip manager
+    CHIPS_MANAGER.chipsFolder = CHIPS_MANAGER.shuffleChip();
   }
 }

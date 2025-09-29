@@ -3,7 +3,7 @@ import SceneRoot from "../sceneROOT";
 
 import { CHIPS_MANAGER } from "@/core/chipsManager";
 
-import { BattleShip } from "@/data/player/player/chips/battleChip";
+import { BattleShip } from "@/data/chips/battleChip";
 import { keyBindings } from "@/config/keyBindings";
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 import { GreenArrow } from "@/UI/greenArrow";
@@ -23,14 +23,10 @@ export class FolderScene extends SceneRoot {
   viewSack = false;
   frameX = 0;
   frameXLimit = this.width / 6 + 40;
-  folderIndex = 0;
-  sliceIndexFolder = 0;
+
+  // Simplificado: solo necesitamos un índice global por cada lista
   globalFolderIndex = 0;
   globalSackIndex = 0;
-  sackIndex = 0;
-  sliceIndexSack = 0;
-  moveToFolderID: string = "N/A";
-  removeFolderID: string = "N/A";
 
   constructor() {
     super();
@@ -58,12 +54,12 @@ export class FolderScene extends SceneRoot {
             this.keySelectChip();
           },
           [keyBindings.pressB]: () => {
-            if (CHIPS_MANAGER.chipsFolder.length >= 29) {
+            if (CHIPS_MANAGER.isFolderFull()) {
               GAME.returnToPreviousScene();
             } else {
               BATTLE_MANAGER.dialogue.showMessage([
-                "No is a good idea",
-                "go with least 30 chips",
+                "It's not a good idea",
+                `go with least ${CHIPS_MANAGER.minChipFolder} chips`,
                 "in the folder",
               ]);
             }
@@ -73,192 +69,91 @@ export class FolderScene extends SceneRoot {
           options[e.key.toLowerCase()]();
         }
       },
-      // onKeyUp
     });
   }
 
-  keySelectChip = () => {
-    if (this.viewSack) {
-      CHIPS_MANAGER.addChipToFolder(this.moveToFolderID);
-    } else {
-      if (this.globalFolderIndex - 1 > 0) {
-        this.globalFolderIndex -= 1;
-      }
-      this.folderIndex = this.folderIndex - 1 > 0 ? this.folderIndex - 1 : 0;
-      this.sliceIndexFolder =
-        this.sliceIndexFolder - 1 > 0 ? this.sliceIndexFolder - 1 : 0;
-      CHIPS_MANAGER.removeChipFromFolder(this.removeFolderID);
-      this.removeFolderID = CHIPS_MANAGER.chipsFolder[this.folderIndex]?.id;
-    }
-  };
+  showData() {
+    console.log({
+      viewSack: this.viewSack,
+      globalFolderIndex: this.globalFolderIndex,
+      globalSackIndex: this.globalSackIndex,
+      currentChip: this.viewSack
+        ? CHIPS_MANAGER.chipsSack[this.globalSackIndex]?.name
+        : CHIPS_MANAGER.chipsFolder[this.globalFolderIndex]?.name,
+    });
+  }
+
   upIndex = () => {
     if (this.viewSack) {
-      this.updateNavigationUp({
-        globalIndex: this.globalSackIndex,
-        allChips: CHIPS_MANAGER.chipsSack,
-        moveId: (id: string) => {
-          this.moveToFolderID = id;
-        },
-        isSack: true,
-        viewIndex: this.sackIndex,
-        viewSlice: this.sliceIndexSack,
-        setGlobalIndex: (index: number) => {
-          this.globalSackIndex = index;
-        },
-        setViewIndex: (index: number) => {
-          this.sackIndex = index;
-        },
-        setViewSlice: (index: number) => {
-          this.sliceIndexSack = index;
-        },
-      });
+      this.globalSackIndex = Math.max(0, this.globalSackIndex - 1);
     } else {
-      this.updateNavigationUp({
-        globalIndex: this.globalFolderIndex,
-        allChips: CHIPS_MANAGER.chipsFolder,
-        moveId: (id: string) => {
-          this.removeFolderID = id;
-        },
-        isSack: false,
-        viewIndex: this.folderIndex,
-        viewSlice: this.sliceIndexFolder,
-        setGlobalIndex: (index: number) => {
-          this.globalFolderIndex = index;
-        },
-        setViewIndex: (index: number) => {
-          this.folderIndex = index;
-        },
-        setViewSlice: (index: number) => {
-          this.sliceIndexFolder = index;
-        },
-      });
+      this.globalFolderIndex = Math.max(0, this.globalFolderIndex - 1);
     }
   };
-  downIndex() {
+
+  downIndex = () => {
     if (this.viewSack) {
-      this.updateNavigationDown({
-        globalIndex: this.globalSackIndex,
-        allChips: CHIPS_MANAGER.chipsSack,
-        moveId: (id: string) => {
-          this.moveToFolderID = id;
-        },
-        isSack: true,
-        viewIndex: this.sackIndex,
-        viewSlice: this.sliceIndexSack,
-        setGlobalIndex: (index: number) => {
-          this.globalSackIndex = index;
-        },
-        setViewIndex: (index: number) => {
-          this.sackIndex = index;
-        },
-        setViewSlice: (index: number) => {
-          this.sliceIndexSack = index;
-        },
-      });
+      this.globalSackIndex = Math.min(
+        CHIPS_MANAGER.chipsSack.length - 1,
+        this.globalSackIndex + 1
+      );
     } else {
-      this.updateNavigationDown({
-        globalIndex: this.globalFolderIndex,
-        allChips: CHIPS_MANAGER.chipsFolder,
-        moveId: (id: string) => {
-          this.removeFolderID = id;
-        },
-        isSack: false,
-        viewIndex: this.folderIndex,
-        viewSlice: this.sliceIndexFolder,
-        setGlobalIndex: (index: number) => {
-          this.globalFolderIndex = index;
-        },
-        setViewIndex: (index: number) => {
-          this.folderIndex = index;
-        },
-        setViewSlice: (index: number) => {
-          this.sliceIndexFolder = index;
-        },
-      });
+      this.globalFolderIndex = Math.min(
+        CHIPS_MANAGER.chipsFolder.length - 1,
+        this.globalFolderIndex + 1
+      );
     }
-  }
-  updateNavigationUp({
-    moveId,
-    globalIndex,
-    allChips,
-    isSack,
-    setGlobalIndex,
-    viewIndex,
-    viewSlice,
-    setViewIndex,
-    setViewSlice,
-  }: {
-    moveId: (id: string) => void;
-    globalIndex: number;
-    allChips: BattleShip[];
-    isSack: boolean;
-    setGlobalIndex: (index: number) => void;
-    viewIndex: number;
-    viewSlice: number;
-    setViewIndex: (index: number) => void;
-    setViewSlice: (index: number) => void;
-  }) {
-    if (globalIndex - 1 <= 0) {
-      globalIndex = 0;
+  };
+
+  keySelectChip = () => {
+    if (this.viewSack) {
+      // Agregar del sack al folder
+      const chipToAdd = CHIPS_MANAGER.chipsSack[this.globalSackIndex];
+      if (chipToAdd) {
+        CHIPS_MANAGER.addChipToFolder(chipToAdd.id);
+      }
     } else {
-      globalIndex -= 1;
-    }
-    moveId(
-      isSack ? allChips[globalIndex]?.id : allChips[globalIndex]?.idForMove
-    );
-    if (viewIndex - 1 >= 0) {
-      viewIndex -= 1;
-    } else if (viewIndex <= 0) {
-      if (viewSlice > 0) {
-        viewSlice -= 1;
+      // Remover del folder
+      const chipToRemove = CHIPS_MANAGER.chipsFolder[this.globalFolderIndex];
+      if (chipToRemove) {
+        CHIPS_MANAGER.removeChipFromFolder(chipToRemove.id);
+
+        // Ajustar el índice después de borrar
+        if (this.globalFolderIndex >= CHIPS_MANAGER.chipsFolder.length) {
+          this.globalFolderIndex = Math.max(
+            0,
+            CHIPS_MANAGER.chipsFolder.length - 1
+          );
+        }
       }
     }
+  };
 
-    setGlobalIndex(globalIndex);
-    setViewIndex(viewIndex);
-    setViewSlice(viewSlice);
+  // Calcula el slice dinámicamente basado en el índice global
+  private getViewSlice(globalIndex: number, totalItems: number): number {
+    const VISIBLE_ITEMS = 7;
+
+    if (totalItems <= VISIBLE_ITEMS) {
+      return 0;
+    }
+
+    // La flecha se mueve hasta la posición 6, luego empieza el scroll
+    if (globalIndex <= 6) {
+      return 0;
+    }
+
+    // Cuando pasa la posición 6, hacer scroll manteniendo la flecha en posición 6
+    const maxSlice = Math.max(0, totalItems - VISIBLE_ITEMS);
+    return Math.min(globalIndex - 6, maxSlice);
   }
-  updateNavigationDown({
-    globalIndex,
-    allChips,
-    moveId,
-    isSack,
-    viewIndex,
-    viewSlice,
-    setGlobalIndex,
-    setViewIndex,
-    setViewSlice,
-  }: {
-    globalIndex: number;
-    allChips: BattleShip[];
-    moveId: (id: string) => void;
-    isSack: boolean;
-    viewIndex: number;
-    viewSlice: number;
-    setGlobalIndex: (index: number) => void;
-    setViewIndex: (index: number) => void;
-    setViewSlice: (index: number) => void;
-  }) {
-    if (globalIndex + 1 >= allChips.length - 1) {
-      globalIndex = allChips.length - 1;
-    } else {
-      globalIndex += 1;
-    }
-    moveId(
-      isSack ? allChips[globalIndex]?.id : allChips[globalIndex]?.idForMove
-    );
-    //sack side
-    if (viewIndex + 1 <= 6) {
-      viewIndex += 1;
-    } else if (viewIndex >= 6) {
-      if (viewSlice + 7 < allChips.length) viewSlice += 1;
-    }
-    setGlobalIndex(globalIndex);
-    setViewIndex(viewIndex);
-    setViewSlice(viewSlice);
+
+  // Calcula el índice visual dentro de la ventana visible
+  private getViewIndex(globalIndex: number, sliceStart: number): number {
+    return globalIndex - sliceStart;
   }
 
   draw(deltaTime: number, c: CanvasRenderingContext2D) {
+    // Animación del frame
     if (this.viewSack) {
       this.frameX += deltaTime * 2.5;
       if (this.frameX >= this.frameXLimit - 38) {
@@ -270,10 +165,10 @@ export class FolderScene extends SceneRoot {
         this.frameX = 0;
       }
     }
+
     c.save();
     c.translate(0 - this.frameX, 0);
 
-    // super.draw(deltaTime, c, canvas);
     c.drawImage(
       this.image,
       this.x,
@@ -287,13 +182,28 @@ export class FolderScene extends SceneRoot {
     );
 
     c.fillText(`${CHIPS_MANAGER.chipsFolder.length}`, 320, 30);
-    // this.optionsButtons.draw(c);
-    //TODO: Folder chips
 
+    // Calcular slices e índices visuales dinámicamente
+    const folderSlice = this.getViewSlice(
+      this.globalFolderIndex,
+      CHIPS_MANAGER.chipsFolder.length
+    );
+    const folderViewIndex = this.getViewIndex(
+      this.globalFolderIndex,
+      folderSlice
+    );
+
+    const sackSlice = this.getViewSlice(
+      this.globalSackIndex,
+      CHIPS_MANAGER.chipsSack.length
+    );
+    const sackViewIndex = this.getViewIndex(this.globalSackIndex, sackSlice);
+
+    // Dibujar folder chips
     this.drawChipsCategory({
       c,
-      indexSlice: this.sliceIndexFolder,
-      indexToShow: this.folderIndex,
+      indexSlice: folderSlice,
+      indexToShow: folderViewIndex,
       xBlackArronws: 280,
       xGreenArronws: 190,
       xtextNameChips: 415,
@@ -302,23 +212,25 @@ export class FolderScene extends SceneRoot {
       deltaTime,
       category: "folder",
     });
-    //TODO: sacks chips
+
+    // Dibujar sack chips
     this.drawChipsCategory({
       c,
-      indexSlice: this.sliceIndexSack,
-      indexToShow: this.sackIndex,
+      indexSlice: sackSlice,
+      indexToShow: sackViewIndex,
       xBlackArronws: 550,
       xGreenArronws: 450,
       xtextNameChips: 675,
       xBigImage: 730,
       chipsToShow: CHIPS_MANAGER.chipsSack,
       deltaTime,
-      //CHIPS_MANAGER.randomChip,
       category: "sack",
     });
+
     c.restore();
     BATTLE_MANAGER.dialogue.draw(c, deltaTime);
   }
+
   drawChipsCategory({
     c,
     indexSlice,
@@ -343,6 +255,7 @@ export class FolderScene extends SceneRoot {
     category: "folder" | "sack";
   }) {
     const chips = chipsToShow.slice(indexSlice, indexSlice + 7);
+
     // Arrows
     if (indexSlice > 0) {
       c.drawImage(this.arrowBlackImageup, xBlackArronws, 54, 28, 28);
@@ -352,26 +265,25 @@ export class FolderScene extends SceneRoot {
     }
 
     chips.forEach((chip, index) => {
-      if (index == indexToShow) {
-        //big image
-        chips[indexToShow].drawFullImage(c, xBigImage, 50);
+      if (index === indexToShow) {
+        // Big image
+        chip.drawFullImage(c, xBigImage, 50);
 
-        //green arrow
+        // Green arrow
         this.greenArrow.draw(
           c,
           { x: xGreenArronws + 5, y: 85 + index * 44 },
           deltaTime
         );
-        // c.drawImage(this.arrowImage, xGreenArronws, 94 + index * 44, 28, 28);
       }
-      //name
+
+      // Name
       if (category === "folder") {
         chip.drawName(c, xtextNameChips, 113 + index * 44);
       } else {
         const isSelected = CHIPS_MANAGER.chipsFolder
           .map((chip) => chip.name)
           .includes(chip.name);
-        // console.log("xtextNameChips", chip.name);
         chip.drawName(c, xtextNameChips, 113 + index * 44, "", !isSelected);
       }
     });
@@ -380,15 +292,17 @@ export class FolderScene extends SceneRoot {
   checkClick(_: number, __: number) {
     // this.optionsButtons.checkClick(mouseX, mouseY);
   }
+
   checkKey(_: KeyboardEvent) {
     // this.optionsButtons.keyDown(e);
   }
 
   in() {
-    this.moveToFolderID = CHIPS_MANAGER.chipsSack[0].id;
-    this.removeFolderID = CHIPS_MANAGER.chipsFolder[0]?.idForMove || "N/A";
+    this.globalSackIndex = 0;
+    this.globalFolderIndex = 0;
     INPUT_MANAGER.setState(this.nameScene);
   }
+
   out() {
     this.viewSack = false;
   }

@@ -7,7 +7,7 @@ import { MegamanAttackBasic } from "../../attacks/megamanAttack/MegamanAttackBas
 import { MegamanAttackDash } from "../../attacks/megamanAttack/MegamanAttackDash.ts";
 import { Entity } from "../../../entities/entity.ts";
 
-import { BattleShip } from "./chips/battleChip.ts";
+import { BattleShip } from "../../chips/battleChip.ts";
 import { ShootStateMax } from "./states/chargeMaxState.ts";
 import { ShootStateCharge } from "./states/chargeShootState.ts.ts";
 import { HealState } from "./states/healState.ts";

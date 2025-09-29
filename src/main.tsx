@@ -11,6 +11,7 @@ import { GAME } from "@/scenes/sceneManager";
 // import { BATTLE_MANAGER } from "./core/battleManager";
 import { ASSET_MANAGER } from "./core/assetManager";
 import { ASSET_SOURCES } from "./core/assetshandler/assetSources";
+import { CHIPS_MANAGER } from "./core/chipsManager";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -29,44 +30,42 @@ const animage = (timeStap: number) => {
   requestAnimationFrame(animage);
 };
 
-// const canvas2 = document.getElementById("canvas2") as HTMLCanvasElement;
-// const c2 = canvas2.getContext("2d")!;
-// canvas2.width = 430;
-// canvas2.height = 430;
+const canvas2 = document.getElementById("canvas2") as HTMLCanvasElement;
+const c2 = canvas2.getContext("2d")!;
+canvas2.width = 430;
+canvas2.height = 430;
 
-// const animage2 = () => {
-//   c2.clearRect(0, 0, canvas2.width, canvas2.height);
-//   c2.fillStyle = "white";
-//   c2.fillRect(0, 0, canvas2.width, canvas2.height);
+const animage2 = () => {
+  c2.clearRect(0, 0, canvas2.width, canvas2.height);
+  c2.fillStyle = "white";
+  c2.fillRect(0, 0, canvas2.width, canvas2.height);
 
-//   BATTLE_MANAGER.chipAreaSelect.availableChip.forEach((chip, index) => {
-//     const colSize = 5; // how many chips per row
-//     const cellSize = 51; // spacing
+  CHIPS_MANAGER.chipsFolder.forEach((chip, index) => {
+    const colSize = 5; // how many chips per row
+    const cellSize = 51; // spacing
 
-//     const row = Math.floor(index / colSize); // row number
-//     const col = index % colSize; // column number
+    const row = Math.floor(index / colSize); // row number
+    const col = index % colSize; // column number
 
-//     const x = col * cellSize;
-//     const y = row * cellSize;
+    const x = col * cellSize;
+    const y = row * cellSize;
 
-//     const chipIsSelected = BATTLE_MANAGER.chipAreaSelect.chipSelecteInTurn.includes(
-//       chip.id
-//     );
-//     const chipIsUsed = BATTLE_MANAGER.chipAreaSelect.chipUsed.includes(chip.id);
+    const chipIsSelected = CHIPS_MANAGER.chipSelecteInTurn.includes(chip.id);
+    const chipIsUsed = CHIPS_MANAGER.chipUsed.includes(chip.id);
 
-//     chip.drawIcon(c2, x, y);
-//     if (chipIsSelected) {
-//       c2.fillStyle = "#ff000080";
-//       c2.fillRect(x, y, 36, 32);
-//     }
-//     if (chipIsUsed) {
-//       c2.fillStyle = "#00000090";
-//       c2.fillRect(x, y, 36, 32);
-//     }
-//   });
+    chip.drawIcon(c2, x, y);
+    if (chipIsSelected) {
+      c2.fillStyle = "#ff000080";
+      c2.fillRect(x, y, 36, 32);
+    }
+    if (chipIsUsed) {
+      c2.fillStyle = "#00000090";
+      c2.fillRect(x, y, 36, 32);
+    }
+  });
 
-//   requestAnimationFrame(animage2);
-// };
+  requestAnimationFrame(animage2);
+};
 
 // Bootstrap: register manifest and preload before starting loops
 ASSET_MANAGER.registerManifest(ASSET_SOURCES);
@@ -93,7 +92,7 @@ const drawLoading = (loaded: number, total: number) => {
   await ASSET_MANAGER.preloadAll(drawLoading);
   // Start loops when ready
   requestAnimationFrame(animage);
-  // requestAnimationFrame(animage2);
+  requestAnimationFrame(animage2);
 })();
 
 // document.getElementById("canvas").addEventListener("click", (e) => {
@@ -165,5 +164,5 @@ function handleResize() {
   }
 }
 
-window.addEventListener("resize", handleResize);
-handleResize();
+// window.addEventListener("resize", handleResize);
+// handleResize();

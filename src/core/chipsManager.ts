@@ -1,23 +1,39 @@
-import { BattleShip } from "../data/player/player/chips/battleChip";
-import { allChipsA } from "../data/player/player/chips/chipData";
+import { BattleShip, IChips } from "../data/chips/battleChip";
+import { allChipsA } from "../data/chips/chipData";
+import { BATTLE_MANAGER } from "./battleManager";
+
+const chipInGame = allChipsA
+  .sort(() => Math.random() - 0.5)
+  .map((chip) => {
+    return new BattleShip({ title: chip.title });
+  });
 
 export class ChipManager {
   static instance: ChipManager | null = null;
-  chipsSack: BattleShip[] = [];
+  chipsSack: BattleShip[] = chipInGame;
+  minChipFolder = 20;
+  maxChipFolder = 25;
   chipsFolder: BattleShip[] = [];
+
   chipsForBattle: BattleShip[] = [];
 
-  randomChip = allChipsA
-    .sort(() => Math.random() - 0.5)
-    .map((chip) => {
-      return new BattleShip({ title: chip.title });
-    });
+  // chip show in area selector
+  chipArea: BattleShip[][] = [[]];
+
+  // chip show in selected area
+  chipSelected: BattleShip[] = [];
+
+  // chip name of selected area
+  chipSelecteInTurn: string[] = [];
+
+  // chip name of all chips used
+  chipUsed: string[] = [];
 
   constructor() {
-    this.chipsSack = allChipsA.map((chip) => {
-      return new BattleShip({ title: chip.title });
-    });
-    this.chipsFolder = this.randomChip.slice(0, 5);
+    this.chipsFolder = chipInGame.filter((chip) => chip.isInFolder);
+  }
+  isFolderFull() {
+    return this.chipsFolder.length >= this.minChipFolder;
   }
 
   static getInstance() {
@@ -26,20 +42,40 @@ export class ChipManager {
     }
     return ChipManager.instance;
   }
-  addChip(chip: BattleShip) {
-    this.chipsForBattle.push(chip);
+  refreshFolder() {
+    this.chipsFolder = chipInGame.filter((chip) => chip.isInFolder);
   }
-  clearShips() {
-    this.chipsForBattle = [];
-  }
+
   addChipToFolder(id: string) {
+    if (this.chipsFolder.length >= this.maxChipFolder) {
+      BATTLE_MANAGER.dialogue.showMessage([
+        "Folder is full",
+        `You have ${this.chipsFolder.length} chips`,
+        "remove a chip from the folder",
+      ]);
+      return;
+    }
     const chip = this.chipsSack.find((c) => c.id === id);
     if (chip) {
-      this.chipsFolder.push(chip);
+      chip.addInFolder();
     }
+    this.refreshFolder();
   }
   removeChipFromFolder(id: string) {
-    this.chipsFolder = this.chipsFolder.filter((c) => c.id !== id);
+    const chip = this.chipsFolder.find((c) => c.id === id);
+    if (chip) {
+      chip.removeInFolder();
+    }
+    this.refreshFolder();
+  }
+  getSpecificChip() {
+    return allChipsA.map((_) => {
+      return new BattleShip({ title: IChips.block });
+    });
+  }
+
+  shuffleChip() {
+    return this.chipsFolder.sort(() => Math.random() - 0.5);
   }
 }
 

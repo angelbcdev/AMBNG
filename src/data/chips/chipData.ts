@@ -1,10 +1,10 @@
-import { BasicBomb } from "../../../attacks/megamanAttack/basicBomp";
-import { BasicPunch } from "../../../attacks/megamanAttack/basicPunch";
-import { BasicSword } from "../../../attacks/megamanAttack/basicSword";
-import { MegamanAttackBasic } from "../../../attacks/megamanAttack/MegamanAttackBasic";
-import { MegamanAttackDash } from "../../../attacks/megamanAttack/MegamanAttackDash";
-import { MegamanAttackDashShoot } from "../../../attacks/megamanAttack/MegamanAttackDashShoot";
-import { StaticBlocks } from "../../../enemys/elements/block";
+import { BasicBomb } from "../attacks/megamanAttack/basicBomp";
+import { BasicPunch } from "../attacks/megamanAttack/basicPunch";
+import { BasicSword } from "../attacks/megamanAttack/basicSword";
+import { MegamanAttackBasic } from "../attacks/megamanAttack/MegamanAttackBasic";
+import { MegamanAttackDash } from "../attacks/megamanAttack/MegamanAttackDash";
+import { MegamanAttackDashShoot } from "../attacks/megamanAttack/MegamanAttackDashShoot";
+import { StaticBlocks } from "../enemys/elements/block";
 
 type ActionForChip = "attack" | "fieldChange" | "heal" | "other" | "addElement";
 type SpriteState =
@@ -45,6 +45,7 @@ export interface ChipData {
   finiteMachine: FiniteMachine;
   chipProyectile: any;
   timeForAttack: number;
+  isInFolder: boolean;
   chipType?: number;
   gamechange?: GameChange;
   elementToAdd?: ElementToAdd; // Assuming elementToAdd is some kind of object or class
@@ -64,6 +65,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: MegamanAttackBasic,
     timeForAttack: 600,
+    isInFolder: true,
   },
   {
     id: "cannons1-A",
@@ -77,6 +79,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: MegamanAttackBasic,
     timeForAttack: 600,
+    isInFolder: false,
   },
   {
     id: "cannons1-A",
@@ -90,6 +93,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: MegamanAttackBasic,
     timeForAttack: 600,
+    isInFolder: false,
   },
   {
     id: "punsh-A",
@@ -103,6 +107,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: BasicPunch,
     timeForAttack: 300,
+    isInFolder: false,
   },
   {
     id: "breackPanel-A",
@@ -117,6 +122,7 @@ const allChipsData: ChipData[] = [
     chipType: 1,
     chipProyectile: null,
     timeForAttack: null,
+    isInFolder: true,
   },
 
   {
@@ -130,6 +136,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: BasicBomb,
     timeForAttack: 100,
+    isInFolder: true,
   },
   {
     id: "block-A",
@@ -144,6 +151,7 @@ const allChipsData: ChipData[] = [
     chipType: 1,
     chipProyectile: null,
     timeForAttack: null,
+    isInFolder: true,
     finiteMachine: null,
   },
   {
@@ -157,6 +165,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: MegamanAttackDashShoot,
     timeForAttack: 500,
+    isInFolder: true,
   },
   {
     id: "pannel3-A",
@@ -171,6 +180,7 @@ const allChipsData: ChipData[] = [
     spriteState: "pickaxe1",
     timeForAttack: 700,
     chipProyectile: null,
+    isInFolder: true,
   },
   {
     id: "pannel3-A",
@@ -185,6 +195,7 @@ const allChipsData: ChipData[] = [
     spriteState: "pickaxe1",
     timeForAttack: 700,
     chipProyectile: null,
+    isInFolder: true,
   },
   {
     id: "addlinePanel-A",
@@ -198,6 +209,7 @@ const allChipsData: ChipData[] = [
     spriteState: "idle",
     timeForAttack: 700,
     chipProyectile: null,
+    isInFolder: true,
   },
   {
     id: "shield-A",
@@ -210,6 +222,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "SHIELD",
     chipProyectile: MegamanAttackDash,
     timeForAttack: 160,
+    isInFolder: true,
   },
   {
     id: "dash-A",
@@ -223,6 +236,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: MegamanAttackDash,
     timeForAttack: 160,
+    isInFolder: true,
   },
   {
     id: "dash-2-A",
@@ -236,6 +250,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: MegamanAttackDash,
     timeForAttack: 160,
+    isInFolder: true,
   },
 
   {
@@ -252,6 +267,7 @@ const allChipsData: ChipData[] = [
     spriteState: "maze",
     timeForAttack: 700,
     chipProyectile: null,
+    isInFolder: true,
   },
   {
     id: "healt10-A",
@@ -267,6 +283,7 @@ const allChipsData: ChipData[] = [
     spriteState: "maze",
     timeForAttack: 700,
     chipProyectile: null,
+    isInFolder: true,
   },
   {
     id: "healt30-A",
@@ -282,6 +299,7 @@ const allChipsData: ChipData[] = [
     spriteState: "maze",
     timeForAttack: 700,
     chipProyectile: null,
+    isInFolder: true,
   },
   {
     id: "healt50-A",
@@ -297,6 +315,7 @@ const allChipsData: ChipData[] = [
     spriteState: "maze",
     timeForAttack: 700,
     chipProyectile: null,
+    isInFolder: true,
   },
   {
     id: "healt120-A",
@@ -312,6 +331,7 @@ const allChipsData: ChipData[] = [
     spriteState: "maze",
     timeForAttack: 700,
     chipProyectile: null,
+    isInFolder: true,
   },
   {
     id: "healt150-A",
@@ -327,6 +347,7 @@ const allChipsData: ChipData[] = [
     spriteState: "maze",
     timeForAttack: 700,
     chipProyectile: null,
+    isInFolder: true,
   },
   {
     id: "healt200-A",
@@ -342,6 +363,7 @@ const allChipsData: ChipData[] = [
     spriteState: "maze",
     timeForAttack: 700,
     chipProyectile: null,
+    isInFolder: true,
   },
   {
     id: "healt300-A",
@@ -357,6 +379,7 @@ const allChipsData: ChipData[] = [
     spriteState: "maze",
     timeForAttack: 700,
     chipProyectile: null,
+    isInFolder: false,
   },
   {
     id: "swords-A",
@@ -370,6 +393,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: BasicSword,
     timeForAttack: 200,
+    isInFolder: false,
   },
   {
     id: "swords-long-A",
@@ -383,6 +407,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: BasicSword,
     timeForAttack: 200,
+    isInFolder: false,
   },
   {
     id: "maze-A",
@@ -395,6 +420,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: MegamanAttackDashShoot,
     timeForAttack: 500,
+    isInFolder: false,
   },
   {
     id: "pickaxel1-A",
@@ -407,6 +433,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: MegamanAttackDashShoot,
     timeForAttack: 500,
+    isInFolder: false,
   },
   {
     id: "pickaxel1-A",
@@ -419,6 +446,7 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: MegamanAttackDashShoot,
     timeForAttack: 500,
+    isInFolder: false,
   },
   {
     id: "pickaxel1-A",
@@ -431,10 +459,8 @@ const allChipsData: ChipData[] = [
     finiteMachine: "USESHIP",
     chipProyectile: MegamanAttackDashShoot,
     timeForAttack: 500,
+    isInFolder: true,
   },
 ];
 
-export const allChipsA = [
-  ...allChipsData,
-  ...allChipsData.sort(() => Math.random() - 0.5).slice(0, 2),
-];
+export const allChipsA = [...allChipsData];

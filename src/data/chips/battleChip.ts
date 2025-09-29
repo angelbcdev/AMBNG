@@ -56,7 +56,7 @@ export class BattleShip {
   spriteState: string;
   elementToAdd: string;
   id: string;
-  idForMove: string = "N/A";
+  isInFolder: boolean;
 
   constructor({ title }: { title: string }) {
     const currentChip = allChipsA.find(
@@ -77,6 +77,7 @@ export class BattleShip {
     this.finiteMachine = currentChip.finiteMachine;
     this.timeForAttack = currentChip.timeForAttack;
     this.elementToAdd = currentChip.elementToAdd;
+    this.isInFolder = currentChip.isInFolder;
   }
   draw(c: CanvasRenderingContext2D, x: number, _: number) {
     const realX =
@@ -174,6 +175,12 @@ export class BattleShip {
     c.fillStyle = isSelected ? "white" : "#5b6768";
     c.fillText(this.name + (extraX ? `-${extraX}` : ""), x - 1, y - 1);
     c.restore();
+  }
+  addInFolder() {
+    this.isInFolder = true;
+  }
+  removeInFolder() {
+    this.isInFolder = false;
   }
 }
 

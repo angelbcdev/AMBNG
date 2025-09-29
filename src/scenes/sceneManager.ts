@@ -6,7 +6,6 @@ import { FolderScene } from "./folderScene/folderScene";
 
 import { INPUT_MANAGER } from "../input/inputManager";
 import { JOYSTICK_MANAGER } from "./joysTickManager";
-import { BATTLE_MANAGER } from "@/core/battleManager";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
