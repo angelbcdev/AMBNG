@@ -40,7 +40,7 @@ const c2 = canvas2.getContext("2d")!;
 canvas2.width = 430;
 canvas2.height = 430;
 
-const animage2 = () => {
+export const animage2 = () => {
   c2.clearRect(0, 0, canvas2.width, canvas2.height);
   c2.fillStyle = "white";
   c2.fillRect(0, 0, canvas2.width, canvas2.height);
@@ -119,7 +119,7 @@ const drawLoading = (loaded: number, total: number) => {
   await ASSET_MANAGER.preloadAll(drawLoading);
   // Start loops when ready
   requestAnimationFrame(animage);
-  requestAnimationFrame(animage2);
+  // requestAnimationFrame(animage2);
 })();
 
 // document.getElementById("canvas").addEventListener("click", (e) => {
@@ -191,5 +191,5 @@ function handleResize() {
   }
 }
 
-// window.addEventListener("resize", handleResize);
-// handleResize();
+window.addEventListener("resize", handleResize);
+handleResize();

@@ -1,4 +1,4 @@
-import BeeTank from "./beetank";
+import { BeeTank } from "./beetank";
 
 class BeeTankState {
   enemy: BeeTank;

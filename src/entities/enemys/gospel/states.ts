@@ -155,7 +155,7 @@ export class GospelWolfAttack extends GospelWolfState {
       }
 
       // Delay entre proyectiles (100-300ms)
-      const shootDelay = 100 + Math.random() * 700;
+      const shootDelay = 100 + Math.random() * 300;
 
       setTimeout(() => {
         if (!this.enemy.delete) {

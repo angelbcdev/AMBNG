@@ -3,6 +3,7 @@ import { ButtonManager } from "../Button/buttonManager ";
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 import {
   GAME_IS_DEV,
+  GAME_LEVEL,
   GAME_SET_PAUSE,
   GAME_SET_UNPAUSE,
   GAME_TOGGLE_DEV,
@@ -10,6 +11,10 @@ import {
 import { keyBindings } from "@/config/keyBindings";
 import { getImageFromAssetsManager } from "@/core/assetshandler/assetHelpers";
 
+const positionleveldev = {
+  x: 40,
+  y: 50,
+};
 export class PauseMenu {
   nameScene = inputStateKeys.WORLD_PAUSE;
   menuImage = new Image();
@@ -26,13 +31,13 @@ export class PauseMenu {
   speed = 1;
   optionsButtons = new ButtonManager([
     {
-      position: { x: 40, y: 60 },
+      position: { x: 40, y: 20 },
       title: "Folder",
       action: () => GAME.changeScene(GAME.statesKeys.folderScene),
     },
     {
-      position: { x: 40, y: 90 },
-      title: `dev `,
+      position: positionleveldev,
+      title: `dev  `,
       action: () => {
         // INPUT_MANAGER.setState(inputStateKeys.WORLD_SCENE);
         GAME_TOGGLE_DEV();
@@ -85,10 +90,15 @@ export class PauseMenu {
       430
     );
     this.optionsButtons.draw(ctx, deltaTime);
-    ctx.font = "12px 'Mega-Man-Battle-Network-Regular'"; // Nombre que has definido en @font-face
+    ctx.font = "8px 'Mega-Man-Battle-Network-Regular'";
     ctx.fillStyle = "#fff";
-    ctx.fillText(` ${GAME_IS_DEV() ? "on" : "off"}`, 110, 115);
+    ctx.fillText(
+      ` ${GAME_IS_DEV() ? "on" : "off"}`,
+      positionleveldev.x + 50,
+      positionleveldev.y + 25
+    );
     ctx.restore();
+
     ctx.save();
     ctx.translate(this.moneyImageX, 0);
     ctx.drawImage(
@@ -102,6 +112,9 @@ export class PauseMenu {
       this.moneylimitWidth,
       50
     );
+    ctx.font = "12px 'Mega-Man-Battle-Network-Regular'";
+    ctx.fillStyle = "#fff";
+    ctx.fillText(`Level ${GAME_LEVEL()}`, 25, 33);
     ctx.restore();
   }
   swapMenu(deltaTime: number) {

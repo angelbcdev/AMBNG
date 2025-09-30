@@ -18,11 +18,11 @@ class SceneRoot {
     if (this.bg) {
       this.bg.draw(c, deltaTime);
     }
-    c.font = "32px 'Mega-Man-Battle-Network-Regular'"; // Nombre que has definido en @font-face
-    c.fillStyle = "#000"; // Color del texto
-    c.textAlign = "left";
+    // c.font = "32px 'Mega-Man-Battle-Network-Regular'"; // Nombre que has definido en @font-face
+    // c.fillStyle = "#000"; // Color del texto
+    // c.textAlign = "left";
 
-    c.fillText(this.nameScene, 100, 100);
+    // c.fillText(this.nameScene, 100, 100);
   }
   checkClick(_: number, __: number) {}
   checkKey(_: KeyboardEvent) {}

@@ -7,12 +7,13 @@ export class GreenArrow {
   height: number;
   maxTime = 400;
   time = 0;
+  gotToRight = true;
 
   constructor() {
     this.img = getImageFromAssetsManager("ui:arrowGreen");
-    this.position = { x: 30, y: 6 };
-    this.width = 32;
-    this.height = 32;
+    this.position = { x: 0, y: 12 };
+    this.width = 20;
+    this.height = 20;
   }
 
   draw(

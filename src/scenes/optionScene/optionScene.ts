@@ -9,26 +9,34 @@ import {
   inputStateKeys,
 } from "@/input/inputManager";
 
+const keyOptions = [
+  "Single shoot / select chips   " + keyBindings.pressB,
+  "Use chips / cancel chip    " + keyBindings.pressA,
+  "Open chips menu    " + (keyBindings.pressL + "---" + keyBindings.pressR),
+  "Talk with LAN    " + keyBindings.pressR,
+  "Move with Arrows   → ← ↑ ↓ ",
+];
+
 export class OptionScene extends SceneRoot {
   nameScene: InputState = inputStateKeys.OPTION_SCENE;
   optionsButtons = new ButtonManager([
-    {
-      position: { x: 50, y: 150 },
-      title: "Single shoot / select chips   " + keyBindings.pressB,
-      action: () => this.rebindKey("pressB"),
-    },
-    {
-      position: { x: 50, y: 190 },
-      title: "Use chips / cancel chip    " + keyBindings.pressA,
-      action: () => this.rebindKey("pressA"),
-    },
-    {
-      position: { x: 50, y: 230 },
-      title:
-        "Open chips menu    " +
-        (keyBindings.pressSelect === " " ? "Space" : keyBindings.pressSelect),
-      action: () => this.rebindKey("pressSelect"),
-    },
+    // {
+    //   position: { x: 50, y: 150 },
+    //   title: "Single shoot / select chips   " + keyBindings.pressB,
+    //   action: () => {}, //this.rebindKey("pressB"),
+    // },
+    // {
+    //   position: { x: 50, y: 190 },
+    //   title: "Use chips / cancel chip    " + keyBindings.pressA,
+    //   action: () => {}, //this.rebindKey("pressA"),
+    // },
+    // {
+    //   position: { x: 50, y: 230 },
+    //   title:
+    //     "Open chips menu    " +
+    //     (keyBindings.pressL + "---" + keyBindings.pressR),
+    //   action: () => {}, //this.rebindKey("pressSelect"),
+    // },
     {
       position: { x: 250, y: 360 },
       title: "Back Home",
@@ -44,17 +52,6 @@ export class OptionScene extends SceneRoot {
     INPUT_MANAGER.addState(this.nameScene, {
       onKeyDown: (e: KeyboardEvent) => {
         this.optionsButtons.keyDown(e);
-        switch (e.key) {
-          case "9":
-            GAME.changeScene(GAME.statesKeys.homeScene);
-            break;
-          case "8":
-            GAME.changeScene(GAME.statesKeys.worldScene);
-            break;
-          case "7":
-            GAME.changeScene(GAME.statesKeys.folderScene);
-            break;
-        }
       },
       // onKeyUp
     });
@@ -88,7 +85,7 @@ export class OptionScene extends SceneRoot {
       console.log(`${actionName} set to ${newKey}`);
 
       window.removeEventListener("keydown", listener);
-      this.refreshButtonLabels();
+      // this.refreshButtonLabels();
     };
 
     window.addEventListener("keydown", listener);
@@ -114,6 +111,10 @@ export class OptionScene extends SceneRoot {
   ) {
     super.draw(deltaTime, c, canvas);
     this.optionsButtons.draw(c, deltaTime);
+    c.font = "8px 'Mega-Man-Battle-Network-Regular'";
+    keyOptions.forEach((option, index) => {
+      c.fillText(option, 70, 160 + index * 40);
+    });
   }
   checkClick(mouseX: number, mouseY: number) {
     this.optionsButtons.checkClick(mouseX, mouseY);

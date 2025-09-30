@@ -85,9 +85,10 @@ class Attack extends Entity {
   }
   limitByMatrix(deltaTime: number) {
     if (this.getMatrixIndices(this.possition.x, this.possition.y)) {
-      if (true) {
+      if (this.attackOuwner.side) {
         this.possition.x -= this.speed * deltaTime;
       } else {
+        // * make to change direction
         this.possition.x += this.speed * deltaTime;
       }
     } else {

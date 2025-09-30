@@ -92,14 +92,6 @@ export class Player extends Entity {
   constructor({ possition: { x, y }, sideToPlay }) {
     super({ x, y, sideToPlay });
     this.height = 35;
-    // this.handleInput();
-
-    //   allChipsA.map(
-    //   (chip) => new BattleShip({ title: chip.title })
-    // );
-    // Array(14)
-    //   .fill(0)
-    //   .map(() => new BattleShip({ title: "pannel3" }));
 
     this.matrixY = y;
 
@@ -107,8 +99,9 @@ export class Player extends Entity {
     this.live = 100;
     this.liveTotal = this.live;
     this.defense = 30;
-    this.damage = 1000;
-    // Resolve player battle sprite via AssetManager, fallback to manifest URL
+    //* attack   of basic shot
+    this.damage = 10;
+
     {
       const key = "player:megamanAll";
       if (ASSET_MANAGER.has(key)) {

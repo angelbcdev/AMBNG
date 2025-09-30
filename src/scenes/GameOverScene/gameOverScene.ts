@@ -8,25 +8,15 @@ import {
   inputStateKeys,
 } from "@/input/inputManager";
 
-export class HomeScene extends SceneRoot {
-  bg = new BackGround(0);
-  nameScene: InputState = inputStateKeys.HOME_SCENE;
+export class GameOverScene extends SceneRoot {
+  bg = new BackGround(6);
+  nameScene: InputState = inputStateKeys.GAME_OVER;
   optionsButtons = new ButtonManager([
     {
-      position: { x: 150, y: 280 },
-      title: "Play",
-      action: () => GAME.changeScene(GAME.statesKeys.worldScene),
+      position: { x: 150, y: 250 },
+      title: "Play again",
+      action: () => GAME.changeScene(GAME.statesKeys.homeScene),
     },
-    {
-      position: { x: 150, y: 320 },
-      title: "Keys",
-      action: () => GAME.changeScene(GAME.statesKeys.optionScene),
-    },
-    // {
-    //   position: { x: 50, y: 270 },
-    //   title: "Chips",
-    //   action: () => GAME.changeScene(GAME.statesKeys.folderScene),
-    // },
   ]);
   logo = new Image();
   xLogo = 0;
@@ -36,8 +26,8 @@ export class HomeScene extends SceneRoot {
   constructor() {
     super();
     this.logo.src = "/logo.png";
-    this.xLogo = 10;
-    this.yLogo = 40;
+    this.xLogo = 140;
+    this.yLogo = 10;
     this.widthLogo = 400;
     this.heightLogo = 300;
     // Define "menu" input logic
@@ -47,7 +37,7 @@ export class HomeScene extends SceneRoot {
         this.optionsButtons.keyDown(e);
         switch (e.key) {
           case "1":
-            GAME.changeScene(GAME.statesKeys.worldScene);
+            GAME.changeScene(GAME.statesKeys.homeScene);
             break;
           case "2":
             GAME.changeScene(GAME.statesKeys.optionScene);
@@ -71,9 +61,13 @@ export class HomeScene extends SceneRoot {
       this.logo,
       this.xLogo,
       this.yLogo,
-      this.widthLogo,
-      this.heightLogo
+      this.widthLogo / 3,
+      this.heightLogo / 3
     );
+    c.fillStyle = "white";
+    c.textAlign = "center";
+    c.font = "40px 'Mega-Man-Battle-Network-Regular'";
+    c.fillText("Game Over", 220, 200);
     this.optionsButtons.draw(c, deltaTime);
   }
   checkClick(mouseX: number, mouseY: number) {

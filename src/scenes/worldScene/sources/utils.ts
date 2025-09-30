@@ -27,7 +27,7 @@ export const testWorld = {
   bloks: {
     5: EnemyBoss,
     1: Wall,
-    0: Path,
+    // 0: Path,
     2: Path,
     3: EnemyZone,
     4: EnemyZone,

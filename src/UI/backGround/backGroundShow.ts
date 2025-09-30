@@ -139,6 +139,7 @@ export class BackGround {
     this.speed = mapDetails[mapa].speed; // Ajusta la velocidad de movimiento
   }
   updateBackGround(newMapa: number) {
+    this.position = { x: 0, y: 0 }; // Iniciar en la esquina superior izquierda
     this.mapa = newMapa;
     this.img = this.resolveImageByKey(mapDetails[newMapa].assetKey);
     this.frameInterval = mapDetails[newMapa].fps;

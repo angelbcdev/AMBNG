@@ -1,16 +1,17 @@
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 import SceneRoot from "../sceneROOT";
-import { GameIso } from "./sources/gameiso";
-import { GAME_TOGGLE_DEV, GAME_IS_PAUSE } from "../../core/gameState";
+import { WORLD_MANAGER } from "@/core/WorldManager";
+import { GAME_TOGGLE_DEV, GAME_IS_PAUSE } from "@/core/gameState";
+import { BATTLE_MANAGER } from "@/core/battleManager";
 
 export class WorldScene extends SceneRoot {
-  isoWorld = new GameIso();
   nameScene = inputStateKeys.WORLD_SCENE;
   constructor() {
+    WORLD_MANAGER.init();
     super();
     INPUT_MANAGER.addState(this.nameScene, {
       onKeyDown: (e: KeyboardEvent) => {
-        this.isoWorld.keyDown(e);
+        WORLD_MANAGER.keyDown(e);
         const options = {
           v: () => {
             GAME_TOGGLE_DEV();
@@ -21,30 +22,31 @@ export class WorldScene extends SceneRoot {
         }
       },
       onKeyUp: (e: KeyboardEvent) => {
-        this.isoWorld.keyUp(e);
+        WORLD_MANAGER.keyUp(e);
       },
     });
   }
   update(deltaTime: number, _: CanvasRenderingContext2D) {
-    this.isoWorld.update(deltaTime);
+    WORLD_MANAGER.update(deltaTime);
   }
   draw(deltaTime: number, c: CanvasRenderingContext2D, _: HTMLCanvasElement) {
-    this.isoWorld.drawBackground(c, deltaTime);
+    WORLD_MANAGER.drawBackground(c, deltaTime);
     c.save();
     c.scale(3, 3);
     c.translate(-50, 0);
-    this.isoWorld.draw(c);
+    WORLD_MANAGER.draw(c);
     c.restore();
-    this.isoWorld.drawUI(c, deltaTime);
+    WORLD_MANAGER.drawUI(c, deltaTime);
+    BATTLE_MANAGER.dialogue.draw(c, deltaTime);
   }
   in() {
     if (GAME_IS_PAUSE()) {
       INPUT_MANAGER.setState(inputStateKeys.WORLD_PAUSE);
     }
-    // isoWorld.in();
+    WORLD_MANAGER.in();
   }
   out() {
     super.out();
-    // isoWorld.out();
+    WORLD_MANAGER.out();
   }
 }

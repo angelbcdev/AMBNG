@@ -77,6 +77,13 @@ export class ChipManager {
   shuffleChip() {
     return this.chipsFolder.sort(() => Math.random() - 0.5);
   }
+  startBattle() {
+    this.chipsForBattle = this.shuffleChip();
+    this.chipArea = [[], [], []];
+    this.chipSelected = [];
+    this.chipSelecteInTurn = [];
+    this.chipUsed = [];
+  }
 }
 
 export const CHIPS_MANAGER = ChipManager.getInstance();

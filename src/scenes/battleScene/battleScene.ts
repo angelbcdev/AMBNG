@@ -89,9 +89,12 @@ export class BattleScene extends SceneRoot {
     this.gameBattle.draw(deltaTime, c);
     // BATTLE_MANAGER.draw(c, deltaTime);
     ENTITY_MANAGER.player.showChipts(c, deltaTime);
-    BATTLE_MANAGER.battleUI.draw(c);
     BATTLE_MANAGER.chipAreaSelect.draw(c, deltaTime);
     BATTLE_MANAGER.fillBar(c);
+    BATTLE_MANAGER.battleUI.draw(c);
+    BATTLE_MANAGER.menuScreen.draw(c, deltaTime);
+    BATTLE_MANAGER.completeScreen.draw(c, deltaTime);
+    BATTLE_MANAGER.dialogue.draw(c, deltaTime);
   }
   checkClick(mouseX: number, mouseY: number) {
     this.gameBattle.checkClick(mouseX, mouseY);

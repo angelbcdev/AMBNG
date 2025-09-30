@@ -1,11 +1,4 @@
-import {
-  GAME_IS_BATTLE,
-  GAME_SET_PAUSE,
-  GAME_SET_BATTLE,
-  GAME_SET_UNBATTLE,
-  GAME_SET_UNPAUSE,
-  GAME_IS_PAUSE,
-} from "./gameState";
+import { GAME_IS_BATTLE, GAME_SET_UNPAUSE, GAME_IS_PAUSE } from "./gameState";
 import { GAME } from "@/scenes/sceneManager";
 import { FLOOR_MANAGER } from "./floorManager";
 import { ENTITY_MANAGER } from "./entityManager";
@@ -18,6 +11,7 @@ import { Dialogue } from "@/UI/dialoge/dialoge";
 import { CompleteScreen } from "@/UI/completeScreen/completeScreen";
 import gameSettings from "@/config/gameSettings";
 import { ENEMY_FACTORY } from "./enemyFactory";
+import { CHIPS_MANAGER } from "./chipsManager";
 
 class BattleManager {
   static instance: BattleManager;
@@ -50,21 +44,26 @@ class BattleManager {
   }
   inBattle(type: "EnemyBoss" | "EnemyZone") {
     this.localIsBattle = true;
-    console.log(type);
+
+    let normalbg = 2;
+    if (type == "EnemyBoss") {
+      normalbg = 5;
+    }
 
     const floorForBattle = Math.floor(Math.random() * 8);
 
     if (this.localIsBattle) {
       GAME.changeScene(GAME.statesKeys.battleScene);
-      this.bg.updateBackGround(2);
+      this.bg.updateBackGround(normalbg);
       this.currentTimeForSelectShip = this.timeForSelectShip;
       FLOOR_MANAGER.initFloors();
       ENTITY_MANAGER.initBattle();
       FLOOR_MANAGER.updateImageFloors(floorForBattle);
+      CHIPS_MANAGER.startBattle();
 
       // this.isCompletedBarShip = true;
 
-      this.timeForBattleStart = 2;
+      this.timeForBattleStart = 1;
       const timeForBattleStart = setInterval(() => {
         this.timeForBattleStart--;
         if (this.timeForBattleStart == 0) {
@@ -116,8 +115,8 @@ class BattleManager {
     // if (GAME_IS_BATTLE()) {
     // }
 
-    this.completeScreen.draw(c, deltaTime);
-    this.dialogue.draw(c, deltaTime);
+    // this.completeScreen.draw(c, deltaTime);
+    // this.dialogue.draw(c, deltaTime);
   }
 
   showMessage(c: CanvasRenderingContext2D, message: string, head: number) {

@@ -1,64 +1,38 @@
-import { EnemyBoss, EnemyZone, mySquare, Path, Wall } from "./isoEntitys";
-import { PlayerIso } from "./isoPlayer";
-import { testWorld } from "./utils";
 import { BackGround } from "@/UI/backGround/backGroundShow";
 import {
   GAME_IS_BATTLE,
   GAME_IS_PAUSE,
+  GAME_SET_LEVEL,
   GAME_TOGGLE_PAUSE,
-} from "@/core/gameState";
+} from "./gameState";
+import { testWorld } from "@/scenes/worldScene/sources/utils";
+import { PlayerIso } from "@/scenes/worldScene/sources/isoPlayer";
+import {
+  EnemyBoss,
+  EnemyZone,
+  mySquare,
+  Path,
+  Wall,
+} from "@/scenes/worldScene/sources/isoEntitys";
 import { keyBindings } from "@/config/keyBindings";
-import { BATTLE_MANAGER } from "@/core/battleManager";
-
-import { isoLanDialogue } from "./isoLanDialogue";
+import { BATTLE_MANAGER } from "./battleManager";
+import { isoLanDialogue } from "@/scenes/worldScene/sources/isoLanDialogue";
+import { Camera } from "@/scenes/worldScene/sources/camera";
 
 const canvas = {
   width: 240,
   height: 160,
 };
 
-class Camera {
-  x: number = 0;
-  y: number = 0;
-  worldWidth: number = 0;
-  worldHeight: number = 0;
-
-  constructor() {
-    this.x = 0;
-    this.y = 0;
-  }
-  focus(x: number, y: number) {
-    this.x = x - canvas.width / 2;
-    this.y = y - canvas.height / 2;
-
-    if (this.x < 0) {
-      this.x = 0;
-    } else if (this.x > this.worldWidth - canvas.width) {
-      this.x = this.worldWidth - canvas.width;
-    }
-    if (this.y < 0) {
-      this.y = 0;
-    } else if (this.y > this.worldHeight - canvas.height) {
-      this.y = this.worldHeight - canvas.height;
-    }
-  }
-
-  isoFocus(x: number, y: number) {
-    this.x = x / 2 - y / 2 - canvas.width / 2;
-    this.y = x / 4 + y / 4 - canvas.height / 2;
-  }
-}
-
-export class GameIso {
-  lastPress = null;
-  pressing = [];
+export class WorldManager {
+  static instance: WorldManager | null = null;
   pause = GAME_IS_PAUSE();
 
   worldWidth = 0;
   worldHeight = 0;
   elapsed = 0;
   cam = null;
-  bg = new BackGround(1);
+  bg: BackGround;
   // player = null;
 
   currentMap = 0;
@@ -75,8 +49,13 @@ export class GameIso {
 
   constructor() {
     this.init();
-    this.cam = new Camera();
-    this.player = new PlayerIso(64, 164, 16, 16);
+  }
+
+  static getInstance() {
+    if (!WorldManager.instance) {
+      WorldManager.instance = new WorldManager();
+    }
+    return WorldManager.instance;
   }
   keyDown = (e: KeyboardEvent) => {
     //ADD move to isoPlayer
@@ -118,6 +97,16 @@ export class GameIso {
     }
   };
   init() {
+    this.worldWidth = 0;
+    this.worldHeight = 0;
+    this.elapsed = 0;
+    this.cam = null;
+    this.bg = new BackGround(1);
+    // player = null;
+
+    this.currentMap = 0;
+    this.cam = new Camera();
+    this.player = new PlayerIso(104, 204, 16, 16);
     this.worldWidth = canvas.width;
     this.worldHeight = canvas.height;
     this.setMap(this.data_world_maps[this.currentMap]);
@@ -205,30 +194,6 @@ export class GameIso {
   }
   drawUI(ctx: CanvasRenderingContext2D, deltaTime: number) {
     BATTLE_MANAGER.draw(ctx, deltaTime);
-    // Debug last key pressed
-    ctx.fillStyle = "#fff";
-    //*PAINT MAP NAME
-    this.painLevelName(ctx, 0, 20);
-  }
-  painLevelName(c: CanvasRenderingContext2D, x: number, y: number) {
-    // c.fillStyle = "#fff";
-    // c.fillRect(x, y, 162, 33);
-    c.fillStyle = "#000";
-    c.textAlign = "right";
-    c.font = `20px Arial`;
-    c.fillText(
-      ` ${this.data_world_maps[this.currentMap].name}  `,
-      x + 81,
-      y + 26
-    );
-    c.fillStyle = "#fff";
-    c.textAlign = "right";
-    c.font = `20px Arial`;
-    c.fillText(
-      ` ${this.data_world_maps[this.currentMap].name}  `,
-      x + 80,
-      y + 24
-    );
   }
 
   // Método helper (agregar a tu clase)
@@ -307,7 +272,7 @@ export class GameIso {
             // Verificar si hay enemyZone adyacente antes de asignar
             if (block instanceof EnemyBoss) {
               block.isEnemyZone = true;
-            } else {
+            } else if (block instanceof EnemyZone) {
               const canBeEnemyZone =
                 Math.random() > block.ratio &&
                 !this.hasAdjacentEnemyZone(row, col, enemyZonePositions);
@@ -326,12 +291,13 @@ export class GameIso {
     }
 
     const bgForBattle = [1, 3, 4];
-    const rdFloar = bgForBattle[Math.floor(Math.random() * bgForBattle.length)];
-    this.bg.updateBackGround(rdFloar);
+
+    this.bg.updateBackGround(bgForBattle[this.currentMap]);
 
     this.worldWidth = columns * blockSize;
     this.worldHeight = rows * blockSize;
     this.updateSortedElements();
+    GAME_SET_LEVEL(this.currentMap + 1);
   }
 
   in() {
@@ -393,3 +359,5 @@ export class GameIso {
     }
   }
 }
+
+export const WORLD_MANAGER = WorldManager.getInstance();

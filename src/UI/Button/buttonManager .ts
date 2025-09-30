@@ -81,7 +81,7 @@ export class ButtonManager {
           c,
           {
             x: btn.position.x,
-            y: btn.position.y,
+            y: btn.position.y - 4,
           },
           deltaTime
         );
@@ -136,14 +136,14 @@ export class ButtonManager {
     c: CanvasRenderingContext2D,
     msg: string | number,
     position: { x: number; y: number },
-    font: number = 12
+    font: number = 8
   ) {
     c.font = `${font}px 'Mega-Man-Battle-Network-Regular'`;
     c.fillStyle = "#484848";
     c.textAlign = "left";
-    c.textBaseline = "middle";
+    // c.textBaseline = "middle";
 
-    c.fillText(` ${msg}`, position.x + 0.5, position.y + 0.5);
+    // c.fillText(` ${msg}`, position.x, position.y);
 
     c.fillStyle = "#fdfddf";
     c.fillText(`${msg}`, position.x, position.y);

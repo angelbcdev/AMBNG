@@ -1,9 +1,6 @@
 import { FLOOR_MANAGER } from "@/core/floorManager.js";
 import Attack from "../data/attacks/attacks.js";
-import {
-  ExplotionsBombs,
-  ExplotionsEffect,
-} from "../data/extra/StaticAnimations";
+import { ExplotionsEffect } from "../data/extra/StaticAnimations";
 
 export class Entity {
   matrixX: number;
@@ -305,22 +302,23 @@ export class Entity {
     damage: number;
     type?: string | number;
   }) {
-    this.AllattackToShow.push(
-      new typeElemetns({
-        matrix: this.matrix,
-        possition: {
-          x: this.possition.x,
-          y: this.possition.y,
-          initialMatrixY: this.matrixY,
-        },
-        sideToPlay: this.side,
-        color: this.color,
-        damage,
-        origin: this.side,
-        attackOuwner: this,
-        type,
-      })
-    );
+    const attack = new typeElemetns({
+      matrix: this.matrix,
+      possition: {
+        x: this.possition.x,
+        y: this.possition.y,
+        initialMatrixY: this.matrixY,
+      },
+      sideToPlay: this.side,
+      color: this.color,
+      damage,
+      origin: this.side,
+      attackOuwner: this,
+      type,
+    });
+
+    attack.matrix = FLOOR_MANAGER.matrix;
+    this.AllattackToShow.push(attack);
   }
 
   addMoreExplotion() {}

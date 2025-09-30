@@ -3,7 +3,7 @@ import { BattleScene } from "./battleScene/battleScene";
 import { HomeScene } from "./homeScene/homeScene";
 import { OptionScene } from "./optionScene/optionScene";
 import { FolderScene } from "./folderScene/folderScene";
-
+import { GameOverScene } from "./GameOverScene/gameOverScene";
 import { INPUT_MANAGER } from "../input/inputManager";
 import { JOYSTICK_MANAGER } from "./joysTickManager";
 
@@ -25,6 +25,7 @@ export class SceneManager {
     battleScene: "battleScene",
     optionScene: "optionScene",
     folderScene: "folderScene",
+    gameOverScene: "gameOverScene",
   };
   scenes = {
     homeScene: new HomeScene(),
@@ -32,6 +33,7 @@ export class SceneManager {
     battleScene: new BattleScene(),
     optionScene: new OptionScene(),
     folderScene: new FolderScene(),
+    gameOverScene: new GameOverScene(),
   };
   currentScene = this.scenes[this.currentSceneIndex];
 

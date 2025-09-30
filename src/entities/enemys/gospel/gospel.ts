@@ -37,7 +37,7 @@ export class GospelWolfEnemy extends StaticEnemy {
     this.image.src = "/assects/enemy/wolfBoss.png";
     this.frameWidth = 240;
     this.frameHeight = 281;
-    this.live = 2000;
+    this.live = 500;
     this.faceToLeft = true;
     this.liveTotal = this.live;
     this.blockSize = {

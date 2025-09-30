@@ -1,3 +1,5 @@
+import { GAME_IS_DEV } from "@/core/gameState";
+
 export interface InputHandler {
   onKeyDown: (event: KeyboardEvent) => void;
   onKeyUp?: (event: KeyboardEvent) => void;
@@ -16,6 +18,7 @@ export type InputState =
   | "WORLD_SCENE"
   | "COMPLETE_SCREEN"
   | "DIALOGUE"
+  | "GAME_OVER"
   | "FOLDER_SCENE";
 
 export const inputStateKeys: Record<InputState, InputState> = {
@@ -32,6 +35,7 @@ export const inputStateKeys: Record<InputState, InputState> = {
   OPTION_SCENE: "OPTION_SCENE",
   HOME_SCENE: "HOME_SCENE",
   ROOT_SCENE: "ROOT_SCENE",
+  GAME_OVER: "GAME_OVER",
 };
 
 class InputStateMachine {
@@ -53,7 +57,6 @@ class InputStateMachine {
   }
 
   addState(nameInput: keyof typeof inputStateKeys, handlers: InputHandler) {
-    console.log(`Adding state: ${nameInput}`);
     this.states[nameInput] = handlers;
   }
 
@@ -63,12 +66,14 @@ class InputStateMachine {
       return;
     }
     if (this.currentState === nameInput) {
-      console.log(`State ${nameInput} is already active`);
+      // console.log(`State ${nameInput} is already active`);
       return;
     }
     this.oldState = this.currentState;
     this.currentState = nameInput;
-    console.log(`Transitioned from ${this.oldState} to -> ${nameInput}`);
+    if (GAME_IS_DEV()) {
+      console.log(`Transitioned from ${this.oldState} to -> ${nameInput}`);
+    }
   }
 
   handleKeyDown(event: KeyboardEvent) {

@@ -3,6 +3,7 @@ import { GAME } from "@/scenes/sceneManager";
 import { ENTITY_MANAGER } from "@/core/entityManager";
 import { GAME_IS_BATTLE, GAME_SET_PAUSE } from "@/core/gameState";
 import { BATTLE_MANAGER } from "@/core/battleManager";
+import { WORLD_MANAGER } from "@/core/WorldManager";
 
 export class BatleGame {
   tembleCanvas = 0;
@@ -89,7 +90,8 @@ export class BatleGame {
       }
       if (!ENTITY_MANAGER.playerIsLive()) {
         //* IS DEATH
-        GAME.changeScene(GAME.statesKeys.homeScene);
+        WORLD_MANAGER.init();
+        GAME.changeScene(GAME.statesKeys.gameOverScene);
       }
     }
 
