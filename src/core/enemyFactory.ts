@@ -4,7 +4,7 @@ import { BeeTank } from "@/entities/enemys/Character/beeTank/beetank";
 import { CannonDumb } from "@/entities/enemys/Character/cannon/cannonDumb";
 import Fishy from "@/entities/enemys/Character/fishy/fishy";
 import { Mettols } from "@/entities/enemys/Character/mettol/mettol";
-import { GospelWolfEnemy } from "@/entities/enemys/Character/gospel";
+import { GospelWolfEnemy } from "@/entities/enemys/gospel/gospel";
 
 // TODO: BeeTank
 
@@ -38,9 +38,11 @@ class EnemyFactory {
     return EnemyFactory.instance;
   }
 
-  addEnemy() {
+  addEnemy(type: "EnemyBoss" | "EnemyZone") {
+    console.log("type", type);
+
     ENTITY_MANAGER.addNewEnemy({
-      newEnemy: Mettols,
+      newEnemy: type == "EnemyBoss" ? GospelWolfEnemy : Mettols,
       position: { x: 0, y: 1 },
       level: 1,
     });

@@ -25,11 +25,11 @@ export class FloorRoad {
 export const testWorld = {
   maps: data.layers,
   bloks: {
+    5: EnemyBoss,
     1: Wall,
     0: Path,
     2: Path,
     3: EnemyZone,
     4: EnemyZone,
-    5: EnemyBoss,
   },
 };

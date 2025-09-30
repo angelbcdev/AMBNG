@@ -48,21 +48,19 @@ class BattleManager {
     }
     return BattleManager.instance;
   }
-  inBattle({
-    backGround,
-    floorImage,
-  }: {
-    backGround: number; // 1
-    floorImage: number; // 3
-  }) {
+  inBattle(type: "EnemyBoss" | "EnemyZone") {
     this.localIsBattle = true;
+    console.log(type);
+
+    const floorForBattle = Math.floor(Math.random() * 8);
+
     if (this.localIsBattle) {
       GAME.changeScene(GAME.statesKeys.battleScene);
-      this.bg.updateBackGround(backGround);
+      this.bg.updateBackGround(2);
       this.currentTimeForSelectShip = this.timeForSelectShip;
       FLOOR_MANAGER.initFloors();
       ENTITY_MANAGER.initBattle();
-      FLOOR_MANAGER.updateImageFloors(floorImage);
+      FLOOR_MANAGER.updateImageFloors(floorForBattle);
 
       // this.isCompletedBarShip = true;
 
@@ -84,7 +82,7 @@ class BattleManager {
       GAME.currentScene.totalTimeInBattle = 0;
       GAME.currentScene.currentTimeForSelectShip = 0;
       GAME.currentScene.canvasTime = 0;
-      ENEMY_FACTORY.addEnemy();
+      ENEMY_FACTORY.addEnemy(type);
     }
   }
   outBattle() {

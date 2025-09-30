@@ -1,4 +1,4 @@
-import { mySquare, Path, Wall } from "./isoEntitys";
+import { EnemyBoss, EnemyZone, mySquare, Path, Wall } from "./isoEntitys";
 import { PlayerIso } from "./isoPlayer";
 import { testWorld } from "./utils";
 import { BackGround } from "@/UI/backGround/backGroundShow";
@@ -167,17 +167,15 @@ export class GameIso {
   checkEnemyZone() {
     //* Check if player is in enemy zone
     for (let i = 0; i < this.enemyZone.length; i++) {
-      if (this.player.intersects(this.enemyZone[i])) {
-        if (this.enemyZone[i].isEnemyZone) {
-          this.enemyZone[i].isEnemyZone = false;
+      const enemyZone = this.enemyZone[i];
+      if (this.player.intersects(enemyZone)) {
+        if (enemyZone.isEnemyZone) {
+          enemyZone.isEnemyZone = false;
           //* Can send config to battle manager
           if (!GAME_IS_BATTLE()) {
             this.player.returnIdle();
             this.player.pressKey = [];
-            BATTLE_MANAGER.inBattle({
-              backGround: 2,
-              floorImage: 3,
-            });
+            BATTLE_MANAGER.inBattle(enemyZone.constructor.name);
           }
         }
       }
@@ -307,25 +305,29 @@ export class GameIso {
             this.wall.push(block);
           } else {
             // Verificar si hay enemyZone adyacente antes de asignar
-            const canBeEnemyZone =
-              Math.random() > block.ratio &&
-              !this.hasAdjacentEnemyZone(row, col, enemyZonePositions);
-            block.isEnemyZone = canBeEnemyZone;
+            if (block instanceof EnemyBoss) {
+              block.isEnemyZone = true;
+            } else {
+              const canBeEnemyZone =
+                Math.random() > block.ratio &&
+                !this.hasAdjacentEnemyZone(row, col, enemyZonePositions);
+              block.isEnemyZone = canBeEnemyZone;
+            }
 
             // Si es enemyZone, agregar su posición al Set
             if (block.isEnemyZone) {
               enemyZonePositions.add(`${row},${col}`);
             }
 
-            // console.log(
-            //   `Block [${row},${col}]: isEnemyZone = ${block.isEnemyZone}`
-            // );
-            // this.walkPath.push(block);
             this.enemyZone.push(block);
           }
         }
       }
     }
+
+    const bgForBattle = [1, 3, 4];
+    const rdFloar = bgForBattle[Math.floor(Math.random() * bgForBattle.length)];
+    this.bg.updateBackGround(rdFloar);
 
     this.worldWidth = columns * blockSize;
     this.worldHeight = rows * blockSize;
