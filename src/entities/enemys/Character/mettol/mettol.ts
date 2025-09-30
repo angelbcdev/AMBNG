@@ -1,5 +1,5 @@
 import { GAME_IS_DEV, GAME_IS_PAUSE } from "@/core/gameState";
-import { DashShoot } from "../../../attacks/dashShoot";
+import { DashShoot } from "@/data/attacks/dashShoot";
 import { Entity } from "../../../../entities/entity";
 
 import Enemy from "../../enemys";

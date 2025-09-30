@@ -59,7 +59,6 @@ class Attack extends Entity {
     this.frameWidth = 90;
     this.frameHeight = 76;
     this.attackOuwner = attackOuwner;
-    this.matrix = attackOuwner?.matrix;
 
     this.possition = {
       x: this.isToLeft === "left" ? (x / 70) * 70 : x + 55,
@@ -86,7 +85,7 @@ class Attack extends Entity {
   }
   limitByMatrix(deltaTime: number) {
     if (this.getMatrixIndices(this.possition.x, this.possition.y)) {
-      if (this.attackOuwner.side === 1) {
+      if (true) {
         this.possition.x -= this.speed * deltaTime;
       } else {
         this.possition.x += this.speed * deltaTime;

@@ -1,11 +1,7 @@
 import { FLOOR_MANAGER } from "@/core/floorManager";
 import { GAME } from "@/scenes/sceneManager";
 import { ENTITY_MANAGER } from "@/core/entityManager";
-import {
-  GAME_IS_BATTLE,
-  GAME_SET_PAUSE,
-  GAME_SET_UNBATTLE,
-} from "@/core/gameState";
+import { GAME_IS_BATTLE, GAME_SET_PAUSE } from "@/core/gameState";
 import { BATTLE_MANAGER } from "@/core/battleManager";
 
 export class BatleGame {
@@ -17,7 +13,7 @@ export class BatleGame {
   totalTimeInBattle = 0;
 
   timeForBattleStart = 3;
-  localIsBattle = false;
+  localIsBattle: boolean;
 
   constructor() {}
 
@@ -80,8 +76,8 @@ export class BatleGame {
 
     if (!ENTITY_MANAGER.hasEnemys()) {
       //* this.gameUI.clearStateImg(c, deltaTime, this.totalTimeInBattle);
-      if (GAME_IS_BATTLE()) {
-        GAME_SET_UNBATTLE();
+      if (GAME_IS_BATTLE() && this.localIsBattle) {
+        this.localIsBattle = false;
         BATTLE_MANAGER.completeScreen.showScreen();
       }
     } else {

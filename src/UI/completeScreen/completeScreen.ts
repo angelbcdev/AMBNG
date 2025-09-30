@@ -3,7 +3,7 @@ import { InputState, inputStateKeys } from "@/input/inputManager";
 import { colorsCanvas, keyBindings } from "@/config/keyBindings";
 import { BATTLE_MANAGER } from "@/core/battleManager";
 import { INPUT_MANAGER } from "@/input/inputManager";
-import { GAME } from "@/scenes/sceneManager";
+// import { GAME } from "@/scenes/sceneManager";
 import { getImageFromAssetsManager } from "@/core/assetshandler/assetHelpers";
 
 export class CompleteScreen {
@@ -137,10 +137,10 @@ export class CompleteScreen {
   }
   hideScreen() {
     // INPUT_MANAGER.setState(inputStateKeys.WORLD_SCENE);
-    GAME.changeScene(GAME.statesKeys.worldScene);
+
+    this.isHidden = true;
     this.resetOptions();
     BATTLE_MANAGER.outBattle();
-    this.isHidden = true;
   }
   paintText(
     c: CanvasRenderingContext2D,

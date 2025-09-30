@@ -1,9 +1,9 @@
 import { GAME_IS_DEV, GAME_IS_PAUSE } from "@/core/gameState";
-import Attack from "../../../attacks/attacks";
-import { BasicBomb } from "../../../attacks/megamanAttack/basicBomp";
+import Attack from "@/data/attacks/attacks";
+import { BasicBomb } from "@/data/attacks/megamanAttack/basicBomp";
 
-import { StaticAttack } from "../../../attacks/statickAttack";
-import PlayerBlue from "../../../player/player/Player";
+import { StaticAttack } from "@/data/attacks/statickAttack";
+import PlayerBlue from "@/data/player/player/Player";
 
 import Enemy from "../../enemys";
 import { Idle, MoveDown, MoveUp, AttackS } from "./state";
@@ -29,7 +29,7 @@ const enemyLevel = {
   },
 };
 
-export default class BeeTank extends Enemy {
+export class BeeTank extends Enemy {
   speed = 0.09;
   setEnemey = true;
   buttomFloor = 0;

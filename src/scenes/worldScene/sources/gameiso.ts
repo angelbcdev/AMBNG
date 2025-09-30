@@ -1,4 +1,4 @@
-import { EnemyZone, mySquare, WalkPath, Wall } from "./isoEntitys";
+import { mySquare, Path, Wall } from "./isoEntitys";
 import { PlayerIso } from "./isoPlayer";
 import { testWorld } from "./utils";
 import { BackGround } from "@/UI/backGround/backGroundShow";
@@ -70,6 +70,7 @@ export class GameIso {
   walkPath = [];
   spritesheet = false;
   player: PlayerIso;
+  sortedElements: mySquare[] = [];
   // menuScreen = new PauseMenu();
 
   constructor() {
@@ -95,9 +96,6 @@ export class GameIso {
           this.player.pressKey = [];
         }
       },
-      // z: () => {
-      //   BATTLE_MANAGER.dialogue.hideDialogue();
-      // },
     };
     if (options[e.key.toLowerCase()]) {
       options[e.key.toLowerCase()]();
@@ -170,18 +168,17 @@ export class GameIso {
     //* Check if player is in enemy zone
     for (let i = 0; i < this.enemyZone.length; i++) {
       if (this.player.intersects(this.enemyZone[i])) {
-        const rng = Math.random();
-        if (rng > 0.98754) {
+        if (this.enemyZone[i].isEnemyZone) {
+          this.enemyZone[i].isEnemyZone = false;
           //* Can send config to battle manager
           if (!GAME_IS_BATTLE()) {
+            this.player.returnIdle();
+            this.player.pressKey = [];
             BATTLE_MANAGER.inBattle({
               backGround: 2,
               floorImage: 3,
             });
           }
-          this.player.returnIdle();
-          this.player.pressKey = [];
-          this.enemyZone.splice(i, 1);
         }
       }
     }
@@ -191,17 +188,22 @@ export class GameIso {
     this.drawWalkPath(ctx);
 
     // Draw map
-    this.fillIsoMap(ctx);
+    // this.fillIsoMap(ctx);
 
     // draw player
     this.player.drawIsoImageAreaPlayer(ctx, this.cam, 8);
   }
   drawWalkPath(ctx: CanvasRenderingContext2D) {
-    this.walkPath
-      .sort((a, b) => b.x + b.y + (a.x + a.y))
-      .forEach((element) => {
-        element.drawIsoImageArea(ctx, this.cam, 8);
-      });
+    this.sortedElements.forEach((element) => {
+      element.drawIsoImageArea(ctx, this.cam, 8);
+    });
+  }
+  updateSortedElements() {
+    this.sortedElements = [
+      ...this.enemyZone,
+      ...this.wall,
+      ...this.walkPath,
+    ].sort((a, b) => a.y + a.x - (b.y + b.x));
   }
   drawUI(ctx: CanvasRenderingContext2D, deltaTime: number) {
     BATTLE_MANAGER.draw(ctx, deltaTime);
@@ -230,28 +232,24 @@ export class GameIso {
       y + 24
     );
   }
-  fillIsoMap(ctx: CanvasRenderingContext2D) {
-    this.wall
-      .sort((a, b) => a.y - b.y)
-      .forEach((element) => {
-        element.drawIsoImageArea(
-          ctx,
-          this.cam,
 
-          8
-        );
-      });
+  // Método helper (agregar a tu clase)
+  private hasAdjacentEnemyZone(
+    row: number,
+    col: number,
+    enemyZonePositions: Set<string>
+  ): boolean {
+    const directions = [
+      [-1, 0], // arriba
+      [1, 0], // abajo
+      [0, -1], // izquierda
+      [0, 1], // derecha
+    ];
 
-    this.enemyZone
-      .sort((a, b) => a.y + b.y)
-      .forEach((element) => {
-        element.drawIsoImageArea(
-          ctx,
-          this.cam,
-
-          8
-        );
-      });
+    return directions.some(([dRow, dCol]) => {
+      const key = `${row + dRow},${col + dCol}`;
+      return enemyZonePositions.has(key);
+    });
   }
   setMap(map: {
     data: number[];
@@ -266,13 +264,15 @@ export class GameIso {
     y: number;
   }) {
     const blockSize = 16;
-    // this.bg.updateBackGround(Math.floor(Math.random() * mapDetails.length));
 
-    // cleand arrays
+    // Clean arrays
     this.walkPath = [];
     this.wall = [];
     this.enemyZone = [];
     this.enemies = [];
+
+    // Set temporal para rastrear enemyZones (se limpia cada vez que se llama setMap)
+    const enemyZonePositions = new Set<string>();
 
     const arrayChunks = [];
     for (let i = 0; i < map.data.length; i += map.width) {
@@ -283,8 +283,7 @@ export class GameIso {
     let col = 0,
       row = 0,
       columns = 0,
-      rows = 0,
-      enemy = null;
+      rows = 0;
 
     for (row = 0, rows = arrayChunks.length; row < rows; row += 1) {
       for (
@@ -292,70 +291,45 @@ export class GameIso {
         col < columns;
         col += 1
       ) {
-        if (arrayChunks[row][col] === this.data_world_bloks.blockRoad) {
-          this.walkPath.push(
-            new WalkPath(
-              col * blockSize,
-              row * blockSize,
-              blockSize + 2,
-              blockSize + 2,
-              true
-            )
-          );
-        }
-
-        if (arrayChunks[row][col] === this.data_world_bloks.blockWall) {
-          this.wall.push(
-            new Wall(
-              col * blockSize,
-              row * blockSize,
-              blockSize,
-              blockSize,
-              true
-            )
-          );
-        } else if (
-          arrayChunks[row][col] === this.data_world_bloks.blockEnemyZone
-        ) {
-          this.walkPath.push(
-            new WalkPath(
-              col * blockSize,
-              row * blockSize,
-              blockSize + 2,
-              blockSize + 2,
-              true
-            )
-          );
-          this.enemyZone.push(
-            new EnemyZone(
-              col * blockSize,
-              row * blockSize,
-              blockSize,
-              blockSize,
-              true
-            )
-          );
-        } else if (arrayChunks[row][col] > 2) {
-          enemy = new mySquare(
+        const element = arrayChunks[row][col];
+        if (this.data_world_bloks[element]) {
+          const block = new this.data_world_bloks[element](
             col * blockSize,
             row * blockSize,
             blockSize,
             blockSize,
             true
           );
-          if (arrayChunks[row][col] === 3) {
-            enemy.vx = 8;
-            enemy.dir = 1;
-          } else if (arrayChunks[row][col] === 4) {
-            enemy.vy = 8;
-            enemy.dir = 2;
+
+          if (block instanceof Path) {
+            this.walkPath.push(block);
+          } else if (block instanceof Wall) {
+            this.wall.push(block);
+          } else {
+            // Verificar si hay enemyZone adyacente antes de asignar
+            const canBeEnemyZone =
+              Math.random() > block.ratio &&
+              !this.hasAdjacentEnemyZone(row, col, enemyZonePositions);
+            block.isEnemyZone = canBeEnemyZone;
+
+            // Si es enemyZone, agregar su posición al Set
+            if (block.isEnemyZone) {
+              enemyZonePositions.add(`${row},${col}`);
+            }
+
+            // console.log(
+            //   `Block [${row},${col}]: isEnemyZone = ${block.isEnemyZone}`
+            // );
+            // this.walkPath.push(block);
+            this.enemyZone.push(block);
           }
-          this.enemies.push(enemy);
         }
       }
     }
+
     this.worldWidth = columns * blockSize;
     this.worldHeight = rows * blockSize;
+    this.updateSortedElements();
   }
 
   in() {

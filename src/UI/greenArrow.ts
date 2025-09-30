@@ -20,7 +20,9 @@ export class GreenArrow {
     position: { x: number; y: number },
     deltaTime: number
   ) {
-    this.time += deltaTime;
+    if (document.hasFocus()) {
+      this.time += deltaTime;
+    }
     if (this.time >= this.maxTime) {
       this.time = 0;
     }

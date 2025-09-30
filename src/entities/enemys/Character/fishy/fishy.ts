@@ -1,5 +1,5 @@
 import { GAME_IS_DEV, GAME_IS_PAUSE } from "@/core/gameState";
-import Attack from "../../../attacks/attacks";
+import Attack from "@/data/attacks/attacks";
 import Enemy from "../../enemys";
 import { FishyAttackDash } from "./fishyAttack";
 import {

@@ -4,7 +4,7 @@ import { BasicSword } from "../attacks/megamanAttack/basicSword";
 import { MegamanAttackBasic } from "../attacks/megamanAttack/MegamanAttackBasic";
 import { MegamanAttackDash } from "../attacks/megamanAttack/MegamanAttackDash";
 import { MegamanAttackDashShoot } from "../attacks/megamanAttack/MegamanAttackDashShoot";
-import { StaticBlocks } from "../enemys/elements/block";
+import { StaticBlocks } from "@/entities/enemys/elements/block";
 
 type ActionForChip = "attack" | "fieldChange" | "heal" | "other" | "addElement";
 type SpriteState =

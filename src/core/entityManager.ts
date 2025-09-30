@@ -144,14 +144,33 @@ class EntityManager {
   hasEnemys() {
     return this.npc.filter((_) => !_.addbyPlayer).length > 0;
   }
-  addNewEffect({ effect, possition, sideToPlay, color, origin, damage }) {
+  addNewEffect({
+    effect,
+    possition,
+    sideToPlay,
+    color,
+    origin,
+    damage,
+    side,
+  }: {
+    effect: any;
+    possition: any;
+    sideToPlay: number;
+    color: string;
+    origin: string;
+    damage: number;
+    side: number;
+  }) {
     const newEffect = new effect({
       possition: possition,
       sideToPlay: sideToPlay,
       color: color,
       origin: origin,
       damage: damage,
+      side: side,
     });
+    newEffect.matrix = FLOOR_MANAGER.matrix;
+    newEffect.calculateMatrix();
     this.effect.push(newEffect);
   }
 }

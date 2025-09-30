@@ -11,7 +11,9 @@ export class mySquare {
   vy: number = 0;
   dir: number = 0;
   color: string = "#0ff000";
-  image: HTMLImageElement | HTMLCanvasElement = new Image();
+  image: HTMLImageElement = new Image();
+  isEnemyZone: boolean = false;
+  colorOpacity: string = "50";
 
   constructor(
     x: number,
@@ -89,19 +91,29 @@ export class mySquare {
         const y = this.left / 4 + this.top / 4 - z - cam.y;
         const TILE_W = 16;
         const TILE_H = 8;
-        if (this.image.width > 0) {
+        if (this.image) {
           ctx.drawImage(this.image, x - 8.2, y + 0.2, TILE_W, TILE_H + 3);
-        } else {
-          if (GAME_IS_DEV()) {
-            ctx.fillStyle = this.color + "50";
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x + TILE_W / 2, y + TILE_H / 2);
-            ctx.lineTo(x, y + TILE_H);
-            ctx.lineTo(x - TILE_W / 2, y + TILE_H / 2);
-            ctx.closePath();
-            ctx.fill();
-          }
+        }
+        //TODO: ELIMIANARa
+        if (this.isEnemyZone && GAME_IS_DEV()) {
+          ctx.fillStyle = this.color + this.colorOpacity;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + TILE_W / 2, y + TILE_H / 2);
+          ctx.lineTo(x, y + TILE_H);
+          ctx.lineTo(x - TILE_W / 2, y + TILE_H / 2);
+          ctx.closePath();
+          ctx.fill();
+        }
+        if (GAME_IS_DEV()) {
+          ctx.fillStyle = this.color + this.colorOpacity;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + TILE_W / 2, y + TILE_H / 2);
+          ctx.lineTo(x, y + TILE_H);
+          ctx.lineTo(x - TILE_W / 2, y + TILE_H / 2);
+          ctx.closePath();
+          ctx.fill();
         }
         //
       }
@@ -109,10 +121,10 @@ export class mySquare {
   }
 }
 
-export class WalkPath extends mySquare {
+export class Path extends mySquare {
   image = new Image();
-
-  color: string = "#484848";
+  colorOpacity: string = "00";
+  color: string = "#ffffff";
   constructor(
     x: number,
     y: number,
@@ -134,11 +146,14 @@ export class Wall extends mySquare {
     createFromTopLeft?: boolean
   ) {
     super(x, y, width, height, createFromTopLeft);
+    this.image = null;
   }
 }
 
 export class EnemyZone extends mySquare {
   color: string = "#ff0000";
+
+  ratio: number = 0.8;
   constructor(
     x: number,
     y: number,
@@ -147,5 +162,11 @@ export class EnemyZone extends mySquare {
     createFromTopLeft?: boolean
   ) {
     super(x, y, width, height, createFromTopLeft);
+    this.image.src = "/assects/isoFloorTest.png";
   }
+}
+
+export class EnemyBoss extends EnemyZone {
+  color: string = "#0000ff";
+  colorOpacity: string = "99";
 }

@@ -12,6 +12,8 @@ import { GAME } from "@/scenes/sceneManager";
 import { ASSET_MANAGER } from "./core/assetManager";
 import { ASSET_SOURCES } from "./core/assetshandler/assetSources";
 import { CHIPS_MANAGER } from "./core/chipsManager";
+import { GAME_IS_BATTLE, GAME_IS_PAUSE } from "./core/gameState";
+import { INPUT_MANAGER } from "./input/inputManager";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -19,6 +21,9 @@ canvas.width = 430;
 canvas.height = 430;
 
 let lastTime = 0;
+
+const xOptions = 280;
+const yOptions = 20;
 const animage = (timeStap: number) => {
   const deltaTime = timeStap - lastTime;
   lastTime = timeStap;
@@ -63,6 +68,28 @@ const animage2 = () => {
       c2.fillRect(x, y, 36, 32);
     }
   });
+
+  c2.fillStyle = "#000000";
+  c2.font = "12px Arial";
+  c2.fillText(`Input old: ${INPUT_MANAGER.oldState}`, xOptions, yOptions);
+  c2.fillText(
+    `Time: ${GAME_IS_BATTLE() ? "Battle" : "World"}`,
+    xOptions,
+    yOptions + 20
+  );
+  c2.fillText(`Time: ${GAME.currentScene.canvasTime}`, xOptions, yOptions + 40);
+  c2.fillText(
+    `Time: ${GAME_IS_PAUSE() ? "Pause" : "Play"}`,
+    xOptions,
+    yOptions + 60
+  );
+  c2.fillText(
+    `Input ct: ${INPUT_MANAGER.currentState}`,
+    xOptions,
+    yOptions + 80
+  );
+  c2.fillText(`Scene prev: ${GAME.previousScene}`, xOptions, yOptions + 100);
+  c2.fillText(`Scene ct: ${GAME.currentSceneIndex}`, xOptions, yOptions + 120);
 
   requestAnimationFrame(animage2);
 };

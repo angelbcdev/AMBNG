@@ -1,5 +1,9 @@
+import { FLOOR_MANAGER } from "@/core/floorManager.js";
 import Attack from "../data/attacks/attacks.js";
-import { ExplotionsBombs } from "../data/extra/StaticAnimations.js";
+import {
+  ExplotionsBombs,
+  ExplotionsEffect,
+} from "../data/extra/StaticAnimations";
 
 export class Entity {
   matrixX: number;
@@ -37,7 +41,7 @@ export class Entity {
   AllattackToShow: Entity[] = [];
   canShoot: boolean;
   addbyPlayer = false;
-  explosion: ExplotionsBombs; // ExplotionsEffect |
+  explosion: any; // ExplotionsEffect |
   proyoectile: any;
   width: number;
   height: number;
@@ -82,7 +86,7 @@ export class Entity {
       x: this.x,
       y: this.y,
     };
-    this.explosion = null;
+    // this.explosion = null;
     this.proyoectile = null; // BasicAttack;
     this.canShoot = true;
     this.timeForShoot = 2000;
@@ -107,8 +111,9 @@ export class Entity {
 
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
     if (this.explosion) {
-      this.explosion.possition = this.possition;
-      this.explosion.draw(c, deltaTime);
+      // this.explosion.possition = this.possition;
+      this.explosion.update(c, deltaTime);
+      this.explosion.drawSprite(c);
     }
     this.updateframe(deltaTime);
     if (!this.isVisible) {
@@ -245,6 +250,8 @@ export class Entity {
       }
     }, this.timeOfStuns);
     if (this.live <= 0) {
+      console.log("you are dead");
+
       this.makeDeath();
     }
   }
@@ -272,20 +279,20 @@ export class Entity {
     if (this.explosion) {
       return;
     }
-    // this.explosion = new ExplotionsEffect({
-    //   possition: {
-    //     x: this.sideToPlay == 1 ? this.possition.x + 60 : this.possition.x - 60,
-    //     y: this.possition.y,
-    //   },
-    //   sideToPlay: this.sideToPlay,
-    //   color: this.color,
-    // });
+    this.explosion = new ExplotionsEffect({
+      possition: {
+        x: this.possition.x,
+        y: this.possition.y,
+      },
+      sideToPlay: 0,
+      color: "red",
+    });
     this.isVisible = false;
     this.canMove = false;
-
+    // console.log("makeDeath", this.explosion);
     setTimeout(() => {
       this.delete = true;
-      this.matrix[this.matrixY][this.matrixX].ocupated = false;
+      FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].ocupated = false;
       // FLOOR_MANAGER.breackFloor(this.matrixX, this.matrixY);
     }, this.timeToDie);
   }

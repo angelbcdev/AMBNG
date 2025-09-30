@@ -9,7 +9,7 @@ import {
 import { GAME } from "@/scenes/sceneManager";
 import { FLOOR_MANAGER } from "./floorManager";
 import { ENTITY_MANAGER } from "./entityManager";
-import { Mettols } from "@/data/enemys/Character/mettol/mettol";
+
 import { PauseMenu } from "../UI/menu/pauseMenu";
 import { ShowChipAreaWithChip } from "../UI/chipAreaSelect/chipAreaSelect";
 import { BattleUI } from "@/UI/battleUI/batleUi";
@@ -17,6 +17,7 @@ import { BackGround } from "@/UI/backGround/backGroundShow";
 import { Dialogue } from "@/UI/dialoge/dialoge";
 import { CompleteScreen } from "@/UI/completeScreen/completeScreen";
 import gameSettings from "@/config/gameSettings";
+import { ENEMY_FACTORY } from "./enemyFactory";
 
 class BattleManager {
   static instance: BattleManager;
@@ -55,59 +56,43 @@ class BattleManager {
     floorImage: number; // 3
   }) {
     this.localIsBattle = true;
-
-    if (!GAME_IS_BATTLE()) {
+    if (this.localIsBattle) {
       GAME.changeScene(GAME.statesKeys.battleScene);
-
       this.bg.updateBackGround(backGround);
-
       this.currentTimeForSelectShip = this.timeForSelectShip;
-
       FLOOR_MANAGER.initFloors();
       ENTITY_MANAGER.initBattle();
       FLOOR_MANAGER.updateImageFloors(floorImage);
 
-      // // GAME_SET_PAUSE();
-      if (!GAME_IS_BATTLE()) {
-        GAME_SET_PAUSE();
-        GAME_SET_BATTLE();
-        // this.isCompletedBarShip = true;
-        this.localIsBattle = true;
-        this.timeForBattleStart = 1;
-        const timeForBattleStart = setInterval(() => {
-          this.timeForBattleStart--;
-          if (this.timeForBattleStart == 0) {
-            clearInterval(timeForBattleStart);
-            GAME_SET_UNPAUSE();
-            this.localIsBattle = false;
-            // Show chip area after 1 second
-            this.chipAreaSelect.prepareChipArea();
-            this.chipAreaSelect.showArea();
-          }
-        }, 1000);
-      }
+      // this.isCompletedBarShip = true;
+
+      this.timeForBattleStart = 2;
+      const timeForBattleStart = setInterval(() => {
+        this.timeForBattleStart--;
+        if (this.timeForBattleStart == 0) {
+          clearInterval(timeForBattleStart);
+          this.localIsBattle = false;
+          GAME_SET_UNPAUSE();
+
+          // Show chip area after 1 second
+          this.chipAreaSelect.prepareChipArea();
+          this.chipAreaSelect.showArea();
+        }
+      }, 1000);
 
       GAME.currentScene.timeInBattle = 0;
       GAME.currentScene.totalTimeInBattle = 0;
       GAME.currentScene.currentTimeForSelectShip = 0;
       GAME.currentScene.canvasTime = 0;
-
-      ENTITY_MANAGER.addNewEnemy({
-        newEnemy: Mettols,
-        position: { x: 1, y: 1 },
-        level: 1,
-      });
+      ENEMY_FACTORY.addEnemy();
     }
   }
   outBattle() {
-    GAME_SET_UNBATTLE();
-    GAME_SET_UNPAUSE();
+    GAME.changeScene(GAME.statesKeys.worldScene);
     setTimeout(() => {
-      // GAME.changeScene(GAME.statesKeys.world);
       FLOOR_MANAGER.matrix = null;
-      // ENTITY_MANAGER.player = null;
       FLOOR_MANAGER.floors = [];
-    }, 1000);
+    }, 500);
   }
   drawBackground(c: CanvasRenderingContext2D, deltaTime: number) {
     this.bg.draw(c, deltaTime);
@@ -130,13 +115,9 @@ class BattleManager {
     // this.battleUI.updateFrame(c, deltaTime, this.isCompletedBarShip);
     //
 
-    if (GAME_IS_BATTLE()) {
-      ENTITY_MANAGER.player.showChipts(c, deltaTime);
-      this.battleUI.draw(c);
-    }
-    this.chipAreaSelect.draw(c, deltaTime);
+    // if (GAME_IS_BATTLE()) {
+    // }
 
-    this.fillBar(c);
     this.completeScreen.draw(c, deltaTime);
     this.dialogue.draw(c, deltaTime);
   }
@@ -167,6 +148,7 @@ class BattleManager {
 
     const currentProgressBarr =
       (this.currentTimeForSelectShip / this.timeForSelectShip) * this.sizeBar;
+    c.save();
     c.fillStyle = this.isCompletedBarShip
       ? this.flashBarTime < 200
         ? "#ffff0090"
@@ -178,9 +160,11 @@ class BattleManager {
       currentProgressBarr,
       this.frameHeight - 33
     );
+
     if (this.isCompletedBarShip) {
       this.battleUI.showMSJBar(c);
     }
+    c.restore();
   }
 }
 

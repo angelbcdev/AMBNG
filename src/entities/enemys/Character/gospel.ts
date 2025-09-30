@@ -1,14 +1,15 @@
 import { Entity } from "@/entities/entity.js";
-import { FireShoot } from "../../attacks/fireShoot.js";
+import { FireShoot } from "@/data/attacks/fireShoot.js";
 import { StaticEnemy } from "../staticEnemy.js";
-
-import { ENTITY_MANAGER } from "@/core/entityManager.js";
+import { GAME_IS_PAUSE } from "@/core/gameState.js";
+import { ExplotionsEffect } from "@/data/extra/StaticAnimations.js";
 
 export class GospelWolfEnemy extends StaticEnemy {
   timeForChangeWorld: any;
   timeExplode = 1000;
   menyExplode = 18;
   sizeExplotion = 150;
+  explosion = null;
   constructor({ possition, sideToPlay }) {
     super({ possition, sideToPlay });
     this.possition = possition;
@@ -16,6 +17,7 @@ export class GospelWolfEnemy extends StaticEnemy {
     this.frameWidth = 240;
     this.frameHeight = 281;
     this.live = 2000;
+    this.faceToLeft = true;
     this.liveTotal = this.live;
     this.blockSize = {
       h: 150,
@@ -36,29 +38,21 @@ export class GospelWolfEnemy extends StaticEnemy {
     };
     this.proyoectile = FireShoot as any;
     this.frameY = this.states.idle;
-    this.timeToDie = 8000;
+    this.timeToDie = 2000;
 
-    this.possitionShowLiveY = -114;
+    this.possitionShowLiveY = -100;
   }
-  draw(c, deltaTime) {
+  draw(c: CanvasRenderingContext2D, deltaTime: number) {
     super.draw(c, deltaTime);
     if (this.live <= 10) {
       clearInterval(this.timeForChangeWorld);
       this.timeForChangeWorld = null;
     }
+    // this.explosion.update(c, deltaTime);
+    // this.explosion.drawSprite(c);
   }
 
-  drawSprite(c) {
-    c.save(); // Guardar el estado actual del contexto
-
-    // Invertir el eje X si faceToLeft es verdadero
-    c.scale(!this.faceToLeft ? -1 : 1, 1);
-
-    // Ajustar la posición en X para que la imagen se pinte correctamente
-    const drawX = !this.faceToLeft
-      ? -this.possition.x - this.blockSize.w - 225
-      : this.possition.x - 160;
-
+  drawSprite(c: CanvasRenderingContext2D) {
     c.drawImage(
       this.image,
       this.frameX * this.frameWidth,
@@ -66,13 +60,11 @@ export class GospelWolfEnemy extends StaticEnemy {
       this.frameWidth,
       this.frameHeight,
 
-      drawX,
-      this.possition.y - 140,
+      this.possition.x - 130,
+      this.possition.y - 160,
       240,
       280
     );
-
-    c.restore();
   }
   makeAttack() {
     if (!this.goingToShoot) {
@@ -84,14 +76,7 @@ export class GospelWolfEnemy extends StaticEnemy {
         Math.floor(Math.random() * (margin.start - margin.end + 1)) +
         margin.end;
       setTimeout(() => {
-        this.addRandomAttacks(
-          this.faceToLeft,
-          this.color || "red",
-          "player",
-          this.damage,
-          this.proyoectile,
-          this.possition
-        );
+        this.addRandomAttacks();
 
         setTimeout(() => {
           this.frameY = this.states.idle;
@@ -102,17 +87,6 @@ export class GospelWolfEnemy extends StaticEnemy {
       }, randomNumber);
     }
   }
-  // validCollision(attack: Nodo) {
-  //   if (
-  //     attack.possition.x + attack.width >= this.possition.x &&
-  //     attack.possition.x <= this.possition.x + this.width &&
-  //     attack.possition.y + attack.height + this.blockSize.h >=
-  //       this.possition.y &&
-  //     attack.possition.y <= this.possition.y + this.blockSize.h
-  //   ) {
-  //     this.resiveDamage(attack);
-  //   }
-  // }
 
   collisionArea(player: Entity) {
     if (this.side === player.side) {
@@ -123,22 +97,18 @@ export class GospelWolfEnemy extends StaticEnemy {
   }
 
   // Método para agregar efectos de proyectiles aleatoriamente
-  addRandomAttacks(
-    sideToPlay,
-    color,
-    layerShoots,
-    damage,
-    proyoectile,
-    position,
-    minAttacks = 3,
-    maxAttacks = 3
-  ) {
+  addRandomAttacks() {
+    const sideToPlay = this.faceToLeft;
+    const minAttacks = 2;
+    const maxAttacks = 2;
     // Determinar el número aleatorio de ataques (proyectiles) a disparar entre minAttacks y maxAttacks
     const numberOfAttacks =
       Math.floor(Math.random() * (maxAttacks - minAttacks + 1)) + minAttacks;
 
     // Variaciones posibles para las posiciones Y de los proyectiles
-    const variationsY = [-60, -10, 40, 90];
+    const variationsY = [-60, -10, 40];
+
+    let matrixY = 0;
 
     // Crear los ataques según el número aleatorio
     for (let i = 0; i < numberOfAttacks; i++) {
@@ -146,24 +116,37 @@ export class GospelWolfEnemy extends StaticEnemy {
       const randomY =
         variationsY[Math.floor(Math.random() * variationsY.length)];
 
-      ENTITY_MANAGER.addNewEffect({
-        effect: proyoectile,
+      if (randomY == -60) {
+        matrixY = 0;
+      } else if (randomY == -10) {
+        matrixY = 1;
+      } else if (randomY == 40) {
+        matrixY = 2;
+      }
+
+      const attack = new this.proyoectile({
         possition: {
-          x: sideToPlay ? position.x - 140 : position.x + 170, // Calcula la posición X dependiendo del lado
-          y: position.y + randomY, // Usar la posición Y aleatoria
-          initialMatrixY: variationsY.findIndex((y) => y === randomY),
+          x: sideToPlay ? this.possition.x - 140 : this.possition.x + 170,
+          y: this.possition.y + randomY,
+          initialMatrixY: this.matrixY,
         },
-        sideToPlay: sideToPlay,
-        color: color,
-        origin: layerShoots,
-        damage: damage,
+        sideToPlay: this.side,
+        color: this.color,
+        damage: this.damage,
+        origin: this.side,
+        attackOuwner: this,
+        type: this.proyoectile,
       });
+      attack.matrix = this.matrix;
+      attack.initialMatrixY = matrixY;
+      this.AllattackToShow.push(attack);
     }
   }
   onDetectedPlayer(player: Entity) {
     if (this.side === player.side || this.delete || !this.canMove) {
       return;
     }
+    if (GAME_IS_PAUSE()) return;
     this.makeAttack();
   }
 }

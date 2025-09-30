@@ -1,4 +1,4 @@
-import BeeTank from "../../enemys/Character/beeTank/beetank";
+import { BeeTank } from "@/entities/enemys/Character/beeTank/beetank";
 import Attack from "../attacks";
 import { ExplotionsBombs } from "../../extra/StaticAnimations.js";
 import { Entity } from "@/entities/entity";

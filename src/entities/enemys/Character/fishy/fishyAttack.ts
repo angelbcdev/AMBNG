@@ -1,5 +1,5 @@
 import { Entity } from "@/entities/entity";
-import Attack from "../../../attacks/attacks";
+import Attack from "@/data/attacks/attacks";
 
 import Fishy from "./fishy";
 

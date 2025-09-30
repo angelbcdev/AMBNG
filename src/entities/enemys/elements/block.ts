@@ -1,4 +1,4 @@
-import Attack from "../../attacks/attacks";
+import Attack from "@/data/attacks/attacks";
 import Enemy from "../enemys";
 
 export class StaticBlocks extends Enemy {

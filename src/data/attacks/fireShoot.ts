@@ -24,7 +24,7 @@ export class FireShoot extends Attack {
 
     this.isToLeft = data.sideToPlay ? "left" : "right";
     this.delete = false;
-    this.speed = 1;
+    this.speed = 0.1;
     {
       const key = "attack:fireShoot";
       if (ASSET_MANAGER.has(key)) this.image = ASSET_MANAGER.get(key);
