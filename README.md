@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/logo.png" alt="Logo" width="220">
+</p>
+
 #  Another MegaMan Battle Network fan game
 
 A canvas-based game inspired by MegaMan Battle Network, built with Vite, React (SWC), and TypeScript. The game renders to a fixed 430x430 canvas and is driven by a scene manager that switches between Home, World (isometric), Battle, Options, and Chips management scenes.
@@ -50,32 +54,69 @@ npm run preview
 ## Project Structure
 ```
 / public
-  / assects                # Game art, UI, tiles, sprites (typo kept to match project paths)
+  / assects                 # Game art, UI, tiles, sprites (typo kept to match project paths)
 / src
   / config
-    keyBindings.ts         # Rebindable controls
+    gameSettings.ts          # Global game settings (sizes, toggles)
+    keyBindings.ts           # Rebindable controls
+  / core
+    WorldManager.ts          # World-level orchestration (map, camera, encounters)
+    assetManager.ts          # Asset loading helpers
+    battleManager.ts         # Battle flow, dialogue hooks
+    chipsManager.ts          # Folder/Sack, battle selection lifecycle
+    enemyFactory.ts          # Enemy spawning utilities
+    entityManager.ts         # Entity lifecycle/update registry
+    floorManager.ts          # Tile/floor management
+    gameState.ts             # Global state (singletons, flags)
   / data
-    / player/player/chips  # Chips system: data, manager, classes
-    gameBattle.ts          # Battle logic (shared/non-scene)
-  / newUI
-    / Button               # ButtonManager UI
-    / menu                 # PauseMenu
-    / backGround           # Parallax/background helpers
+    / attacks                # Attack definitions and helpers
+    / chips                  # Chip classes and data
+      battleChip.ts          # BattleShip and chip interfaces
+      chipData.ts            # Chip dataset (allChipsA, etc.)
+    / floor                  # Floor/tile data
+    / gameData               # Misc game data
+    / player                 # Player-related data
+  / entities
+    entity.ts                # Base entity
+    / enemys                 # Enemy entity implementations
+  / UI
+    / Button                 # ButtonManager (note: current file name contains a space)
+    / backGround             # Background helpers
+    / battleUI               # Battle UI pieces
+    / chipAreaSelect         # Chip selection UI
+    / completeScreen         # Completion overlays
+    / dialoge                # Dialogue UI
+    / menu                   # Pause menu
+    greenArrow.ts            # Arrow drawing helper
+  / components               # ECS-like components (WIP)
+    AnimationComponent.ts
+    Component.ts
+    PhysicsComponent.ts
+    DevFucntions.tsx
   / scenes
-    / sceneManager.ts      # Central scene router and canvas loop integration
-    / sceneROOT.ts         # Base scene class
-    / homeScene            # HomeScene
-    / worldScene           # WorldScene (sources with iso renderer)
+    sceneManager.ts          # Central scene router and canvas loop integration
+    sceneROOT.ts             # Base scene class
+    joysTickManager.ts       # Joystick/tick helpers for scenes
+    / homeScene              # HomeScene
+    / worldScene             # WorldScene (isometric)
+      worldScene.ts          # World scene entry
       / sources
-        gameiso.ts         # GameIso: world loop, camera, zones, pause
-        isoEntitys.ts      # mySquare, WalkPath, Wall, EnemyZone
-        isPlayer.ts        # PlayerIso
-        utils.ts           # world data & helpers
-    / battleScene          # Battle scene & UI
-    / optionScene          # Keybinding rebinding UI
-    / chipsScene           # ChipsScene: folder/sack navigation
-  main.tsx                 # Game boot & animation loop
-  index.html               # Root HTML with <canvas id="canvas">
+        camera.ts            # Camera with iso focus and clamping
+        isoEntitys.ts        # mySquare, WalkPath, Wall, EnemyZone
+        isoLanDialogue.ts    # Dialogue snippets in world
+        isoPlayer.ts         # PlayerIso movement and collisions
+        utils.ts             # World data & helpers
+    / battleScene            # Battle scene & sources
+      battleScene.ts
+      / sources              # (future battle helpers)
+    / optionScene            # Keybinding rebinding UI
+    / folderScene            # Folder/Sack navigation scene
+      folderScene.ts
+    / GameOverScene          # Game Over scene
+  App.tsx                    # React host
+  main.tsx                   # Game boot & animation loop
+  index.css                  # Global styles
+  index.html                 # Root HTML with <canvas id="canvas">
 ```
 
 ## How it Works
@@ -90,49 +131,49 @@ npm run preview
 ### Scenes
 - **Base**: `src/scenes/sceneROOT.ts` with lifecycle hooks `in()`, `out()`, `update()`, `draw()`, `checkKey()`, `checkClick()`.
 - **Home**: `src/scenes/homeScene/homeScene.ts` uses `ButtonManager` to navigate.
-- **World (Iso)**: `src/scenes/worldScene/sources/gameiso.ts`
+- **World (Iso)**: `src/scenes/worldScene/worldScene.ts`
   - Handles player movement, collisions, random encounters (`EnemyZone`).
-  - Camera (`Camera`) with `isoFocus`.
+  - Camera in `src/scenes/worldScene/sources/camera.ts` with isometric focus/clamping.
   - Pause toggling integrates with `PauseMenu`.
-- **Battle**: `src/scenes/battleScene/` (work in progress), initialized via world encounters.
+- **Battle**: `src/scenes/battleScene/battleScene.ts` (work in progress), initialized via world encounters.
 - **Options**: `src/scenes/optionScene/optionScene.ts` provides key rebinding.
-- **Chips**: `src/scenes/chipsScene/chipsScene.ts` manages Sack/Folder with arrow navigation and add/remove using keybindings.
+- **Folder**: `src/scenes/folderScene/folderScene.ts` manages Sack/Folder with arrow navigation and add/remove using keybindings.
 
 ### UI Components
-- **`ButtonManager`** (`src/newUI/Button/buttonManager.ts`)
+- **`ButtonManager`** (`src/UI/Button/buttonManager .ts`)
   - Keyboard navigation: ArrowUp/ArrowDown to change selection, Enter or `keyBindings.pressB` to activate.
   - Draws a green arrow indicator next to the active button.
-- **`PauseMenu`** (`src/newUI/menu/pauseMenu.ts`)
+- **`PauseMenu`** (`src/UI/menu/pauseMenu.ts`)
   - Sliding side panels (left menu, right money panel) animated by `swapMenu()`.
-  - Contains a `ButtonManager` to navigate options; currently provides a "Folder" option to open the Chips scene.
+  - Contains a `ButtonManager` to navigate options; currently provides a "Folder" option to open the Folder scene.
 
 ### Chips System
-- **`BattleShip` class**: `src/data/player/player/chips/index.ts`
+- **`BattleShip` class**: `src/data/chips/battleChip.ts`
   - Auto-configures from `allChipsA` by `title`.
   - Exposes `drawFullImage(...)` and `drawName(...)` to render chip visuals.
-  - Has `id` (base) and `idForMove` (ephemeral for moving within Folder).
-- **`ChipManager`**: `src/data/player/player/chips/chipsManager.ts`
-  - Single-instance via `CHIPS_MANAGER`.
+  - Has `id` and helper flags such as `isInFolder`.
+- **Chip data**: `src/data/chips/chipData.ts` provides `allChipsA`.
+- **`ChipManager`**: `src/core/chipsManager.ts`
+  - Singleton via `CHIPS_MANAGER`.
   - Collections: `chipsSack`, `chipsFolder`, `chipsForBattle`.
-  - Methods: `addChipToFolder(id)`, `removeChipFromFolder(idForMove)`, `addChip(chip)`, `clearShips()`.
-- **Chips scene navigation** (`src/scenes/chipsScene/chipsScene.ts`)
-  - Two panes (Folder and Sack) with paging of 7 items each.
+  - Methods: `addChipToFolder(id)`, `removeChipFromFolder(id)`, `startBattle()`, `shuffleChip()`.
+- **Folder scene navigation** (`src/scenes/folderScene/folderScene.ts`)
+  - Two panes (Folder and Sack) with paging.
   - ArrowUp/ArrowDown moves the cursor; ArrowLeft/Right switches panes.
-  - `keyBindings.pressB` moves from Sack -> Folder (adds); same key on Folder removes and shifts selection.
   - `keyBindings.pressA` returns to the previous scene.
 
 ### World (Isometric)
 - Entities in `src/scenes/worldScene/sources/isoEntitys.ts` render as isometric diamonds.
 - `WalkPath` tiles define traversable areas; `Wall` blocks movement; `EnemyZone` triggers battles.
-- `GameIso` assembles the map from numeric layers in `utils.ts`.
+ - World assembly/helpers live in `src/scenes/worldScene/sources/utils.ts`.
 
 ## Controls / Keybindings
 Keybindings are defined in `src/config/keyBindings.ts` and can be changed at runtime in the Options scene.
 
 **Default Controls** (names may vary depending on your current config):
-- **Arrow keys**: Navigate menus, move player in world, move selection in Chips scene
-- **Enter** or `pressB`: Activate menu buttons; add/remove chips in Chips scene
-- **`pressA`**: Confirm/return to previous scene from Chips scene
+- **Arrow keys**: Navigate menus, move player in world, move selection in Folder scene
+- **Enter** or `pressB`: Activate menu buttons; add/remove chips in Folder scene
+- **`pressA`**: Confirm/return to previous scene from Folder scene
 - **Escape**: Toggle pause menu in world scene
 
 *Note: If you customized `keyBindings.ts`, the Options scene allows rebinding to new keys (avoids arrow keys by default).*
@@ -264,12 +305,11 @@ We welcome contributions! Please check the roadmap above for areas where help is
 - Enemy AI patterns
 - Isometric world art and level design
 - Audio integration
-- Mobile optimization
-
+  - Mobile optimization
+  
 ## License
 MIT (or your preferred license) – update as needed.
 
 ---
-
 **Current Status**: Alpha - Core systems functional, battle system in development
-**Last Updated**: September 2025
+**Last Updated**: September 30, 2025
