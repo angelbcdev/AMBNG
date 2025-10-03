@@ -3,6 +3,7 @@ import Attack from "@/data/attacks/attacks";
 import { allChipsA, ChipData } from "./chipData";
 import { FLOOR_MANAGER } from "@/core/floorManager";
 import { ENTITY_MANAGER } from "@/core/entityManager";
+import { getImageFromAssetsManager } from "@/core/assetshandler/assetHelpers";
 
 export const IChips = {
   maze: "maze",
@@ -38,7 +39,7 @@ export class BattleShip {
     addlinePanel: "addlinePanel",
     randomeFloor: "randomeFloor",
   };
-  image: HTMLImageElement = new Image();
+
   with = 94;
   height = 84;
   posición = { x: 0, y: 0 };
@@ -57,13 +58,19 @@ export class BattleShip {
   elementToAdd: string;
   id: string;
   isInFolder: boolean;
+  imageAllChip: HTMLImageElement = new Image();
+  imageAllChipWidth = 68;
+  imageAllChipHeight = 92;
+  imageAllChipPositionX = 0;
+  imageAllChipPositionY = 0;
 
   constructor({ title }: { title: string }) {
     const currentChip = allChipsA.find(
       (chip) => chip.title === title
     ) as ChipData;
     this.id = getRandomeIDforMove();
-    this.image.src = currentChip.image;
+
+    this.imageAllChip = getImageFromAssetsManager("chip:allchip");
     this.name = currentChip.title;
     this.chipType = currentChip.chipType;
     this.class = currentChip.clase;
@@ -78,6 +85,8 @@ export class BattleShip {
     this.timeForAttack = currentChip.timeForAttack;
     this.elementToAdd = currentChip.elementToAdd;
     this.isInFolder = currentChip.isInFolder;
+    this.imageAllChipPositionX = currentChip.imageAllChipPositionX;
+    this.imageAllChipPositionY = currentChip.imageAllChipPositionY;
   }
   draw(c: CanvasRenderingContext2D, x: number, _: number) {
     const realX =
@@ -89,7 +98,9 @@ export class BattleShip {
     try {
       c.fillStyle = x == 0 ? "red" : "blue";
       c.fillRect(realX - 3, realY - 3, this.with / 1.9, this.height / 1.9);
-      c.drawImage(this.image, realX, realY, this.with / 2.2, this.height / 2.2);
+
+      this.drawIcon(c, realX, realY);
+      // c.drawImage(this.image, realX, realY, this.with / 2.2, this.height / 2.2);
 
       if (this.damage > 0) {
         this.showDamage(c, realX, realY);
@@ -97,10 +108,42 @@ export class BattleShip {
     } catch (error) {}
   }
   drawIcon(c: CanvasRenderingContext2D, x: number, y: number) {
-    c.drawImage(this.image, x, y, this.with / 2.6, this.height / 2.6);
+    c.drawImage(
+      this.imageAllChip,
+      this.imageAllChipPositionX * this.imageAllChipWidth,
+      this.imageAllChipPositionY * this.imageAllChipHeight + 16,
+      this.imageAllChipWidth,
+      this.imageAllChipHeight - 34,
+      x,
+      y,
+      this.with / 2.6,
+      this.height / 2.6
+    );
   }
-  drawFullImage(c: CanvasRenderingContext2D, x: number, y: number) {
-    c.drawImage(this.image, x, y, this.with, this.height);
+  drawFullImage(
+    c: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    isSelectView: boolean = false
+  ) {
+    const width = isSelectView ? 196 : 142;
+    const height = isSelectView ? 236 : 250;
+
+    // if (this.imageAllChipPositionX == 0 || this.imageAllChipPositionY == 0) {
+    //   c.drawImage(this.image, x, y, this.with, this.height);
+    // } else {
+    c.drawImage(
+      this.imageAllChip,
+      this.imageAllChipPositionX * this.imageAllChipWidth,
+      this.imageAllChipPositionY * this.imageAllChipHeight,
+      this.imageAllChipWidth,
+      this.imageAllChipHeight,
+      x - (isSelectView ? 40 : 36),
+      y - (isSelectView ? 36 : 34),
+      width,
+      height
+    );
+    // }
   }
   showDamage(c: CanvasRenderingContext2D, realX: number, realY: number) {
     c.font = "8px 'Mega-Man-Battle-Network-Regular'";

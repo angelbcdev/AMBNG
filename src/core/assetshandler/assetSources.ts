@@ -115,35 +115,7 @@ export const ASSET_SOURCES: AssetManifest = {
   ],
 
   // Battle chip icons (from chipData)
-  chips: [
-    { key: "chip:cannons1", url: `${URLROOT}/battleShip/cannon1.png` },
-    { key: "chip:cannons2", url: `${URLROOT}/battleShip/cannon2.png` },
-    { key: "chip:cannons3", url: `${URLROOT}/battleShip/cannon3.png` },
-    { key: "chip:punsh", url: `${URLROOT}/battleShip/punsh.png` },
-    { key: "chip:breackPanel", url: `${URLROOT}/battleShip/breakPanel.png` },
-    { key: "chip:bomb", url: `${URLROOT}/battleShip/bomb.png` },
-    { key: "chip:block", url: `${URLROOT}/battleShip/block.png` },
-    { key: "chip:maze", url: `${URLROOT}/battleShip/maze.png` },
-    { key: "chip:pannel3", url: `${URLROOT}/battleShip/panel3.png` },
-    { key: "chip:pannel1", url: `${URLROOT}/battleShip/panel1.png` },
-    { key: "chip:addlinePanel", url: `${URLROOT}/battleShip/addlinePanel.png` },
-    { key: "chip:shield", url: `${URLROOT}/battleShip/guard.png` },
-    { key: "chip:dash", url: `${URLROOT}/battleShip/dash.png` },
-    { key: "chip:dash2", url: `${URLROOT}/battleShip/dash-2.png` },
-    { key: "chip:healt80", url: `${URLROOT}/battleShip/healt80.png` },
-    { key: "chip:healt10", url: `${URLROOT}/battleShip/healt10.png` },
-    { key: "chip:healt30", url: `${URLROOT}/battleShip/healt30.png` },
-    { key: "chip:healt50", url: `${URLROOT}/battleShip/healt50.png` },
-    { key: "chip:healt120", url: `${URLROOT}/battleShip/healt120.png` },
-    { key: "chip:healt150", url: `${URLROOT}/battleShip/healt150.png` },
-    { key: "chip:healt200", url: `${URLROOT}/battleShip/healt200.png` },
-    { key: "chip:healt300", url: `${URLROOT}/battleShip/healt300.png` },
-    { key: "chip:swords", url: `${URLROOT}/battleShip/swords.png` },
-    { key: "chip:swords-long", url: `${URLROOT}/battleShip/swords-long.png` },
-    { key: "chip:pickaxel1", url: `${URLROOT}/battleShip/pickaxel1.png` },
-    { key: "chip:pickaxel2", url: `${URLROOT}/battleShip/pickaxel2.png` },
-    { key: "chip:pickaxel3", url: `${URLROOT}/battleShip/pickaxel3.png` },
-  ],
+  chips: [{ key: "chip:allchip", url: `${URLROOT}/chips/allChips.png` }],
 
   // Floor atlases
   tiles: [

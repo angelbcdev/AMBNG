@@ -221,7 +221,7 @@ export class FolderScene extends SceneRoot {
       xBlackArronws: 550,
       xGreenArronws: 450,
       xtextNameChips: 675,
-      xBigImage: 730,
+      xBigImage: 740,
       chipsToShow: CHIPS_MANAGER.chipsSack,
       deltaTime,
       category: "sack",

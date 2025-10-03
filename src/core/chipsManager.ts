@@ -43,7 +43,7 @@ export class ChipManager {
     return ChipManager.instance;
   }
   refreshFolder() {
-    this.chipsFolder = chipInGame.filter((chip) => chip.isInFolder);
+    // this.chipsFolder = chipInGame.filter((chip) => chip.isInFolder);
   }
 
   addChipToFolder(id: string) {

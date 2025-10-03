@@ -17,7 +17,7 @@ export class SceneManager {
   canvas: HTMLCanvasElement;
   static instance: SceneManager | null = null;
 
-  currentSceneIndex = "homeScene";
+  currentSceneIndex = "folderScene";
   previousScene = "homeScene";
   statesKeys = {
     homeScene: "homeScene",
@@ -47,6 +47,7 @@ export class SceneManager {
   }
   constructor() {
     this.currentScene.in();
+
     this.canvas = canvas;
     this.c = c;
     INPUT_MANAGER.setState(this.currentScene.nameScene);

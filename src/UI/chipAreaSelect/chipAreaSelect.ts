@@ -234,7 +234,7 @@ export class ShowChipAreaWithChip {
     } catch (_) {}
 
     if (this.chipInView.viewX < 5 && chip) {
-      chip.drawFullImage(c, this.position.x, this.position.y + 64);
+      chip.drawFullImage(c, this.position.x + 26, this.position.y + 54, true);
     } else {
       this.noChipSelected(c);
     }
