@@ -42,7 +42,7 @@ class BattleManager {
     }
     return BattleManager.instance;
   }
-  inBattle(type: "EnemyBoss" | "EnemyZone") {
+  inBattle(type: "EnemyBoss" | "EnemyZone" | "test") {
     this.localIsBattle = true;
 
     let normalbg = 2;

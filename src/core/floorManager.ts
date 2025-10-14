@@ -37,7 +37,7 @@ export class MatrixManager {
       .sort((a, b) => b.y + a.y)
       .forEach((floor: FloorBase) => {
         floor.draw(c, deltaTime);
-        floor.floors = this.floors;
+        // floor.floors = this.floors;
         floor.validateAttack(effects);
       });
   }
@@ -48,11 +48,25 @@ export class MatrixManager {
 
     this.floors[findFloor]?.breakFloor();
   }
-
-  brackAllFloor(characterData: Entity, _: number) {
-    const timeOut = 300;
+  brokeOneLine(characterData: Entity) {
+    this.makeGameTemble();
+    (async () => {
+      let timer = null;
+      await new Promise((resolve) => (timer = setTimeout(resolve, 1200)));
+      this.brackAllFloor(characterData, 300); // , true
+      clearTimeout(timer);
+    })();
+  }
+  brackAllFloor(
+    characterData: Entity,
+    timeOut: number = 300,
+    isOneLine = false
+  ) {
     const side = characterData.side;
     this.floors.forEach((floor) => {
+      if (isOneLine && floor.matrixY != characterData.matrixY) {
+        return;
+      }
       let defineTime = 0;
       if (side == 0) {
         defineTime = floor.matrixX * timeOut;
@@ -72,7 +86,6 @@ export class MatrixManager {
         setTimeout(() => {
           floor.breakFloor();
         }, defineTime);
-        // floor.breakFloor();
       }
     });
   }

@@ -14,6 +14,10 @@ import { ASSET_SOURCES } from "./core/assetshandler/assetSources";
 import { CHIPS_MANAGER } from "./core/chipsManager";
 import { GAME_IS_BATTLE, GAME_IS_PAUSE } from "./core/gameState";
 import { INPUT_MANAGER } from "./input/inputManager";
+import { FLOOR_MANAGER } from "./core/floorManager";
+import { ENTITY_MANAGER } from "./core/entityManager";
+import { BATTLE_MANAGER } from "./core/battleManager";
+import { FloorState } from "./data/floor/states";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -22,8 +26,6 @@ canvas.height = 430;
 
 let lastTime = 0;
 
-const xOptions = 280;
-const yOptions = 20;
 const animage = (timeStap: number) => {
   const deltaTime = timeStap - lastTime;
   lastTime = timeStap;
@@ -37,14 +39,10 @@ const animage = (timeStap: number) => {
 
 const canvas2 = document.getElementById("canvas2") as HTMLCanvasElement;
 const c2 = canvas2.getContext("2d")!;
-canvas2.width = 430;
-canvas2.height = 430;
+canvas2.width = 600;
+canvas2.height = 700;
 
-export const animage2 = () => {
-  c2.clearRect(0, 0, canvas2.width, canvas2.height);
-  c2.fillStyle = "white";
-  c2.fillRect(0, 0, canvas2.width, canvas2.height);
-
+export const drawChips = () => {
   CHIPS_MANAGER.chipsFolder.forEach((chip, index) => {
     const colSize = 5; // how many chips per row
     const cellSize = 51; // spacing
@@ -68,30 +66,90 @@ export const animage2 = () => {
       c2.fillRect(x, y, 36, 32);
     }
   });
+};
 
+export const showGameStatesDev = (
+  xOptions = 120,
+  yOptions = 20,
+  space = 200
+) => {
   c2.fillStyle = "#000000";
   c2.font = "12px Arial";
   c2.fillText(`Input old: ${INPUT_MANAGER.oldState}`, xOptions, yOptions);
+
   c2.fillText(
-    `Time: ${GAME_IS_BATTLE() ? "Battle" : "World"}`,
+    `Input ct: ${INPUT_MANAGER.currentState}`,
+    xOptions + space,
+    yOptions
+  );
+
+  c2.fillText(
+    `current mode: ${GAME_IS_BATTLE() ? "Battle" : "World"}`,
     xOptions,
     yOptions + 20
   );
-  c2.fillText(`Time: ${GAME.currentScene.canvasTime}`, xOptions, yOptions + 40);
   c2.fillText(
-    `Time: ${GAME_IS_PAUSE() ? "Pause" : "Play"}`,
-    xOptions,
-    yOptions + 60
+    `isPause: ${GAME_IS_PAUSE() ? "Pause" : "Play"}`,
+    xOptions + space,
+    yOptions + 20
   );
-  c2.fillText(
-    `Input ct: ${INPUT_MANAGER.currentState}`,
-    xOptions,
-    yOptions + 80
-  );
-  c2.fillText(`Scene prev: ${GAME.previousScene}`, xOptions, yOptions + 100);
-  c2.fillText(`Scene ct: ${GAME.currentSceneIndex}`, xOptions, yOptions + 120);
 
-  requestAnimationFrame(animage2);
+  c2.fillText(`Scene prev: ${GAME.previousScene}`, xOptions, yOptions + 40);
+  c2.fillText(
+    `Scene ct: ${GAME.currentSceneIndex}`,
+    xOptions + space,
+    yOptions + 40
+  );
+};
+
+FLOOR_MANAGER.initFloors();
+
+BATTLE_MANAGER.inBattle("test");
+export const devFloor = (deltaTime: number) => {
+  // ENTITY_MANAGER.initBattle();
+  try {
+    ENTITY_MANAGER.npc[0]?.showDataDev(c2, 10, 20);
+  } catch (__) {}
+
+  FLOOR_MANAGER.drawFloors(c2, deltaTime, []);
+  ENTITY_MANAGER.draw(c2, deltaTime);
+};
+
+export const animateDev = (timeStap: number) => {
+  const deltaTime = timeStap - lastTime;
+  lastTime = timeStap;
+  c2.clearRect(0, 0, canvas2.width, canvas2.height);
+  c2.fillStyle = "white";
+  c2.fillRect(0, 0, canvas2.width, canvas2.height);
+
+  // drawChips();
+  // showGameStatesDev();
+  devFloor(deltaTime);
+
+  FLOOR_MANAGER.floors.forEach((floor) => {
+    c2.fillStyle = "red";
+    c2.strokeRect(floor.x, floor.y + 310, floor.width, floor.height);
+    c2.fillStyle = "black";
+    c2.font = "12px Arial";
+    c2.fillText(
+      `${FLOOR_MANAGER.matrix[floor.matrixY][floor.matrixX].side}`,
+      floor.x + 35,
+      floor.y + 320
+    );
+    c2.fillText(floor.isChangeFloor.toString(), floor.x + 35, floor.y + 340);
+    c2.fillText(
+      floor.characterFloor?.constructor.name || "",
+      floor.x + 35,
+      floor.y + 340
+    );
+    c2.fillText(
+      `${floor.timeChangeFloor.toFixed(1)}`,
+      floor.x + 35,
+      floor.y + 360
+    );
+  });
+
+  requestAnimationFrame(animateDev);
 };
 
 // Bootstrap: register manifest and preload before starting loops
@@ -119,17 +177,8 @@ const drawLoading = (loaded: number, total: number) => {
   await ASSET_MANAGER.preloadAll(drawLoading);
   // Start loops when ready
   requestAnimationFrame(animage);
-  // requestAnimationFrame(animage2);
+  requestAnimationFrame(animateDev);
 })();
-
-// document.getElementById("canvas").addEventListener("click", (e) => {
-//   const rect = canvas.getBoundingClientRect();
-//   const scaleX = canvas.width / rect.width;
-//   const scaleY = canvas.height / rect.height;
-//   // const x = (e.clientX - rect.left) * scaleX;
-//   // const y = (e.clientY - rect.top) * scaleY;
-//   // GAME.checkClick(x, y);
-// });
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -178,7 +227,7 @@ function setupCanvasResolution(
 }
 
 // Call this on startup and on resize:
-function handleResize() {
+export function handleResize() {
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
   setupCanvasResolution(canvas, ctx, LOGICAL_WIDTH, LOGICAL_HEIGHT);
@@ -191,5 +240,5 @@ function handleResize() {
   }
 }
 
-window.addEventListener("resize", handleResize);
-handleResize();
+// window.addEventListener("resize", handleResize);
+// handleResize();

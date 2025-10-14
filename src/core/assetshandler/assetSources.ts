@@ -117,6 +117,13 @@ export const ASSET_SOURCES: AssetManifest = {
   // Battle chip icons (from chipData)
   chips: [{ key: "chip:allchip", url: `${URLROOT}/chips/allChips.png` }],
 
+  navis: [
+    {
+      key: "navi:gust",
+      url: `${URLROOT}/navis/gust/gustSprite.png`,
+    },
+  ],
+
   // Floor atlases
   tiles: [
     { key: "floor:all1", url: `${URLROOT}/floor/allFloor1.png` },

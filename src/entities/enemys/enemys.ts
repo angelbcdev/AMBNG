@@ -81,12 +81,12 @@ class Enemy extends Entity {
     this.paintliveEnemy({
       c,
       currentLive: this.live > 0 ? this.live : 0,
-      x:
-        this.live > 999
-          ? this.possition.x - 18
-          : this.live > 99
-          ? this.possition.x + this.possitionShowLiveX + 1
-          : this.possition.x + this.possitionShowLiveX + 2,
+      x: this.possition.x + this.possitionShowLiveX,
+      // this.live > 999
+      //   ? this.possition.x - 18
+      //   : this.live > 99
+      //   ? this.possition.x + this.possitionShowLiveX + 1
+      //   : this.possition.x + this.possitionShowLiveX + 2,
       y: this.possition.y - this.possitionShowLiveY,
     });
   }

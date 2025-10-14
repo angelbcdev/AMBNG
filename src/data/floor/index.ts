@@ -2,8 +2,16 @@ import { ENTITY_MANAGER } from "@/core/entityManager";
 import Attack from "../attacks/attacks";
 import { Entity } from "../../entities/entity";
 import { FLOOR_MANAGER } from "@/core/floorManager";
+import { getImageFromAssetsManager } from "@/core/assetshandler/assetHelpers";
+import {
+  BlinkingState,
+  FloorState,
+  GrietaState,
+  InvisibleState,
+  NormalState,
+} from "./states";
 
-const visualFloor = {
+export const visualFloor = {
   0: {
     normal: 0,
     grieta: 2,
@@ -22,44 +30,38 @@ const visualFloor = {
 };
 export const floorImages = [
   {
-    img: "/assects/floor/allFloor1.png",
+    img: getImageFromAssetsManager("floor:all1"),
     name: "basic",
   },
   {
-    img: "/assects/floor/allFloor2.png",
+    img: getImageFromAssetsManager("floor:all2"),
     name: "fire",
   },
   {
-    img: "/assects/floor/allFloor3.png",
+    img: getImageFromAssetsManager("floor:all3"),
     name: "grey",
   },
   {
-    img: "/assects/floor/allFloor4.png",
+    img: getImageFromAssetsManager("floor:all4"),
     name: "wood",
   },
   {
-    img: "/assects/floor/allFloor5.png",
+    img: getImageFromAssetsManager("floor:all5"),
     name: "speed",
   },
   {
-    img: "/assects/floor/allFloor6.png",
+    img: getImageFromAssetsManager("floor:all6"),
     name: "circuit",
   },
   {
-    img: "/assects/floor/allFloor7.png",
+    img: getImageFromAssetsManager("floor:all7"),
     name: "steal",
   },
   {
-    img: "/assects/floor/allFloor8.png",
+    img: getImageFromAssetsManager("floor:all8"),
     name: "folder",
   },
 ];
-
-const floorStatus = {
-  NORMAL: "normal",
-  GRIETA: "grieta",
-};
-const startTime = performance.now();
 
 export class FloorBase {
   image = new Image();
@@ -68,7 +70,7 @@ export class FloorBase {
   y: number;
   width: number;
   height: number;
-  floorState: string = floorStatus.NORMAL;
+
   isAttack: boolean;
   matrixY: number;
   matrixX: number;
@@ -77,32 +79,24 @@ export class FloorBase {
   frameWidth: number;
   frameHeight: number;
   side: number;
-  floors: FloorBase[];
 
-  floorToChange: null | number = null;
-  isVisible: boolean = true;
-  timerForAppear: number = 5000;
-  timeStartForBlink: number = this.timerForAppear - 1500;
-  timerBlink: number = 0;
-  blink: boolean = false;
   showImagen: boolean = true;
   characterFloor: null | Entity = null;
   nameFloor: string = "";
+
+  states = {
+    normal: new NormalState(this),
+    grieta: new GrietaState(this),
+    invisible: new InvisibleState(this),
+    blinking: new BlinkingState(this),
+  };
+  oldState: string = "normal";
+  currentState: FloorState = this.states.normal;
+
   isChangeFloor: boolean = false;
-  timeToChangeFloor: number = 5000;
-  limitTimeForChangeFloor: number = this.timeToChangeFloor;
-
-  imageEffectChangeActive: boolean = false;
-  timeForChangeFloor: number = 0;
-  imageEffectChangeFrame: number = 0;
-  imageEffectChangeX: number = 0;
-  imageEffectChangeY: number = 0;
-
-  imageEffectChangeWidth: number = 62;
-  imageEffectChangeHeight: number = 41;
-  imageEffectChangeMaxFrame: number = 8;
-  imageEffectChangeFrameTime: number = 1000 / 10;
-  imageEffectChangeTimer: number = 0;
+  timeChangeFloor: number = 0;
+  limitTimeForChangeFloor: number = 3000;
+  timeToChangeFloor: number = 3000;
 
   constructor({
     possition: {
@@ -115,7 +109,7 @@ export class FloorBase {
       imageFloor = 7,
     },
   }) {
-    this.x = x - 5;
+    this.x = x - 2;
     this.y = y;
     this.width = 73;
     this.height = 55;
@@ -123,250 +117,59 @@ export class FloorBase {
     this.side = side;
     this.matrixY = matrixY;
     this.matrixX = matrixX;
-    this.frameX = visualFloor[this.side || 0][this.floorState] || 0;
+    // this.frameX = visualFloor[this.side || 0][this.floorState] || 0;
     this.frameY = matrixY < 2 ? matrixY : 2;
     this.frameWidth = 53;
     this.frameHeight = 32;
     this.nameFloor = floorImages[imageFloor].name;
 
-    this.image.src = floorImages[imageFloor].img;
+    this.image = floorImages[imageFloor].img;
 
-    this.imageEffectChange.src = "assects/floor/floorChange.png";
+    this.currentState.enter();
   }
   updateImageFloor(newImageFloor: number) {
-    this.image.src = floorImages[newImageFloor].img;
+    this.image = floorImages[newImageFloor].img;
     this.nameFloor = floorImages[newImageFloor].name;
   }
   changeRandomFloor(floor?: number) {
     if (floor) {
       this.nameFloor = floorImages[floor].name;
 
-      this.image.src = floorImages[floor].img;
+      this.image = floorImages[floor].img;
     } else {
       const randomFloor = Math.floor(Math.random() * 6) + 1;
-      this.image.src = floorImages[randomFloor].img;
+      this.image = floorImages[randomFloor].img;
       this.nameFloor = floorImages[randomFloor].name;
     }
   }
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
-    if (this.floorState === floorStatus.GRIETA) {
-      this.validateCharacter(ENTITY_MANAGER.getAllEntities());
-    }
-    this.paintNormalImage(c);
-
-    this.paintEffect(c);
-    this.paintBlinkImage(c);
-    if (!this.isVisible) {
-      if (this.timerBlink > this.timeStartForBlink) {
-        this.blink = true;
-      } else {
-        this.timerBlink += deltaTime;
-      }
-    }
-
-    this.paintMakeChangeFloor(c, deltaTime);
+    this.currentState.draw(c, deltaTime);
   }
   update(_: CanvasRenderingContext2D, deltaTime: number) {
-    if (this.isChangeFloor) {
-      this.timeForChangeFloor += deltaTime;
-      if (this.timeForChangeFloor > this.limitTimeForChangeFloor) {
-        this.timeForChangeFloor = 0;
+    this.currentState.update(deltaTime);
 
+    if (this.isChangeFloor) {
+      this.timeChangeFloor += deltaTime;
+      if (this.timeChangeFloor >= this.limitTimeForChangeFloor) {
+        this.isChangeFloor = false;
+        this.timeChangeFloor = 0;
         this.returnFloor();
       }
     }
   }
-  paintMakeChangeFloor(c: CanvasRenderingContext2D, deltaTime: number) {
-    if (!this.imageEffectChangeActive) {
-      return;
-    }
-    if (this.imageEffectChangeTimer > this.imageEffectChangeFrameTime) {
-      this.imageEffectChangeTimer = 0;
-      if (this.imageEffectChangeFrame <= this.imageEffectChangeMaxFrame - 1) {
-        this.imageEffectChangeFrame += 1;
-      } else {
-        this.imageEffectChangeActive = false;
-        this.imageEffectChangeFrame = 0;
-      }
-    } else {
-      this.imageEffectChangeTimer += deltaTime;
-    }
 
-    c.drawImage(
-      this.imageEffectChange,
-      this.imageEffectChangeFrame * this.imageEffectChangeWidth,
-      this.imageEffectChangeY * this.imageEffectChangeHeight,
-      this.imageEffectChangeWidth,
-      this.imageEffectChangeHeight,
-
-      this.x - 5,
-      this.y - 15,
-      this.width + 10,
-      this.height + 10
-    );
-  }
-  paintNormalImage(c: CanvasRenderingContext2D) {
-    if (!this.isVisible) {
-      return;
-    }
-
-    c.drawImage(
-      this.image,
-      this.frameX * this.frameWidth,
-      this.frameY * this.frameHeight,
-      this.frameWidth,
-      this.frameHeight,
-      this.x,
-      this.y,
-      this.width,
-      this.height
-    );
-    this.paintBase(c);
-  }
-  paintBlinkImage(c: CanvasRenderingContext2D) {
-    const time = performance.now() - startTime;
-    if (!this.blink) {
-      return;
-    }
-
-    const alpha = Math.abs(Math.sin(time * 0.02)); // 0.1 ajusta la velocidad de parpadeo
-    this.frameX = visualFloor[this.side][floorStatus.NORMAL];
-    c.save();
-    c.globalAlpha = alpha;
-    c.drawImage(
-      this.image,
-      this.frameX * this.frameWidth,
-      this.frameY * this.frameHeight,
-      this.frameWidth,
-      this.frameHeight,
-      this.x,
-      this.y,
-      this.width,
-      this.height
-    );
-    c.drawImage(
-      this.image,
-      0 * this.frameWidth,
-      3 * this.frameHeight,
-      this.frameWidth,
-      this.frameHeight,
-      this.x,
-      this.y + this.height,
-      this.width,
-      this.height
-    );
-    c.restore();
-  }
-  paintBase(c: CanvasRenderingContext2D) {
-    if (!this.isVisible) {
-      return;
-    }
-
-    c.drawImage(
-      this.image,
-      0 * this.frameWidth,
-      3 * this.frameHeight,
-      this.frameWidth,
-      this.frameHeight,
-      this.x,
-      this.y + this.height,
-      this.width,
-      this.height
-    );
-    if (this.matrixY < 2) {
-      c.fillStyle = "rgba(5, 0, 0,0.5)";
-      c.fillRect(this.x, this.y + this.height, this.width, this.height / 3 - 5);
-    }
-  }
-  paintEffect(c: CanvasRenderingContext2D) {
-    if (!this.isVisible) {
-      return;
-    }
-    if (this.isAttack) {
-      c.save();
-      c.globalAlpha = 0.5;
-      c.drawImage(
-        this.image,
-        4 * this.frameWidth,
-        this.frameY * this.frameHeight,
-        this.frameWidth,
-        this.frameHeight,
-        this.x,
-        this.y,
-        this.width,
-        this.height
-      );
-      c.restore();
-    }
-  }
-  validateCharacter(characters: Entity[]) {
-    for (const character of characters) {
-      const isCharacterInZone =
-        character.possition.x + character.width >= this.x &&
-        character.possition.x <= this.x + this.width &&
-        character.possition.y + character.height >= this.y &&
-        character.possition.y <= this.y + this.height;
-
-      if (isCharacterInZone) {
-        this.pressCharacterFloor(character);
-      } else {
-        this.releaseCharacterFloor(character);
-      }
-    }
-  }
-  pressCharacterFloor(character: Entity) {
-    // Si el personaje entra en la zona, solo cambiar el estado si no está en proceso de cambio
-    if (
-      this.isChangeFloor === false &&
-      this.floorState === floorStatus.GRIETA &&
-      this.characterFloor === null
-    ) {
-      this.characterFloor = character;
-      this.isChangeFloor = true;
-    }
-  }
-  releaseCharacterFloor(character: Entity) {
-    // Si el personaje sale de la zona, restauramos el estado a NORMAL si estaba en GRIETA
-    if (
-      this.floorState === floorStatus.GRIETA &&
-      this.characterFloor == character
-    ) {
-      this.unAvailableFloor();
-    }
-  }
-  changeFloor() {
-    const newSide = this.side == 0 ? 1 : 0;
-    if (FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].ocupated) {
-      return;
-    }
-    this.imageEffectChangeActive = true;
-
-    setTimeout(() => {
-      this.frameX = visualFloor[newSide][this.floorState];
-      FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].side = newSide;
-      this.isChangeFloor = true;
-    }, 160);
-  }
-  returnFloor() {
-    if (FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].ocupated) {
-      return;
-    }
-
-    this.isChangeFloor = false;
-    FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].side = this.side;
-    this.frameX = visualFloor[this.side][floorStatus.NORMAL];
-    this.limitTimeForChangeFloor = 3000;
-  }
   breakFloor() {
     // Aquí cambiamos el estado solo si no está en proceso de restauración
-    if (this.floorState === floorStatus.NORMAL) {
-      this.floorState = floorStatus.GRIETA;
-      this.frameX = visualFloor[this.side][this.floorState];
-      // No debe haber cambio pendiente si ya está en GRIETA
+    if (this.currentState.name === "normal") {
+      this.changeState("grieta");
     }
-    // else {
-    //   this.unAvailableFloor();
-    // }
+  }
+  changeState(newState: keyof typeof this.states) {
+    if (newState === this.currentState.name) return;
+
+    this.currentState.exit();
+    this.currentState = this.states[newState];
+    this.currentState.enter();
   }
 
   validateAttack(attacks: Attack[]) {
@@ -392,21 +195,26 @@ export class FloorBase {
     }
   }
   unAvailableFloor() {
+    this.changeState("invisible");
+  }
+  changeFloor() {
     if (FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].ocupated) {
       return;
     }
-    FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].side = 3;
-    this.isVisible = false;
-    this.frameX = visualFloor[3][floorStatus.NORMAL];
-    this.floorToChange = null;
+    this.isChangeFloor = true;
+    this.currentState.imageEffectChangeActive = true;
+    this.side = this.side == 0 ? 1 : 0;
 
-    setTimeout(() => {
-      this.floorState = floorStatus.NORMAL;
-      this.isVisible = true;
-      this.isChangeFloor = true;
-      this.characterFloor = null;
-      FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].side = this.side;
-      this.frameX = visualFloor[this.side][this.floorState];
-    }, this.timerForAppear);
+    this.currentState.enter();
+  }
+  returnFloor() {
+    if (FLOOR_MANAGER.matrix[this.matrixY][this.matrixX].ocupated) {
+      return;
+    }
+
+    this.currentState.imageEffectChangeActive = true;
+    this.side = this.side == 0 ? 1 : 0;
+
+    this.currentState.enter();
   }
 }

@@ -106,6 +106,19 @@ class EntityManager {
     });
   }
 
+  draw(c: CanvasRenderingContext2D, deltaTime: number) {
+    // draw entities and effects per row
+    FLOOR_MANAGER.matrix?.forEach((_, indexY) => {
+      ENTITY_MANAGER.levelToPaint(c, deltaTime, indexY);
+      ENTITY_MANAGER.levelToPaintAttack(c, deltaTime, indexY);
+    });
+
+    ENTITY_MANAGER.validateCollisionEnemys();
+
+    ENTITY_MANAGER.runFilters();
+    ENTITY_MANAGER.extractAttacks();
+  }
+
   levelToPaint(c: CanvasRenderingContext2D, deltaTime: number, row: number) {
     [...this.npc, this.player]
       .filter((entity) => entity.matrixY == row)

@@ -7,17 +7,12 @@ import { GameOverScene } from "./GameOverScene/gameOverScene";
 import { INPUT_MANAGER } from "../input/inputManager";
 import { JOYSTICK_MANAGER } from "./joysTickManager";
 
-const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-const c = canvas.getContext("2d")!;
-canvas.width = 430;
-canvas.height = 430;
-
 export class SceneManager {
   c: CanvasRenderingContext2D;
   canvas: HTMLCanvasElement;
   static instance: SceneManager | null = null;
 
-  currentSceneIndex = "homeScene";
+  currentSceneIndex = "battleScene";
   previousScene = "homeScene";
   statesKeys = {
     homeScene: "homeScene",
@@ -48,8 +43,6 @@ export class SceneManager {
   constructor() {
     this.currentScene.in();
 
-    this.canvas = canvas;
-    this.c = c;
     INPUT_MANAGER.setState(this.currentScene.nameScene);
     JOYSTICK_MANAGER.draw();
     // this.currentScene.in();
@@ -108,4 +101,4 @@ export class SceneManager {
   }
 }
 
-export const GAME = SceneManager.getInstance();
+export const GAME_DEV = SceneManager.getInstance();

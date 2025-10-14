@@ -50,16 +50,7 @@ export class BatleGame {
     // draw floors
     FLOOR_MANAGER.drawFloors(c, deltaTime, ENTITY_MANAGER.effect);
 
-    // draw entities and effects per row
-    FLOOR_MANAGER.matrix?.forEach((_, indexY) => {
-      ENTITY_MANAGER.levelToPaint(c, deltaTime, indexY);
-      ENTITY_MANAGER.levelToPaintAttack(c, deltaTime, indexY);
-    });
-
-    ENTITY_MANAGER.validateCollisionEnemys();
-
-    ENTITY_MANAGER.runFilters();
-    ENTITY_MANAGER.extractAttacks();
+    ENTITY_MANAGER.draw(c, deltaTime);
     c.restore();
 
     BATTLE_MANAGER.draw(c, deltaTime);

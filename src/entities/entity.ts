@@ -8,7 +8,7 @@ export class Entity {
   possition: { x: number; y: number };
   jump = 70;
   blockSize: { w: number; h: number };
-
+  canAnimate = true;
   color: string;
   frameX: number;
   frameY: number;
@@ -54,6 +54,8 @@ export class Entity {
   canMove = true;
   isVisible = true;
   sideToPlay: 1 | 0;
+  fameAdjustWidth = 0;
+  fameAdjustHeight = 0;
   constructor({
     x,
     y,
@@ -207,6 +209,9 @@ export class Entity {
       this.frameX =
         this.frameX < this.maxFrame ? this.frameX + 1 : this.incialFrameX;
     } else {
+      if (!this.canAnimate) {
+        return;
+      }
       this.frameTime += deltaTime;
     }
   }
@@ -221,8 +226,8 @@ export class Entity {
 
       this.possition.x - this.frameAjustX,
       this.possition.y - this.frameAjustY,
-      this.blockSize.w,
-      this.blockSize.h
+      this.blockSize.w + this.fameAdjustWidth,
+      this.blockSize.h + this.fameAdjustHeight
     );
   }
 

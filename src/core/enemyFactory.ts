@@ -6,6 +6,7 @@ import Fishy from "@/entities/enemys/Character/fishy/fishy";
 import { Mettols } from "@/entities/enemys/Character/mettol/mettol";
 import { GospelWolfEnemy } from "@/entities/enemys/gospel/gospel";
 import { EnemyZone } from "@/scenes/worldScene/sources/isoEntitys";
+import { Gustman } from "@/entities/naviz/gustman/gustman";
 // import { EnemyBoss, EnemyZone } from "@/scenes/worldScene/sources/isoEntitys";
 
 // TODO: BeeTank
@@ -49,7 +50,7 @@ class EnemyFactory {
     });
   }
 
-  addEnemy(type: "EnemyBoss" | "EnemyZone") {
+  addEnemy(type: "EnemyBoss" | "EnemyZone" | "test") {
     // this.addEspecifiEnemy();
     // return;
 
@@ -84,6 +85,20 @@ class EnemyFactory {
           level: randomLevel,
         });
       });
+    } else if (type == "test") {
+      ENTITY_MANAGER.addNewEnemy({
+        newEnemy: Gustman,
+        position: {
+          x: 1,
+          y: 1,
+        },
+        level: 1,
+      });
+      // ENTITY_MANAGER.addNewEnemy({
+      //   newEnemy: Gustman,
+      //   position: { x: 0, y: 1 },
+      //   level: 1,
+      // });
     } else {
       ENTITY_MANAGER.addNewEnemy({
         newEnemy: GospelWolfEnemy,
