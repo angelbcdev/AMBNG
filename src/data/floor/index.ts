@@ -1,4 +1,3 @@
-import { ENTITY_MANAGER } from "@/core/entityManager";
 import Attack from "../attacks/attacks";
 import { Entity } from "../../entities/entity";
 import { FLOOR_MANAGER } from "@/core/floorManager";
@@ -111,7 +110,7 @@ export class FloorBase {
   }) {
     this.x = x - 2;
     this.y = y;
-    this.width = 73;
+    this.width = 74;
     this.height = 55;
     this.isAttack = isAttack;
     this.side = side;
@@ -119,7 +118,7 @@ export class FloorBase {
     this.matrixX = matrixX;
     // this.frameX = visualFloor[this.side || 0][this.floorState] || 0;
     this.frameY = matrixY < 2 ? matrixY : 2;
-    this.frameWidth = 53;
+    this.frameWidth = 53.3;
     this.frameHeight = 32;
     this.nameFloor = floorImages[imageFloor].name;
 

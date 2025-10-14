@@ -1,9 +1,10 @@
+import { gapMatrixFloor } from "@/config/gameSettings";
 import { FloorBase } from "../floor";
 import { TMatrix } from "../floor/matrixForFloor";
 
 export const ubicateFloors = function (matrix: TMatrix[][]) {
   const blockSize = 64;
-  const gapX = 6.5;
+  const gapX = 8;
   const objects = [];
 
   matrix.forEach((row, y) => {
@@ -11,27 +12,12 @@ export const ubicateFloors = function (matrix: TMatrix[][]) {
       // if (symbol.side != 0 && symbol.side != 1) {
       //   return;
       // }
-      let gap = 130;
-
-      if (y === 0) {
-        gap += 30;
-      }
-
-      if (y === 1) {
-        gap += 20;
-      }
-
-      if (y === 2) {
-        gap += 10;
-      }
-      if (y === 3) {
-        gap = 130;
-      }
+      const gap = gapMatrixFloor(y);
 
       objects.push(
         new FloorBase({
           possition: {
-            x: x * (blockSize + gapX + 2),
+            x: x * (blockSize + gapX),
             y: y * blockSize + gap,
             side: symbol.side,
             isAttack: symbol.isAttack || false,

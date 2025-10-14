@@ -126,8 +126,9 @@ const allChipsData: ChipData[] = [
     spriteState: "maze",
     chipType: 1,
     chipProyectile: null,
-    timeForAttack: null,
+
     isInFolder: true,
+    timeForAttack: 800,
     imageAllChipPositionX: 11,
     imageAllChipPositionY: 6,
   },

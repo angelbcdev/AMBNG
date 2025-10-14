@@ -23,6 +23,9 @@ export class MatrixManager {
       floor.update(c, deltaTime);
     });
   }
+  getMaxRowFloor() {
+    return this.matrix.length;
+  }
 
   updateImageFloors(floorImage: number) {
     this.floors = [];
@@ -53,7 +56,7 @@ export class MatrixManager {
     (async () => {
       let timer = null;
       await new Promise((resolve) => (timer = setTimeout(resolve, 1200)));
-      this.brackAllFloor(characterData, 300); // , true
+      this.brackAllFloor(characterData, 300, true);
       clearTimeout(timer);
     })();
   }
@@ -157,8 +160,7 @@ export class MatrixManager {
   destroyRandomFloor(characterData: Entity, _: number) {
     const side = characterData.side;
     const floors = this.floors.filter(
-      (floor) =>
-        floor.side != side && floor.characterFloor == null && floor.isVisible
+      (floor) => floor.side != side && floor.characterFloor == null
     );
 
     const random = Math.floor(Math.random() * floors.length);

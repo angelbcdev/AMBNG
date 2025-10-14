@@ -32,7 +32,7 @@ export class FloorState {
   }
 
   enter() {}
-  update(deltaTime: number) {}
+  update(_: number) {}
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
     c.drawImage(
       this.floor.image,
@@ -209,7 +209,7 @@ export class InvisibleState extends FloorState {
     // Lógica del estado normal
   }
 
-  draw(c: CanvasRenderingContext2D, deltaTime: number) {}
+  draw(_: CanvasRenderingContext2D, __: number) {}
 
   exit() {}
 }

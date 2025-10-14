@@ -14,6 +14,8 @@ import {
 import { Entity } from "@/entities/entity";
 import { getImageFromAssetsManager } from "@/core/assetshandler/assetHelpers";
 import { FLOOR_MANAGER } from "@/core/floorManager";
+import { BasicPunch } from "@/data/attacks/megamanAttack/basicPunch";
+import { ENTITY_MANAGER } from "@/core/entityManager";
 
 export class Gustman extends Enemy {
   canAttack = true;
@@ -67,13 +69,13 @@ export class Gustman extends Enemy {
       h: 100,
     };
     //Ajust Frame and sprite
-    this.frameAjustY = 160;
+    this.frameAjustY = 150;
     this.frameAjustX = 110;
     this.maxFrame = 8;
     this.frameWidth = 120;
     this.frameHeight = 110;
-    this.fameAdjustWidth = 140;
-    this.fameAdjustHeight = 140;
+    this.fameAdjustWidth = 120;
+    this.fameAdjustHeight = 120;
     this.possitionShowLiveX = 2;
     this.possitionShowLiveY = -50;
     this.moveNewAttack = 80;
@@ -101,14 +103,7 @@ export class Gustman extends Enemy {
         { name: "old", value: this.oldState },
         { name: "current", value: this.currentState?.state },
       ],
-      [
-        { name: "move", value: this.canMove },
-        // { name: "count timer for attack", value: this.countTimerForAttack },
-      ],
-      [
-        { name: "shoot", value: this.canShoot },
-        { name: "attack", value: this.canAttack },
-      ],
+
       // Time For Move
       [
         { name: "time move", value: Gustmanstates.timerForMove.toFixed(2) },
@@ -170,25 +165,19 @@ export class Gustman extends Enemy {
     let newMatrixX: number, newMatrixY: number;
 
     if (type == "Movemen") {
-      newMatrixY = Math.floor(Math.random() * 3);
+      newMatrixY = Math.floor(Math.random() * FLOOR_MANAGER.getMaxRowFloor());
       newMatrixX = Math.floor(Math.random() * 3) + 3;
     } else {
-      this.matrix.forEach((row, rowPosition) => {
-        const colPosition = row.findIndex(
-          (cell) => cell.side != this.side && cell.ocupated
-        );
-        if (colPosition != -1) {
-          if (type == "Smash") {
-            newMatrixY = rowPosition;
-            newMatrixX = Math.floor(Math.random() * 3) + 3;
-          } else if (type == "Punch") {
-            //Let
-          } else if (type == "Broken") {
-            newMatrixY = rowPosition;
-            newMatrixX = 3;
-          }
-        }
-      });
+      if (type == "Smash") {
+        newMatrixY = ENTITY_MANAGER.player.matrixY;
+        newMatrixX = Math.floor(Math.random() * 3) + 3;
+      } else if (type == "Punch") {
+        newMatrixX = 3;
+        newMatrixY = ENTITY_MANAGER.player.matrixY;
+      } else if (type == "Broken") {
+        newMatrixY = Math.floor(Math.random() * FLOOR_MANAGER.getMaxRowFloor());
+        newMatrixX = 3;
+      }
     }
 
     if (
@@ -242,25 +231,42 @@ export class Gustman extends Enemy {
     }
     this.live -= attack.damage;
     attack.delete = true;
-    this.changeState("hit");
+    this.blink = true;
+    setTimeout(() => {
+      this.blink = false;
+    }, 500);
+    if (attack.damage >= 50) {
+      this.changeState("hit");
+    }
 
     if (this.live <= 0) {
       this.makeDeath();
     }
   }
-  smashAttack() {
-    this.addAttack({});
-  }
+
   smashBrokenAttack() {}
 
   addAttack({ type = "nadda" }: { type?: string | number }) {
-    const attack = new this.proyoectile({
+    //this.proyoectile
+
+    let ajustX = 0;
+    let attackType = BasicPunch;
+    if (type == "Punch") {
+      ajustX = 40;
+      attackType = BasicPunch;
+    }
+    if (type == "Smash") {
+      ajustX = 0;
+      attackType = this.proyoectile;
+    }
+
+    const attack = new attackType({
       matrix: this.matrix,
       possition: {
         x:
           this.side === 0
             ? this.possition.x + this.moveNewAttack
-            : this.possition.x - this.moveNewAttack,
+            : this.possition.x - this.moveNewAttack - ajustX,
         y: this.possition.y,
         initialMatrixY: this.matrixY,
       },

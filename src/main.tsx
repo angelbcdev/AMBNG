@@ -16,8 +16,7 @@ import { GAME_IS_BATTLE, GAME_IS_PAUSE } from "./core/gameState";
 import { INPUT_MANAGER } from "./input/inputManager";
 import { FLOOR_MANAGER } from "./core/floorManager";
 import { ENTITY_MANAGER } from "./core/entityManager";
-import { BATTLE_MANAGER } from "./core/battleManager";
-import { FloorState } from "./data/floor/states";
+// import { BATTLE_MANAGER } from "./core/battleManager";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
@@ -102,9 +101,9 @@ export const showGameStatesDev = (
   );
 };
 
-FLOOR_MANAGER.initFloors();
+// FLOOR_MANAGER.initFloors();
 
-BATTLE_MANAGER.inBattle("test");
+// BATTLE_MANAGER.inBattle("test");
 export const devFloor = (deltaTime: number) => {
   // ENTITY_MANAGER.initBattle();
   try {
@@ -177,7 +176,8 @@ const drawLoading = (loaded: number, total: number) => {
   await ASSET_MANAGER.preloadAll(drawLoading);
   // Start loops when ready
   requestAnimationFrame(animage);
-  requestAnimationFrame(animateDev);
+
+  // requestAnimationFrame(animateDev);
 })();
 
 createRoot(document.getElementById("root")!).render(

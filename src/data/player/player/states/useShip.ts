@@ -48,7 +48,7 @@ export class UseShip extends PlayerState {
 
       case this.player.states.maze:
         if (this.player.frameX == this.player.maxFrame) {
-          this.player.incialFrameX = this.player.maxFrame;
+          this.player.canAnimate = false;
           FLOOR_MANAGER.makeGameTemble();
           if (this.time >= this.timeKeepImage + 500) {
             this.player.changeState(this.player.states.idle);
@@ -60,7 +60,7 @@ export class UseShip extends PlayerState {
         break;
       default:
         if (this.player.frameX == this.player.maxFrame) {
-          this.player.incialFrameX = this.player.maxFrame;
+          this.player.canAnimate = false;
           if (this.time >= this.timeKeepImage) {
             this.player.changeState(this.player.states.idle);
             this.time = 0;
@@ -84,6 +84,7 @@ export class UseShip extends PlayerState {
     return { newMatrixY, newMatrixX };
   }
   exit(): void {
+    this.player.canAnimate = true;
     this.player.incialFrameX = 0;
     this.player.spriteToShip = 99;
     this.timeKeepImage = 500;

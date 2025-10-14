@@ -56,10 +56,10 @@ class EnemyFactory {
 
     if (type == EnemyZone.name) {
       // Paso 1: Determinar cantidad de enemigos
-      const enemyCount = Math.floor(Math.random() * 1) + 1;
+      const enemyCount = Math.floor(Math.random() * 2) + 1;
 
       // Paso 2: Preparar columnas disponibles
-      const availableColumns = [0, 1, 2];
+      const availableColumns = [0, 1, 2, 3];
 
       // Paso 3: Seleccionar columnas únicas
       const selectedColumns: number[] = [];

@@ -8,14 +8,16 @@
   </head>
   <body id="game" class="bg-black fles justify-center items-center">
     <div class="w-[430px] min-h-[430px] relative flex flex-row">
-      <canvas id="canvas" class="h-[430px] w-[430px]"></canvas>
-      <canvas
-        id="canvasJoystick"
-        class="h-[430px] w-[430px] md:hidden"
-      ></canvas>
+      <div class="w-[430px] min-h-[430px] relative flex flex-col">
+        <canvas id="canvas" class="h-[430px] w-[430px]"></canvas>
+        <canvas
+          id="canvasJoystick"
+          class="h-[430px] w-[430px] md:hidden"
+        ></canvas>
+      </div>
       <canvas id="canvas2">ww</canvas>
-      <div id="root"></div>
     </div>
+    <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
       const game = document.getElementById("game");

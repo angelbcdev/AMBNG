@@ -5,8 +5,10 @@ import { BATTLE_MANAGER } from "./battleManager";
 const chipInGame = allChipsA
   .sort(() => Math.random() - 0.5)
   .map((chip) => {
-    return new BattleShip({ title: BattleShip.title.addlinePanel });
+    return new BattleShip({ title: chip.title });
   });
+//chip.title
+//BattleShip.title.addlinePanel
 
 export class ChipManager {
   static instance: ChipManager | null = null;

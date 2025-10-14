@@ -1,22 +1,42 @@
 // import { GAME_IS_PAUSE } from "@/core/gameState";
 import { FLOOR_MANAGER } from "@/core/floorManager";
 import { Gustman } from "./gustman";
+import { ENTITY_MANAGER } from "@/core/entityManager";
+
+const SETUP = {
+  MOVE: {
+    init: 250,
+    max: 1000,
+  },
+  ATTACK_SMASH: {
+    init: 250,
+    max: 1500,
+  },
+  ATTACK_PUSH: {
+    init: 500,
+    max: 1000,
+  },
+  ATTACK_SMASH_BROKEN: {
+    init: 750,
+    max: 2500,
+  },
+};
 
 export class Gustmanstates {
   navy: Gustman;
   state: string;
 
   static timerForMove = 0;
-  static maxTimeForMove = 1000;
+  static maxTimeForMove = SETUP.MOVE.max;
 
   static timeForAttackSmash = 0;
-  static maxTimeForAttackSmash = 1500;
+  static maxTimeForAttackSmash = SETUP.ATTACK_SMASH.max;
 
   static timeForAttackPush = 0;
-  static maxTimeForAttackPush = 1500;
+  static maxTimeForAttackPush = SETUP.ATTACK_PUSH.max;
 
   static timeForAttackSmashBroken = 0;
-  static maxTimeForAttackSmashBroken = 1500;
+  static maxTimeForAttackSmashBroken = SETUP.ATTACK_SMASH_BROKEN.max;
 
   constructor(navy: Gustman, state: string) {
     this.navy = navy;
@@ -31,7 +51,10 @@ export class Gustmanstates {
     if (Gustmanstates.timerForMove >= Gustmanstates.maxTimeForMove) {
       this.navy.changeState("move");
       Gustmanstates.timerForMove = 0;
-      Gustmanstates.maxTimeForMove = getTimebetweenSeconds(250, 1500);
+      Gustmanstates.maxTimeForMove = getTimebetweenSeconds(
+        SETUP.MOVE.init,
+        SETUP.MOVE.max
+      );
     }
   }
   countTimeForAttackSmash(deltaTime: number) {
@@ -44,16 +67,23 @@ export class Gustmanstates {
       this.navy.changeState("attackSmash");
 
       Gustmanstates.timeForAttackSmash = 0;
-      Gustmanstates.maxTimeForAttackSmash = getTimebetweenSeconds(3000, 5000);
+      Gustmanstates.maxTimeForAttackSmash = getTimebetweenSeconds(
+        SETUP.ATTACK_SMASH.init,
+        SETUP.ATTACK_SMASH.max
+      );
     }
   }
   countTimeForAttackPush(deltaTime: number) {
     Gustmanstates.timeForAttackPush += deltaTime;
 
     if (Gustmanstates.timeForAttackPush >= Gustmanstates.maxTimeForAttackPush) {
+      this.navy.acctionMoveNavy("Punch");
       this.navy.changeState("attackPush");
       Gustmanstates.timeForAttackPush = 0;
-      Gustmanstates.maxTimeForAttackPush = getTimebetweenSeconds(3000, 5000);
+      Gustmanstates.maxTimeForAttackPush = getTimebetweenSeconds(
+        SETUP.ATTACK_PUSH.init,
+        SETUP.ATTACK_PUSH.max
+      );
     }
   }
   countTimeForAttackSmashBroken(deltaTime: number) {
@@ -67,8 +97,8 @@ export class Gustmanstates {
       this.navy.changeState("attackSmashBroken");
       Gustmanstates.timeForAttackSmashBroken = 0;
       Gustmanstates.maxTimeForAttackSmashBroken = getTimebetweenSeconds(
-        3000,
-        5000
+        SETUP.ATTACK_SMASH_BROKEN.init,
+        SETUP.ATTACK_SMASH_BROKEN.max
       );
     }
   }
@@ -86,8 +116,10 @@ export class GustmanstatesIDLE extends Gustmanstates {
   }
   update(_: CanvasRenderingContext2D, __: number) {
     this.countTimeForMove(__);
-    // this.countTimeForAttackSmash(__);
-    // this.countTimeForAttackPush(__);
+    this.countTimeForAttackSmash(__);
+    if (ENTITY_MANAGER.player.matrixX == 2) {
+      this.countTimeForAttackPush(__);
+    }
     this.countTimeForAttackSmashBroken(__);
   }
 
@@ -117,8 +149,24 @@ export class GustmanstatesAttackPush extends Gustmanstates {
   }
   enter() {
     super.enter();
-
+    this.navy.frameX = 0;
     this.navy.frameY = this.navy.states.punch;
+  }
+  update(_: CanvasRenderingContext2D, __: number) {
+    if (this.navy.canAttack && this.navy.frameX == this.navy.maxFrame - 2) {
+      this.navy.canAnimate = false;
+      //   FLOOR_MANAGER.brokeOneLine(this.navy);
+      this.navy.addAttack({ type: "Punch" });
+      this.navy.frameX = this.navy.maxFrame - 1;
+      this.navy.canAttack = false;
+      setTimeout(() => {
+        this.navy.changeState("idle");
+        this.navy.canAnimate = true;
+      }, 600);
+    }
+  }
+  exit() {
+    // this.navy.canAnimate = true;
   }
 }
 export class GustmanstatesAttackSmashBroken extends Gustmanstates {
@@ -161,7 +209,7 @@ export class GustmanstatesAttackSmash extends Gustmanstates {
     if (this.navy.canAttack && this.navy.maxFrame == this.navy.frameX) {
       this.navy.canAnimate = false;
       // this.navy.changeState("idle");
-      this.navy.smashAttack();
+      this.navy.addAttack({ type: "Smash" });
 
       this.navy.canAttack = false;
       setTimeout(() => {

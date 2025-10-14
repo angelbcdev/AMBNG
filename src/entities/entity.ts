@@ -1,6 +1,7 @@
 import { FLOOR_MANAGER } from "@/core/floorManager.js";
 import Attack from "../data/attacks/attacks.js";
 import { ExplotionsEffect } from "../data/extra/StaticAnimations";
+import { gapMatrixNPC } from "@/config/gameSettings.js";
 
 export class Entity {
   matrixX: number;
@@ -143,19 +144,7 @@ export class Entity {
     this.matrix.forEach((row: number[], y: number) => {
       row.forEach((_, x: number) => {
         if (this.matrixY == y && this.matrixX == x) {
-          let gap = 130;
-          if (y === 0) {
-            gap += 30;
-          }
-          if (y === 1) {
-            gap += 11;
-          }
-          if (y === 2) {
-            gap -= 8;
-          }
-          if (y === 3) {
-            gap -= 20;
-          }
+          const gap = gapMatrixNPC(y);
           this.possition = {
             x: x * this.jump + this.blockSize.w / 2 - this.width,
             y: y * this.jump + gap + 15,

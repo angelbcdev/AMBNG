@@ -16,6 +16,9 @@ class Enemy extends Entity {
     hit: 0,
     shoot: 0,
   };
+  blink = false;
+
+  timerBlink = 0;
 
   constructor({
     possition,
@@ -31,10 +34,10 @@ class Enemy extends Entity {
     });
     this.matrixX = sideToPlay == 1 ? 5 - possition.x : possition.x;
     this.matrixY = possition.y;
-    this.possition = {
-      x: possition.x,
-      y: possition.y - 2,
-    };
+    // this.possition = {
+    //   x: possition.x,
+    //   y: possition.y - 2,
+    // };
 
     this.blockSize = {
       h: 50,
@@ -75,7 +78,21 @@ class Enemy extends Entity {
 
   draw(c: CanvasRenderingContext2D, deltaTime: number) {
     // console.log("this.matrix", this.matrix);
-    super.draw(c, deltaTime);
+
+    this.timerBlink += deltaTime;
+
+    if (this.blink) {
+      if (this.timerBlink > 300) {
+        this.timerBlink = 0;
+      }
+      c.save();
+      c.globalAlpha = this.timerBlink > 150 ? 0 : 1;
+      super.draw(c, deltaTime);
+      c.restore();
+    } else {
+      super.draw(c, deltaTime);
+    }
+
     this.drawAreaView(c);
 
     this.paintliveEnemy({
