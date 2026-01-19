@@ -16,6 +16,7 @@ import { GAME_IS_BATTLE, GAME_IS_PAUSE } from "./core/gameState";
 import { INPUT_MANAGER } from "./input/inputManager";
 import { FLOOR_MANAGER } from "./core/floorManager";
 import { ENTITY_MANAGER } from "./core/entityManager";
+import { BATTLE_MANAGER } from "./core/battleManager";
 // import { BATTLE_MANAGER } from "./core/battleManager";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -101,9 +102,9 @@ export const showGameStatesDev = (
   );
 };
 
-// FLOOR_MANAGER.initFloors();
 
-// BATTLE_MANAGER.inBattle("test");
+//TODO: add test a battle with the navy 
+// BATTLE_MANAGER.inBattle("test"); // at the moment is Gustman
 export const devFloor = (deltaTime: number) => {
   // ENTITY_MANAGER.initBattle();
   try {
