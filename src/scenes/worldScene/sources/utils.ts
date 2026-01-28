@@ -7,6 +7,7 @@ import {
   IsoNavisStorage,
 } from "./navis/isoNavis";
 import { MoveNpc, MoveNpcVX, MoveNpcVY } from "./navis/moveNpc";
+import { PlayerIso } from "./isoPlayer";
 
 export class FloorRoad {
   width = 32;
@@ -44,8 +45,8 @@ export const testWorld = {
   DefaultPath: Path,
   maps: data.layers,
   blocks: {
+    1: PlayerIso,
     0: "",
-    1: "",
     2: Wall,
     3: Path,
     5: EnemyBoss,

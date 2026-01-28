@@ -130,6 +130,16 @@ export class NavyNPC extends mySquare {
       player.pressKey = [];
     }
   }
+  update(_: number) {}
+  moveImageColliction(direction?: TDirection, player?: PlayerIso) {
+    this.currentDirection = direction;
+
+    this.isIdle = false;
+    if (player) {
+      player.returnIdle();
+      player.pressKey = [];
+    }
+  }
 }
 
 export class NavyNPCStatic extends NavyNPC {

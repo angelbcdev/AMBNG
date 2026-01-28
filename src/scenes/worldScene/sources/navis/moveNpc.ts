@@ -26,11 +26,13 @@ export class NavyNPCMove extends NavyNPC {
   heightFrame = 128;
   widthDraw = 12;
   heightDraw = 24;
+  vx: number = 0;
+  vy: number = 0;
   constructor(x: number, y: number) {
     super(x, y);
     this.imageDialogue = "chatBot";
     this.currentDirection = "leftUp";
-    this.isIdle = true;
+    this.isIdle = false;
     this.image.src = "./assects/navis/controlBot.png";
   }
   drawIsoImageAreaPlayer(
@@ -70,7 +72,8 @@ export class MoveNpc extends IsoNavis {
   vx: number = 0;
   vy: number = 0;
   dir = 1;
-  speed: number = 0.5;
+  speed: number = 0.25;
+
   constructor(
     x: number,
     y: number,
@@ -81,10 +84,27 @@ export class MoveNpc extends IsoNavis {
     super(x, y, width, height, createFromTopLeft);
 
     this.navi = new NavyNPCMove(x, y);
+    // this.changeFaceNPC();
   }
-  update(deltaTime: number = 10) {}
+  update(deltaTime: number = 10) {
+    this.navi.update(deltaTime);
+    this.navi.x = this.x;
+    this.navi.y = this.y;
+  }
   playerMove(face: string) {
     console.log("face", face);
+  }
+  changeFaceNPC() {
+    const currentLocation = `${this.vx}:${this.vy}`;
+
+    const directionFaces = {
+      "6:0": "rightUp",
+      "-6:0": "leftUp",
+      "0:6": "rightDown",
+      "0:-6": "leftDown",
+    };
+
+    this.navi.currentDirection = directionFaces[currentLocation];
   }
 }
 export class MoveNpcVX extends MoveNpc {

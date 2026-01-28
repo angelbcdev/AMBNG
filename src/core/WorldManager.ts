@@ -111,18 +111,19 @@ export class WorldManager {
 
     this.currentMap = 0;
     this.cam = new Camera();
-    this.player = new PlayerIso(104, 204, 16, 16);
+
     this.worldWidth = canvas.width;
     this.worldHeight = canvas.height;
     this.setMap(this.data_world_maps[this.currentMap]);
+    this.player = this.player || new PlayerIso(104, 204, 16, 16);
   }
 
   update(deltaTime: number) {
     this.pause = GAME_IS_PAUSE();
     if (!this.pause && this.player) {
-      this.moveNPC.forEach((npc) => {
-        npc.navi.update(deltaTime);
-      });
+      // this.moveNPC.forEach((npc) => {
+      //   npc.navi.update(deltaTime);
+      // });
 
       this.player.update(deltaTime);
       this.player.mover(this.wall);
@@ -281,6 +282,18 @@ export class WorldManager {
             true,
           );
 
+          if (block instanceof PlayerIso) {
+            this.player = block;
+            const defaultPath = new this.data_world_DefaultPath(
+              col * blockSize,
+              row * blockSize,
+              blockSize,
+              blockSize,
+              true,
+            );
+            this.walkPath.push(defaultPath);
+            continue;
+          }
           this.sortByElement(block, row, col, enemyZonePositions);
 
           // ---- Navi out word ----
@@ -368,6 +381,7 @@ export class WorldManager {
 
   updateMoveNPC(deltaTime: number) {
     this.moveNPC.forEach((NPC) => {
+      NPC.update();
       if (NPC.intersects(this.player)) {
         NPC.speed = 0;
         return;
@@ -376,18 +390,22 @@ export class WorldManager {
       //leftUp
       if (NPC.vx < 0) {
         NPC.x -= NPC.speed;
+
         validateDirection(NPC, this.wall, "vx", "left", "right");
         return;
       } else if (NPC.vx > 0) {
         NPC.x += NPC.speed;
+
         validateDirection(NPC, this.wall, "vx", "right", "left");
         return;
       } else if (NPC.vy < 0) {
         NPC.y -= NPC.speed;
+
         validateDirection(NPC, this.wall, "vy", "top", "bottom");
         return;
       } else if (NPC.vy > 0) {
         NPC.y += NPC.speed;
+
         validateYDwon(NPC, this.wall);
 
         return;
