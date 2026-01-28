@@ -1,5 +1,12 @@
-import data from "@/utils/testT01.json";
+import data from "@/utils/test/001.json";
 import { Wall, Path, EnemyZone, EnemyBoss } from "./isoEntitys";
+import {
+  IsoNavis,
+  IsoNavisBattle,
+  IsoNavisGustman,
+  IsoNavisStorage,
+} from "./navis/isoNavis";
+import { MoveNpc, MoveNpcVX, MoveNpcVY } from "./navis/moveNpc";
 
 export class FloorRoad {
   width = 32;
@@ -22,14 +29,36 @@ export class FloorRoad {
   }
 }
 
+export const getRandomeID = () => {
+  const charactes =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let randomID = "";
+  for (let i = 0; i < 10; i++) {
+    const randomIndex = Math.floor(Math.random() * charactes.length);
+    randomID += charactes.charAt(randomIndex);
+  }
+  return randomID;
+};
+
 export const testWorld = {
+  DefaultPath: Path,
   maps: data.layers,
-  bloks: {
+  blocks: {
+    0: "",
+    1: "",
+    2: Wall,
+    3: Path,
     5: EnemyBoss,
-    1: Wall,
-    // 0: Path,
-    2: Path,
-    3: EnemyZone,
+    6: IsoNavisStorage,
+    7: IsoNavisBattle,
+    8: IsoNavisGustman,
+    9: MoveNpcVX,
+    10: MoveNpcVY,
+    13: EnemyZone,
     4: EnemyZone,
   },
+};
+
+export const getTimebetweenSeconds = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 };

@@ -16,6 +16,29 @@ import {
 import { BATTLE_MANAGER } from "../../core/battleManager";
 import { GAME_SET_PAUSE, GAME_SET_UNPAUSE } from "../../core/gameState";
 import { CHIPS_MANAGER } from "@/core/chipsManager";
+import { DIALOGUE_MANAGER } from "@/scenes/worldScene/sources/isoLanDialogue";
+
+DIALOGUE_MANAGER.addCharacter("lan", "addNewChip", [
+  [
+    "Hey MEGAMAN!   ",
+    "let me way for",
+    "more chips ",
+    "       ",
+    "I HAVE AN IDEA!!",
+  ],
+]);
+
+DIALOGUE_MANAGER.addCharacter("lan", "selectChipsSome", [
+  ["We can do this   ", "right MEGAMAN!    ", "             ", "LEST GO!!!!"],
+]);
+DIALOGUE_MANAGER.addCharacter("lan", "selectChipsNone", [
+  [
+    "Hey MEGAMAN!   ",
+    "Hurry finish this  is ",
+    "a piece a key     ",
+    "don't be late!",
+  ],
+]);
 
 export class ShowChipAreaWithChip {
   nameScene: InputState = inputStateKeys.BATTLE_CHIP_AREA;
@@ -112,7 +135,7 @@ export class ShowChipAreaWithChip {
       c,
       this.position.x - 20,
       this.position.y,
-      this.logoImageFrameX
+      this.logoImageFrameX,
     );
   }
 
@@ -208,7 +231,7 @@ export class ShowChipAreaWithChip {
         c,
         this.position.x + 208,
         this.position.y + 300,
-        this.chipSelectorFrameX
+        this.chipSelectorFrameX,
       );
     }
 
@@ -217,7 +240,7 @@ export class ShowChipAreaWithChip {
         c,
         this.position.x + 208,
         this.position.y + 300 + 50,
-        this.chipSelectorFrameX
+        this.chipSelectorFrameX,
       );
     }
   }
@@ -325,19 +348,11 @@ export class ShowChipAreaWithChip {
       },
       [keyBindings.pressR]: () => {
         if (CHIPS_MANAGER.chipSelected.length < 1) {
-          BATTLE_MANAGER.dialogue.showMessage([
-            "We can do this   ",
-            "right MEGAMAN!    ",
-            "             ",
-            "LEST GO!!!!",
-          ]);
+          const msj = DIALOGUE_MANAGER.getRandomLine("lan", "selectChipsNone");
+          BATTLE_MANAGER.dialogue.showMessage(msj);
         } else {
-          BATTLE_MANAGER.dialogue.showMessage([
-            "Hey MEGAMAN!   ",
-            "Hurry finish this   ",
-            "a piece a key     ",
-            "don't be late!",
-          ]);
+          const msj = DIALOGUE_MANAGER.getRandomLine("lan", "selectChipsSome");
+          BATTLE_MANAGER.dialogue.showMessage(msj);
         }
       },
       [keyBindings.pressA]: () => {
@@ -375,7 +390,7 @@ export class ShowChipAreaWithChip {
   }
 
   addChip() {
-    const timeForDialoge = 1700;
+    const timeForDialoge = 8000;
 
     if (this.chipInView.viewX < 5) {
       if (CHIPS_MANAGER.chipSelected.length > 5) {
@@ -417,13 +432,8 @@ export class ShowChipAreaWithChip {
           this.currentRawChip > 2 ? 2 : (this.currentRawChip += 1);
 
         this.chipInView = { viewX: 0, viewY: 0 };
-
-        BATTLE_MANAGER.dialogue.showMessage([
-          "Hey MEGAMAN!   ",
-          "let me way for",
-          "more chips ",
-          "I HAVE AN IDEA!!",
-        ]);
+        const msj = DIALOGUE_MANAGER.getRandomLine("lan", "addNewChip");
+        BATTLE_MANAGER.dialogue.showMessage(msj);
         setTimeout(() => {
           this.hiddenArea();
           // this way Dialogue is hidden and don't change the input state

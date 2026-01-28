@@ -1,3 +1,4 @@
+import { DIALOGUE_MANAGER } from "@/scenes/worldScene/sources/isoLanDialogue";
 import { BattleShip, IChips } from "../data/chips/battleChip";
 import { allChipsA } from "../data/chips/chipData";
 import { BATTLE_MANAGER } from "./battleManager";
@@ -50,11 +51,15 @@ export class ChipManager {
 
   addChipToFolder(id: string) {
     if (this.chipsFolder.length >= this.maxChipFolder) {
-      BATTLE_MANAGER.dialogue.showMessage([
-        "Folder is full",
-        `You have ${this.chipsFolder.length} chips`,
-        "remove a chip from the folder",
+      DIALOGUE_MANAGER.addCharacter("lan", "folderFull", [
+        ["Folder is full"],
+        ["You have", `${this.chipsFolder.length} chips`],
+        ["remove a chip from the folder"],
       ]);
+
+      const msj = DIALOGUE_MANAGER.getRandomLine("lan", "folderFull");
+
+      BATTLE_MANAGER.dialogue.showMessage(msj);
       return;
     }
     const chip = this.chipsSack.find((c) => c.id === id);

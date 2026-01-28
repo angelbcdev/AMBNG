@@ -66,7 +66,7 @@ export class BattleShip {
 
   constructor({ title }: { title: string }) {
     const currentChip = allChipsA.find(
-      (chip) => chip.title === title
+      (chip) => chip.title === title,
     ) as ChipData;
     this.id = getRandomeIDforMove();
 
@@ -117,14 +117,14 @@ export class BattleShip {
       x,
       y,
       this.with / 2.6,
-      this.height / 2.6
+      this.height / 2.6,
     );
   }
   drawFullImage(
     c: CanvasRenderingContext2D,
     x: number,
     y: number,
-    isSelectView: boolean = false
+    isSelectView: boolean = false,
   ) {
     const width = isSelectView ? 196 : 142;
     const height = isSelectView ? 236 : 250;
@@ -141,7 +141,7 @@ export class BattleShip {
       x - (isSelectView ? 40 : 36),
       y - (isSelectView ? 36 : 34),
       width,
-      height
+      height,
     );
     // }
   }
@@ -206,7 +206,7 @@ export class BattleShip {
     x: number,
     y: number,
     extraX: string = "",
-    isSelected: boolean = true
+    isSelected: boolean = true,
   ) {
     c.save();
     c.textAlign = "right";

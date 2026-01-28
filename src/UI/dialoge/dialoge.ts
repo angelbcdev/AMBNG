@@ -2,6 +2,7 @@ import { keyBindings } from "@/config/keyBindings";
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 import { ASSET_MANAGER } from "@/core/assetManager";
 import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
+import { character } from "@/scenes/worldScene/sources/isoLanDialogue";
 
 export class Dialogue {
   nameScene = inputStateKeys.DIALOGUE;
@@ -15,7 +16,7 @@ export class Dialogue {
   frameX = 0;
 
   frameWidth = 126;
-  frameHeight = 147;
+  frameHeight = 145;
   frameTime = 0;
 
   isHidden = true;
@@ -49,6 +50,8 @@ export class Dialogue {
   normalSpeed = 5;
   maxSpeed = 9.8;
 
+  currentCharacter = character.lan;
+
   constructor() {
     // Resolve portrait via AssetManager with fallback
     const key = "ui:lanPortrait";
@@ -58,6 +61,7 @@ export class Dialogue {
       const def = (ASSET_SOURCES.ui || []).find((d) => d.key === key);
       if (def) this.imagen.src = def.url;
     }
+    this.currentCharacter = character.lan;
     this.lines = [
       "This msj has tu be long enough ",
       "This msj has tu be long enough ",
@@ -200,7 +204,7 @@ export class Dialogue {
       c.fillText(
         line,
         this.position.x + 170,
-        this.position.y + 38 + index * 28
+        this.position.y + 38 + index * 28,
       );
     });
   }
@@ -209,21 +213,29 @@ export class Dialogue {
     c.drawImage(
       this.imagen,
       this.frameX * this.frameWidth,
-      0,
+      this.currentCharacter * this.frameHeight,
       this.frameWidth - 4,
       this.frameHeight,
       this.position.x + 20,
       this.position.y + 20,
       120,
-      120
+      120,
     );
   }
 
-  showMessage(newLines: string[] = ["message", "no", "added "]) {
+  showMessage({
+    image = "lan",
+    line = ["message", "no", "added "],
+  }: {
+    image: keyof typeof character;
+    line: string[];
+  }) {
     this.isHidden = false;
 
+    this.currentCharacter = character[image];
+
     // 🔑 reset, pero esperar a que suba antes de hablar
-    this.lines = newLines;
+    this.lines = line;
     this.linesToShow = this.lines.map(() => "");
     this.currentCharacterToShowIndex = 0;
     this.currentLineToShowIndex = 0;

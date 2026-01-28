@@ -123,6 +123,12 @@ export const ASSET_SOURCES: AssetManifest = {
       url: `${URLROOT}/navis/gust/gustSprite.png`,
     },
   ],
+  worldNavis: [
+    {
+      key: "isonavi:npc",
+      url: `${URLROOT}/navis/worldNavis/isoNavis.png`,
+    },
+  ],
 
   // Floor atlases
   tiles: [

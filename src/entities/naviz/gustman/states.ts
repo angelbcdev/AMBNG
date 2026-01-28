@@ -2,6 +2,7 @@
 import { FLOOR_MANAGER } from "@/core/floorManager";
 import { Gustman } from "./gustman";
 import { ENTITY_MANAGER } from "@/core/entityManager";
+import { getTimebetweenSeconds } from "@/scenes/worldScene/sources/utils";
 
 const SETUP = {
   MOVE: {
@@ -53,7 +54,7 @@ export class Gustmanstates {
       Gustmanstates.timerForMove = 0;
       Gustmanstates.maxTimeForMove = getTimebetweenSeconds(
         SETUP.MOVE.init,
-        SETUP.MOVE.max
+        SETUP.MOVE.max,
       );
     }
   }
@@ -69,7 +70,7 @@ export class Gustmanstates {
       Gustmanstates.timeForAttackSmash = 0;
       Gustmanstates.maxTimeForAttackSmash = getTimebetweenSeconds(
         SETUP.ATTACK_SMASH.init,
-        SETUP.ATTACK_SMASH.max
+        SETUP.ATTACK_SMASH.max,
       );
     }
   }
@@ -82,7 +83,7 @@ export class Gustmanstates {
       Gustmanstates.timeForAttackPush = 0;
       Gustmanstates.maxTimeForAttackPush = getTimebetweenSeconds(
         SETUP.ATTACK_PUSH.init,
-        SETUP.ATTACK_PUSH.max
+        SETUP.ATTACK_PUSH.max,
       );
     }
   }
@@ -98,7 +99,7 @@ export class Gustmanstates {
       Gustmanstates.timeForAttackSmashBroken = 0;
       Gustmanstates.maxTimeForAttackSmashBroken = getTimebetweenSeconds(
         SETUP.ATTACK_SMASH_BROKEN.init,
-        SETUP.ATTACK_SMASH_BROKEN.max
+        SETUP.ATTACK_SMASH_BROKEN.max,
       );
     }
   }
@@ -240,7 +241,3 @@ export class GustmanstatesHit extends Gustmanstates {
     }
   }
 }
-
-const getTimebetweenSeconds = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};

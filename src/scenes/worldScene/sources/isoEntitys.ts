@@ -1,6 +1,5 @@
 import { GAME_IS_DEV } from "@/core/gameState";
-
-//TODO channge the name to ISOEntity
+import { getRandomeID } from "./utils";
 
 export class mySquare {
   left: number = 0;
@@ -14,13 +13,14 @@ export class mySquare {
   image: HTMLImageElement = new Image();
   isEnemyZone: boolean = false;
   colorOpacity: string = "50";
-
+  local = { x: 0, y: 0, gap: 3 };
+  id: string = "";
   constructor(
     x: number,
     y: number,
     width: number,
     height: number,
-    createFromTopLeft?: boolean
+    createFromTopLeft?: boolean,
   ) {
     this.width = width;
     this.height = height;
@@ -31,6 +31,7 @@ export class mySquare {
       this.left = x;
       this.top = y;
     }
+    this.id = getRandomeID();
   }
 
   get x(): number {
@@ -76,11 +77,12 @@ export class mySquare {
     }
     return false;
   }
+  playerMove(_: string) {}
 
   drawIsoImageArea(
     ctx?: CanvasRenderingContext2D,
     cam?: { x: number; y: number },
-    z?: number
+    z?: number,
   ): void {
     if (ctx !== undefined) {
       z = z === undefined ? 0 : z;
@@ -91,6 +93,8 @@ export class mySquare {
         const TILE_H_img = 16 / 2;
         const TILE_W = this.width;
         const TILE_H = this.height / 2;
+        this.local.x = x;
+        this.local.y = y;
 
         // Offset para centrar la imagen en la zona de colisión ampliada
         const offsetX = (this.width - 16) / 4; // Compensación en coordenadas isométricas
@@ -102,7 +106,7 @@ export class mySquare {
             x - 8.2 + offsetX,
             y + 0.2 + offsetY,
             TILE_W_img,
-            TILE_H_img + 3
+            TILE_H_img + 3,
           );
         }
 
@@ -134,7 +138,7 @@ export class mySquare {
 }
 
 export class EnemyBoss extends mySquare {
-  color: string = "#0000ff";
+  color: string = "#ff0000";
   colorOpacity: string = "99";
   ratio: number = 0.9;
 
@@ -143,23 +147,23 @@ export class EnemyBoss extends mySquare {
     y: number,
     width: number,
     height: number,
-    createFromTopLeft?: boolean
+    createFromTopLeft?: boolean,
   ) {
     super(x, y, width, height, createFromTopLeft);
     this.image.src = "/assects/isoFloorTest.png";
 
     // Expandir la zona de contacto manteniendo el centro
-    const offset = (48 - 16) / 2; // = 16
-    this.left -= offset;
-    this.top -= offset;
-    this.width = 48;
-    this.height = 48;
+    // const offset = (48 - 16) / 2; // = 16
+    // this.left -= offset;
+    // this.top -= offset;
+    // this.width = 16;
+    // this.height = 48;
   }
 
   drawIsoImageArea(
     ctx?: CanvasRenderingContext2D,
     cam?: { x: number; y: number },
-    z?: number
+    z?: number,
   ): void {
     if (ctx !== undefined) {
       z = z === undefined ? 0 : z;
@@ -182,7 +186,7 @@ export class EnemyBoss extends mySquare {
             x - 8.2,
             y + 0.2,
             TILE_W_img,
-            TILE_H_img + 3
+            TILE_H_img + 3,
           );
         }
 
@@ -214,7 +218,7 @@ export class Path extends mySquare {
     y: number,
     width: number,
     height: number,
-    createFromTopLeft?: boolean
+    createFromTopLeft?: boolean,
   ) {
     super(x, y, width, height, createFromTopLeft);
     this.image.src = "/assects/isoFloorTest.png";
@@ -222,12 +226,13 @@ export class Path extends mySquare {
 }
 export class Wall extends mySquare {
   color: string = "#000000";
+
   constructor(
     x: number,
     y: number,
     width: number,
     height: number,
-    createFromTopLeft?: boolean
+    createFromTopLeft?: boolean,
   ) {
     super(x, y, width, height, createFromTopLeft);
     this.image = null;
@@ -235,7 +240,7 @@ export class Wall extends mySquare {
 }
 
 export class EnemyZone extends mySquare {
-  color: string = "#ff0000";
+  color: string = "#dd0000";
 
   ratio: number = 0.8;
   constructor(
@@ -243,9 +248,23 @@ export class EnemyZone extends mySquare {
     y: number,
     width: number,
     height: number,
-    createFromTopLeft?: boolean
+    createFromTopLeft?: boolean,
   ) {
     super(x, y, width, height, createFromTopLeft);
     this.image.src = "/assects/isoFloorTest.png";
   }
 }
+
+// console.log("this", {
+//   left: this.left,
+//   top: this.top,
+//   right: this.right,
+//   bottom: this.bottom,
+// });
+
+// console.log("navi", {
+//   left: navi.left,
+//   top: navi.top,
+//   right: navi.right,
+//   bottom: navi.bottom,
+// });

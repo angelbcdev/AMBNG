@@ -1,4 +1,4 @@
-let IS_DEV = false;
+let IS_DEV = true;
 let IS_PAUSE = false;
 let IS_BATTLE = false;
 let LEVEL = 0;

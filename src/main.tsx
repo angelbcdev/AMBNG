@@ -16,13 +16,13 @@ import { GAME_IS_BATTLE, GAME_IS_PAUSE } from "./core/gameState";
 import { INPUT_MANAGER } from "./input/inputManager";
 import { FLOOR_MANAGER } from "./core/floorManager";
 import { ENTITY_MANAGER } from "./core/entityManager";
-import { BATTLE_MANAGER } from "./core/battleManager";
 // import { BATTLE_MANAGER } from "./core/battleManager";
-
+// import { BATTLE_MANAGER } from "./core/battleManager";
+const zoon = 1;
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
-canvas.width = 430;
-canvas.height = 430;
+canvas.width = 430 * zoon;
+canvas.height = 430 * zoon;
 
 let lastTime = 0;
 
@@ -71,7 +71,7 @@ export const drawChips = () => {
 export const showGameStatesDev = (
   xOptions = 120,
   yOptions = 20,
-  space = 200
+  space = 200,
 ) => {
   c2.fillStyle = "#000000";
   c2.font = "12px Arial";
@@ -80,30 +80,29 @@ export const showGameStatesDev = (
   c2.fillText(
     `Input ct: ${INPUT_MANAGER.currentState}`,
     xOptions + space,
-    yOptions
+    yOptions,
   );
 
   c2.fillText(
     `current mode: ${GAME_IS_BATTLE() ? "Battle" : "World"}`,
     xOptions,
-    yOptions + 20
+    yOptions + 20,
   );
   c2.fillText(
     `isPause: ${GAME_IS_PAUSE() ? "Pause" : "Play"}`,
     xOptions + space,
-    yOptions + 20
+    yOptions + 20,
   );
 
   c2.fillText(`Scene prev: ${GAME.previousScene}`, xOptions, yOptions + 40);
   c2.fillText(
     `Scene ct: ${GAME.currentSceneIndex}`,
     xOptions + space,
-    yOptions + 40
+    yOptions + 40,
   );
 };
 
-
-//TODO: add test a battle with the navy 
+//TODO: add test a battle with the navy
 // BATTLE_MANAGER.inBattle("test"); // at the moment is Gustman
 export const devFloor = (deltaTime: number) => {
   // ENTITY_MANAGER.initBattle();
@@ -134,18 +133,18 @@ export const animateDev = (timeStap: number) => {
     c2.fillText(
       `${FLOOR_MANAGER.matrix[floor.matrixY][floor.matrixX].side}`,
       floor.x + 35,
-      floor.y + 320
+      floor.y + 320,
     );
     c2.fillText(floor.isChangeFloor.toString(), floor.x + 35, floor.y + 340);
     c2.fillText(
       floor.characterFloor?.constructor.name || "",
       floor.x + 35,
-      floor.y + 340
+      floor.y + 340,
     );
     c2.fillText(
       `${floor.timeChangeFloor.toFixed(1)}`,
       floor.x + 35,
-      floor.y + 360
+      floor.y + 360,
     );
   });
 
@@ -185,7 +184,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     {/* <main className="bg-blue-200 w-[430px] "><DevFucntions /></main> */}
     {/* <CanvasJoystick /> */}
-  </StrictMode>
+  </StrictMode>,
 );
 
 // //**--------------------------- */
@@ -203,7 +202,7 @@ function setupCanvasResolution(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
   logicalW: number,
-  logicalH: number
+  logicalH: number,
 ) {
   const dpr = Math.max(1, window.devicePixelRatio || 1);
   const scale = fitScaleToWindow();

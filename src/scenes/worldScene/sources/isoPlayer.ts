@@ -3,6 +3,7 @@ import { mySquare } from "./isoEntitys";
 import { GAME_IS_DEV } from "@/core/gameState";
 import { ASSET_MANAGER } from "@/core/assetManager";
 import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
+import { NavyNPC } from "./navis/isoNavis";
 
 export class PlayerIso extends mySquare {
   color: string = "#fff000";
@@ -23,6 +24,7 @@ export class PlayerIso extends mySquare {
   fps = 12;
   image = new Image();
 
+  c: any;
   allAnimations = {
     //idle
     idle_down_left: 0,
@@ -71,9 +73,9 @@ export class PlayerIso extends mySquare {
   }
   mover(wall: mySquare[]) {
     if (this.pressKey.includes(keyBindings.pressA)) {
-      this.speed = 1.75;
+      this.speed = 3.75;
     } else {
-      this.speed = 0.75;
+      this.speed = 1.75;
     }
     //choose frame Y
     if (
@@ -142,10 +144,12 @@ export class PlayerIso extends mySquare {
   drawIsoImageAreaPlayer(
     c: CanvasRenderingContext2D,
     cam: { x: number; y: number },
-    z: number
+    z: number,
   ) {
+    this.c = c;
     const x = this.left / 2 - this.top / 2 - cam.x;
     const y = this.left / 4 + this.top / 4 - z - cam.y;
+
     if (GAME_IS_DEV()) {
       const TILE_W = 16;
       const TILE_H = 8;
@@ -168,7 +172,7 @@ export class PlayerIso extends mySquare {
       x - this.moveFrameX,
       y - this.moveFrameY,
       20,
-      20
+      20,
     );
   }
 
@@ -215,7 +219,11 @@ export class PlayerIso extends mySquare {
   }
   checkKeyUp = (e: KeyboardEvent) => {
     this.pressKey.splice(this.pressKey.indexOf(e.key), 1);
-    this.returnIdle();
+
+    if (["ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"].includes(e.key)) {
+      this.returnIdle();
+    }
+
     this.lastPress = e.key;
   };
   checkKeyDown = (e: KeyboardEvent) => {
@@ -250,6 +258,42 @@ export class PlayerIso extends mySquare {
       case this.allAnimations.run_right:
         this.frameY = this.allAnimations.idle_right;
         break;
+    }
+  }
+  checkNavy(navys: NavyNPC[]) {
+    for (const navy of navys) {
+      if (this.intersects(navy)) {
+        // 2️⃣ calcular centros
+        const playerCenterX = (this.left + this.right) / 2;
+        const playerCenterY = (this.top + this.bottom) / 2;
+
+        const naviCenterX = (navy.left + navy.right) / 2;
+        const naviCenterY = (navy.top + navy.bottom) / 2;
+
+        const dx = playerCenterX - naviCenterX;
+        const dy = playerCenterY - naviCenterY;
+
+        // 3️⃣ decidir una sola dirección
+        if (Math.abs(dx) > Math.abs(dy)) {
+          // horizontal
+          if (dx < 0) {
+            navy.moveImageChat("leftUp", this);
+            this.frameY = this.allAnimations.idle_down_right;
+          } else {
+            navy.moveImageChat("rightDown", this);
+            this.frameY = this.allAnimations.idle_up_left;
+          }
+        } else {
+          // vertical
+          if (dy < 0) {
+            navy.moveImageChat("rightUp", this);
+            this.frameY = this.allAnimations.idle_down_left;
+          } else {
+            navy.moveImageChat("leftDown", this);
+            this.frameY = this.allAnimations.idle_up_right;
+          }
+        }
+      }
     }
   }
 }

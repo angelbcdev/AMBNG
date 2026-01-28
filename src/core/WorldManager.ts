@@ -16,8 +16,10 @@ import {
 } from "@/scenes/worldScene/sources/isoEntitys";
 import { keyBindings } from "@/config/keyBindings";
 import { BATTLE_MANAGER } from "./battleManager";
-import { isoLanDialogue } from "@/scenes/worldScene/sources/isoLanDialogue";
+import { DIALOGUE_MANAGER } from "@/scenes/worldScene/sources/isoLanDialogue";
 import { Camera } from "@/scenes/worldScene/sources/camera";
+import { IsoNavis } from "@/scenes/worldScene/sources/navis/isoNavis";
+import { MoveNpc } from "@/scenes/worldScene/sources/navis/moveNpc";
 
 const canvas = {
   width: 240,
@@ -36,12 +38,14 @@ export class WorldManager {
   // player = null;
 
   currentMap = 0;
-  data_world_bloks = testWorld.bloks;
+  data_world_blocks = testWorld.blocks;
   data_world_maps = testWorld.maps;
+  data_world_DefaultPath = testWorld.DefaultPath;
   wall = [];
   enemyZone = [];
-  enemies = [];
+  moveNPC = [];
   walkPath = [];
+  isoNavis = [];
   spritesheet = false;
   player: PlayerIso;
   sortedElements: mySquare[] = [];
@@ -61,15 +65,16 @@ export class WorldManager {
     //ADD move to isoPlayer
     this.player.checkKeyDown(e);
     const options = {
+      [keyBindings.pressB]: () => {
+        this.player.checkNavy(this.isoNavis);
+      },
       [keyBindings.pressStart]: () => {
         BATTLE_MANAGER.menuScreen.in();
       },
       [keyBindings.pressR]: () => {
         if (BATTLE_MANAGER.dialogue.isHidden) {
-          const msj =
-            isoLanDialogue[
-              Math.floor(Math.random() * isoLanDialogue.length - 1)
-            ];
+          const msj = DIALOGUE_MANAGER.getRandomLine("lan", "isoWorld");
+
           BATTLE_MANAGER.dialogue.showMessage(msj);
           this.player.returnIdle();
           this.player.pressKey = [];
@@ -115,8 +120,13 @@ export class WorldManager {
   update(deltaTime: number) {
     this.pause = GAME_IS_PAUSE();
     if (!this.pause && this.player) {
+      this.moveNPC.forEach((npc) => {
+        npc.navi.update(deltaTime);
+      });
+
       this.player.update(deltaTime);
       this.player.mover(this.wall);
+      this.updateMoveNPC(deltaTime);
       // GameOver Reset
 
       //* Out Screen
@@ -178,7 +188,12 @@ export class WorldManager {
     // this.fillIsoMap(ctx);
 
     // draw player
-    this.player.drawIsoImageAreaPlayer(ctx, this.cam, 8);
+
+    [this.player, ...this.isoNavis, ...this.moveNPC.map((e) => e.navi)]
+      .sort((a, b) => a.x + a.y - (b.x + b.y))
+      .forEach((navy) => {
+        navy.drawIsoImageAreaPlayer(ctx, this.cam, 8);
+      });
   }
   drawWalkPath(ctx: CanvasRenderingContext2D) {
     this.sortedElements.forEach((element) => {
@@ -190,7 +205,7 @@ export class WorldManager {
       ...this.enemyZone,
       ...this.wall,
       ...this.walkPath,
-    ].sort((a, b) => a.y + a.x - (b.y + b.x));
+    ].sort((a, b) => a.x + a.y - (b.x + b.y));
   }
   drawUI(ctx: CanvasRenderingContext2D, deltaTime: number) {
     BATTLE_MANAGER.draw(ctx, deltaTime);
@@ -200,7 +215,7 @@ export class WorldManager {
   private hasAdjacentEnemyZone(
     row: number,
     col: number,
-    enemyZonePositions: Set<string>
+    enemyZonePositions: Set<string>,
   ): boolean {
     const directions = [
       [-1, 0], // arriba
@@ -232,7 +247,8 @@ export class WorldManager {
     this.walkPath = [];
     this.wall = [];
     this.enemyZone = [];
-    this.enemies = [];
+    this.moveNPC = [];
+    this.isoNavis = [];
 
     // Set temporal para rastrear enemyZones (se limpia cada vez que se llama setMap)
     const enemyZonePositions = new Set<string>();
@@ -255,36 +271,28 @@ export class WorldManager {
         col += 1
       ) {
         const element = arrayChunks[row][col];
-        if (this.data_world_bloks[element]) {
-          const block = new this.data_world_bloks[element](
+
+        if (this.data_world_blocks[element]) {
+          const block = new this.data_world_blocks[element](
             col * blockSize,
             row * blockSize,
             blockSize,
             blockSize,
-            true
+            true,
           );
 
-          if (block instanceof Path) {
-            this.walkPath.push(block);
-          } else if (block instanceof Wall) {
-            this.wall.push(block);
-          } else {
-            // Verificar si hay enemyZone adyacente antes de asignar
-            if (block instanceof EnemyBoss) {
-              block.isEnemyZone = true;
-            } else if (block instanceof EnemyZone) {
-              const canBeEnemyZone =
-                Math.random() > block.ratio &&
-                !this.hasAdjacentEnemyZone(row, col, enemyZonePositions);
-              block.isEnemyZone = canBeEnemyZone;
-            }
+          this.sortByElement(block, row, col, enemyZonePositions);
 
-            // Si es enemyZone, agregar su posición al Set
-            if (block.isEnemyZone) {
-              enemyZonePositions.add(`${row},${col}`);
-            }
-
-            this.enemyZone.push(block);
+          // ---- Navi out word ----
+          if (block instanceof IsoNavis || block instanceof MoveNpc) {
+            const defaultPath = new this.data_world_DefaultPath(
+              col * blockSize,
+              row * blockSize,
+              blockSize,
+              blockSize,
+              true,
+            );
+            this.walkPath.push(defaultPath);
           }
         }
       }
@@ -299,6 +307,52 @@ export class WorldManager {
     this.updateSortedElements();
     GAME_SET_LEVEL(this.currentMap + 1);
   }
+  sortByElement(
+    block: any,
+    row: number,
+    col: number,
+    enemyZonePositions: Set<string>,
+  ) {
+    // ---- Navi out word ----
+    if (block instanceof IsoNavis) {
+      // const navi = new (block.x, block.y)();
+      this.isoNavis.push(block.navi);
+    }
+    if (block instanceof MoveNpc) {
+      this.moveNPC.push(block);
+    }
+
+    if (block instanceof Path) {
+      this.walkPath.push(block);
+      return;
+    }
+
+    if (block instanceof Wall) {
+      this.wall.push(block);
+      return;
+    }
+
+    // ---- Enemy logic ----
+    let isEnemyZone = false;
+
+    if (block instanceof EnemyBoss) {
+      isEnemyZone = true;
+    }
+
+    if (block instanceof EnemyZone) {
+      isEnemyZone =
+        Math.random() > block.ratio &&
+        !this.hasAdjacentEnemyZone(row, col, enemyZonePositions);
+    }
+
+    block.isEnemyZone = isEnemyZone;
+
+    if (isEnemyZone) {
+      enemyZonePositions.add(`${row},${col}`);
+    }
+
+    this.enemyZone.push(block);
+  }
 
   in() {
     if (this.pause) {
@@ -306,58 +360,72 @@ export class WorldManager {
       BATTLE_MANAGER.menuScreen.showMenu = false;
       document.removeEventListener(
         "keydown",
-        BATTLE_MANAGER.menuScreen.checkKey
+        BATTLE_MANAGER.menuScreen.checkKey,
       );
     }
   }
   out() {}
 
-  moveNPC() {
-    let i = 0,
-      l = 0,
-      j = 0,
-      jl = 0;
-    // Move enemies
-    for (i = 0, l = this.enemies.length; i < l; i += 1) {
-      if (this.enemies[i].vx !== 0) {
-        this.enemies[i].x += this.enemies[i].vx;
-
-        for (j = 0, jl = this.wall.length; j < jl; j += 1) {
-          if (this.enemies[i].intersects(this.wall[j])) {
-            this.enemies[i].vx *= -1;
-            this.enemies[i].x += this.enemies[i].vx;
-            this.enemies[i].dir += 2;
-            if (this.enemies[i].dir > 3) {
-              this.enemies[i].dir -= 4;
-            }
-            break;
-          }
-        }
+  updateMoveNPC(deltaTime: number) {
+    this.moveNPC.forEach((NPC) => {
+      if (NPC.intersects(this.player)) {
+        NPC.speed = 0;
+        return;
       }
 
-      if (this.enemies[i].vy !== 0) {
-        this.enemies[i].y += this.enemies[i].vy;
+      //leftUp
+      if (NPC.vx < 0) {
+        NPC.x -= NPC.speed;
+        validateDirection(NPC, this.wall, "vx", "left", "right");
+        return;
+      } else if (NPC.vx > 0) {
+        NPC.x += NPC.speed;
+        validateDirection(NPC, this.wall, "vx", "right", "left");
+        return;
+      } else if (NPC.vy < 0) {
+        NPC.y -= NPC.speed;
+        validateDirection(NPC, this.wall, "vy", "top", "bottom");
+        return;
+      } else if (NPC.vy > 0) {
+        NPC.y += NPC.speed;
+        validateYDwon(NPC, this.wall);
 
-        for (j = 0, jl = this.wall.length; j < jl; j += 1) {
-          if (this.enemies[i].intersects(this.wall[j])) {
-            this.enemies[i].vy *= -1;
-            this.enemies[i].y += this.enemies[i].vy;
-            this.enemies[i].dir += 2;
-            if (this.enemies[i].dir > 3) {
-              this.enemies[i].dir -= 4;
-            }
-            break;
-          }
-        }
+        return;
       }
-
-      // Player Intersects Enemy
-      if (this.player.intersects(this.enemies[i])) {
-        // this.gameover = true;
-        // this.pause = true;
-      }
-    }
+    });
   }
 }
+
+type TDirection = "bottom" | "top" | "left" | "right";
+const validateDirection = (
+  NPC: MoveNpc,
+  obj: MoveNpc[],
+  direction: "vx" | "vy",
+  oldPosition: TDirection,
+  newPosition: TDirection,
+) => {
+  for (let i = 0, l = obj.length; i < l; i += 1) {
+    if (NPC.id === obj[i].id) {
+      return;
+    }
+    if (NPC.intersects(obj[i])) {
+      NPC[oldPosition] = obj[i][newPosition];
+      NPC[direction] = NPC[direction] * -1;
+    }
+  }
+};
+
+const validateYDwon = (NPC: MoveNpc, wall: MoveNpc[]) => {
+  for (let i = 0, l = wall.length; i < l; i += 1) {
+    if (NPC.id === wall[i].id) continue;
+
+    if (NPC.intersects(wall[i])) {
+      // Ajuste directo de la posición
+      NPC.y = wall[i].top - NPC.height / 2;
+      NPC.vy = NPC.vy * -1;
+      break;
+    }
+  }
+};
 
 export const WORLD_MANAGER = WorldManager.getInstance();

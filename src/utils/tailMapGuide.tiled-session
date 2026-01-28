@@ -3,10 +3,22 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "testT.tmx",
     "expandedProjectPaths": [
     ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "guideMapT.tsx": {
+            "scaleInDock": 1
+        },
+        "testT.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 320,
+                "y": 239.66666666666666
+            }
+        }
     },
     "last.exportedFilePath": "/Users/angelalbertobernechea/Desktop/games/meggg/src/utils",
     "last.imagePath": "/Users/angelalbertobernechea/Desktop/games/meggg/src/utils",
@@ -17,9 +29,11 @@
     "map.tileWidth": 16,
     "map.width": 40,
     "openFiles": [
+        "testT.tmx"
     ],
     "project": "tailMapGuide.tiled-project",
     "recentFiles": [
+        "testT.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
