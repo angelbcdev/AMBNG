@@ -31,6 +31,7 @@ export class NavyNPC extends mySquare {
   };
   imageDialogue: keyof typeof character = "lan";
   isIdle = true;
+  isTalking = false;
   returnAfterTalk = 30000;
   newMove = getTimebetweenSeconds(1000, 2000);
   currentTimeMove = 0;
@@ -121,10 +122,12 @@ export class NavyNPC extends mySquare {
   moveImageChat(direction: TDirection, player: PlayerIso) {
     this.currentDirection = direction;
     this.isIdle = false;
+    this.isTalking = true;
 
     //* ADD DIALOGUE
     if (BATTLE_MANAGER.dialogue.isHidden) {
       const msj = DIALOGUE_MANAGER.getRandomLine(this.imageDialogue);
+      BATTLE_MANAGER.dialogue.npcID = this.id;
       BATTLE_MANAGER.dialogue.showMessage(msj);
       player.returnIdle();
       player.pressKey = [];

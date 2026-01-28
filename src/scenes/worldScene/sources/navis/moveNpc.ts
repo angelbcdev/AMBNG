@@ -1,6 +1,10 @@
+import { mySquare } from "../isoEntitys";
+import { PlayerIso } from "../isoPlayer";
 import { IsoNavis, NavyNPC } from "./isoNavis";
 
 //navy to show
+
+type TDirection = "bottom" | "top" | "left" | "right";
 export class NavyNPCMove extends NavyNPC {
   imageDirection = {
     leftDown: {
@@ -28,11 +32,13 @@ export class NavyNPCMove extends NavyNPC {
   heightDraw = 24;
   vx: number = 0;
   vy: number = 0;
+  isTalking = false;
   constructor(x: number, y: number) {
     super(x, y);
     this.imageDialogue = "chatBot";
     this.currentDirection = "leftUp";
     this.isIdle = false;
+
     this.image.src = "./assects/navis/controlBot.png";
   }
   drawIsoImageAreaPlayer(
@@ -73,6 +79,7 @@ export class MoveNpc extends IsoNavis {
   vy: number = 0;
   dir = 1;
   speed: number = 0.25;
+  limitSpeed = this.speed;
 
   constructor(
     x: number,
@@ -90,21 +97,107 @@ export class MoveNpc extends IsoNavis {
     this.navi.update(deltaTime);
     this.navi.x = this.x;
     this.navi.y = this.y;
+    this.changeFaceNPC();
   }
   playerMove(face: string) {
     console.log("face", face);
   }
   changeFaceNPC() {
+    if (this.navi.isTalking) return;
     const currentLocation = `${this.vx}:${this.vy}`;
 
     const directionFaces = {
-      "6:0": "rightUp",
+      "6:0": "rightDown",
       "-6:0": "leftUp",
-      "0:6": "rightDown",
-      "0:-6": "leftDown",
+      "0:6": "leftDown",
+      "0:-6": "rightUp",
     };
 
     this.navi.currentDirection = directionFaces[currentLocation];
+  }
+
+  moveCurrentNavi(player: PlayerIso, wall: MoveNpc[]) {
+    if (this.navi.isTalking) return;
+    //leftUp
+    if (this.vx < 0) {
+      this.x -= this.speed;
+
+      this.validateDirection(this, wall, "vx", "left", "right");
+      if (this.intersects(player)) {
+        this.stopByPlayer();
+        this.left = player.right;
+      }
+      return;
+    } else if (this.vx > 0) {
+      this.x += this.speed;
+
+      this.validateDirection(this, wall, "vx", "right", "left");
+      if (this.intersects(player)) {
+        this.stopByPlayer();
+        this.right = player.left;
+      }
+
+      return;
+    } else if (this.vy < 0) {
+      this.y -= this.speed;
+
+      this.validateDirection(this, wall, "vy", "top", "bottom");
+      if (this.intersects(player)) {
+        this.stopByPlayer();
+        this.top = player.bottom;
+      }
+      return;
+    } else if (this.vy > 0) {
+      this.y += this.speed;
+
+      this.validateYDwon(this, wall);
+      if (this.intersects(player)) {
+        this.stopByPlayer();
+        this.bottom = player.top;
+      }
+
+      return;
+    }
+  }
+
+  validateDirection = (
+    NPC: MoveNpc,
+    obj: MoveNpc[],
+    direction: "vx" | "vy",
+    oldPosition: TDirection,
+    newPosition: TDirection,
+  ) => {
+    for (let i = 0, l = obj.length; i < l; i += 1) {
+      if (NPC.id === obj[i].id) {
+        return;
+      }
+      if (NPC.intersects(obj[i])) {
+        NPC[oldPosition] = obj[i][newPosition];
+        NPC[direction] = NPC[direction] * -1;
+      }
+    }
+  };
+  validateYDwon = (NPC: MoveNpc, wall: MoveNpc[]) => {
+    for (let i = 0, l = wall.length; i < l; i += 1) {
+      if (NPC.id === wall[i].id) continue;
+
+      if (NPC.intersects(wall[i])) {
+        // Ajuste directo de la posición
+        NPC.y = wall[i].top - NPC.height / 2;
+        NPC.vy = NPC.vy * -1;
+        break;
+      }
+    }
+  };
+  stopByPlayer() {
+    this.speed = 0;
+    this.navi.isIdle = true;
+    setTimeout(() => {
+      this.speed = this.limitSpeed;
+      this.vx *= -1;
+      this.vy *= -1;
+      this.navi.isIdle = false;
+    }, 5000);
   }
 }
 export class MoveNpcVX extends MoveNpc {

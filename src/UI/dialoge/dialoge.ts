@@ -3,6 +3,7 @@ import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 import { ASSET_MANAGER } from "@/core/assetManager";
 import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
 import { character } from "@/scenes/worldScene/sources/isoLanDialogue";
+import { WORLD_MANAGER } from "@/core/WorldManager";
 
 export class Dialogue {
   nameScene = inputStateKeys.DIALOGUE;
@@ -45,7 +46,7 @@ export class Dialogue {
   linesToShow: string[] = [];
   canTalk = false;
   state: "talking" | "idle" = "idle";
-
+  npcID = "";
   speed = 5;
   normalSpeed = 5;
   maxSpeed = 9.8;
@@ -249,6 +250,20 @@ export class Dialogue {
     this.isHidden = true;
     this.resetDialogue();
     INPUT_MANAGER.returnPreviousState();
+
+    // 🔑 reset npc
+    if (this.npcID != "") {
+      WORLD_MANAGER.moveNPC.forEach((npc) => {
+        if (npc.navi.id == this.npcID) {
+          if (npc.navi.isTalking) {
+            setTimeout(() => {
+              npc.navi.isTalking = false;
+            }, 1500);
+          }
+        }
+      });
+      this.npcID = "";
+    }
   }
 
   resetDialogue() {

@@ -127,7 +127,7 @@ export class WorldManager {
 
       this.player.update(deltaTime);
       this.player.mover(this.wall);
-      this.updateMoveNPC(deltaTime);
+      this.updateMoveNPC();
       // GameOver Reset
 
       //* Out Screen
@@ -379,71 +379,12 @@ export class WorldManager {
   }
   out() {}
 
-  updateMoveNPC(deltaTime: number) {
+  updateMoveNPC() {
     this.moveNPC.forEach((NPC) => {
       NPC.update();
-      if (NPC.intersects(this.player)) {
-        NPC.speed = 0;
-        return;
-      }
-
-      //leftUp
-      if (NPC.vx < 0) {
-        NPC.x -= NPC.speed;
-
-        validateDirection(NPC, this.wall, "vx", "left", "right");
-        return;
-      } else if (NPC.vx > 0) {
-        NPC.x += NPC.speed;
-
-        validateDirection(NPC, this.wall, "vx", "right", "left");
-        return;
-      } else if (NPC.vy < 0) {
-        NPC.y -= NPC.speed;
-
-        validateDirection(NPC, this.wall, "vy", "top", "bottom");
-        return;
-      } else if (NPC.vy > 0) {
-        NPC.y += NPC.speed;
-
-        validateYDwon(NPC, this.wall);
-
-        return;
-      }
+      NPC.moveCurrentNavi(this.player, this.wall);
     });
   }
 }
-
-type TDirection = "bottom" | "top" | "left" | "right";
-const validateDirection = (
-  NPC: MoveNpc,
-  obj: MoveNpc[],
-  direction: "vx" | "vy",
-  oldPosition: TDirection,
-  newPosition: TDirection,
-) => {
-  for (let i = 0, l = obj.length; i < l; i += 1) {
-    if (NPC.id === obj[i].id) {
-      return;
-    }
-    if (NPC.intersects(obj[i])) {
-      NPC[oldPosition] = obj[i][newPosition];
-      NPC[direction] = NPC[direction] * -1;
-    }
-  }
-};
-
-const validateYDwon = (NPC: MoveNpc, wall: MoveNpc[]) => {
-  for (let i = 0, l = wall.length; i < l; i += 1) {
-    if (NPC.id === wall[i].id) continue;
-
-    if (NPC.intersects(wall[i])) {
-      // Ajuste directo de la posición
-      NPC.y = wall[i].top - NPC.height / 2;
-      NPC.vy = NPC.vy * -1;
-      break;
-    }
-  }
-};
 
 export const WORLD_MANAGER = WorldManager.getInstance();
