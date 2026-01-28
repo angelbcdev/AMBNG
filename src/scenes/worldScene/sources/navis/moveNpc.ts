@@ -1,4 +1,4 @@
-import { mySquare } from "../isoEntitys";
+import { GAME_IS_PAUSE } from "@/core/gameState";
 import { PlayerIso } from "../isoPlayer";
 import { IsoNavis, NavyNPC } from "./isoNavis";
 

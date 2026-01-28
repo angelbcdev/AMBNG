@@ -10,9 +10,11 @@
     },
     "last.exportedFilePath": "/Users/angelalbertobernechea/Desktop/games/ambng/src/utils/test",
     "last.imagePath": "/Users/angelalbertobernechea/Desktop/games/ambng/src/utils",
+    "map.height": 120,
     "map.lastUsedExportFilter": "All Files (*)",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
+    "map.width": 130,
     "openFiles": [
     ],
     "project": "isoWorlTest.tiled-project",

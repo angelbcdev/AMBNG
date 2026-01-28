@@ -19,13 +19,7 @@ import { CHIPS_MANAGER } from "@/core/chipsManager";
 import { DIALOGUE_MANAGER } from "@/scenes/worldScene/sources/isoLanDialogue";
 
 DIALOGUE_MANAGER.addCharacter("lan", "addNewChip", [
-  [
-    "Hey MEGAMAN!   ",
-    "let me way for",
-    "more chips ",
-    "       ",
-    "I HAVE AN IDEA!!",
-  ],
+  ["Hey MEGAMAN!   ", "let me way for", "more chips ", "I HAVE AN IDEA!!"],
 ]);
 
 DIALOGUE_MANAGER.addCharacter("lan", "selectChipsSome", [
@@ -390,7 +384,7 @@ export class ShowChipAreaWithChip {
   }
 
   addChip() {
-    const timeForDialoge = 8000;
+    const timeForDialoge = 4000;
 
     if (this.chipInView.viewX < 5) {
       if (CHIPS_MANAGER.chipSelected.length > 5) {
@@ -434,6 +428,7 @@ export class ShowChipAreaWithChip {
         this.chipInView = { viewX: 0, viewY: 0 };
         const msj = DIALOGUE_MANAGER.getRandomLine("lan", "addNewChip");
         BATTLE_MANAGER.dialogue.showMessage(msj);
+
         setTimeout(() => {
           this.hiddenArea();
           // this way Dialogue is hidden and don't change the input state

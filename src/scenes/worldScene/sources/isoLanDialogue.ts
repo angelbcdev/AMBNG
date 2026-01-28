@@ -1,5 +1,6 @@
 export const character = {
   lan: 0,
+  megaman: 5,
   naviSore: 1,
   naviBattle: 2,
   gustman: 3,
@@ -11,7 +12,8 @@ export type TDialogueScene =
   | "addNewChip"
   | "selectChipsSome"
   | "selectChipsNone"
-  | "folderFull";
+  | "folderFull"
+  | "askMoreChips";
 export class CharacterDialogue {
   characters: {
     [key: string]: {
@@ -28,12 +30,10 @@ export class CharacterDialogue {
   ) {
     this.characters[`${characterImage}:${scene}`] = {
       image: character[characterImage],
-      lines,
+      lines, //: [["base msj"], ...lines],
       linesCount: 0,
       scene,
     };
-
-    console.log("this.characters", this.characters);
   }
   getRandomLine(
     characterImage: keyof typeof character,
@@ -49,6 +49,7 @@ export class CharacterDialogue {
     if (this.characters[key].linesCount >= this.characters[key].lines.length) {
       this.characters[key].linesCount = 0;
     }
+
     return data;
   }
 }

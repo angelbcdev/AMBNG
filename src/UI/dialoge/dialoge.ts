@@ -231,6 +231,7 @@ export class Dialogue {
     image: keyof typeof character;
     line: string[];
   }) {
+    INPUT_MANAGER.setState(inputStateKeys.DIALOGUE);
     this.isHidden = false;
 
     this.currentCharacter = character[image];
@@ -241,7 +242,7 @@ export class Dialogue {
     this.currentCharacterToShowIndex = 0;
     this.currentLineToShowIndex = 0;
     this.timeforCharacter = 0;
-    INPUT_MANAGER.setState(inputStateKeys.DIALOGUE);
+
     this.canTalk = false;
     this.setState("idle"); // espera en idle mientras sube
   }

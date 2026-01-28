@@ -1,12 +1,11 @@
 import data from "@/utils/test/001.json";
 import { Wall, Path, EnemyZone, EnemyBoss } from "./isoEntitys";
 import {
-  IsoNavis,
   IsoNavisBattle,
   IsoNavisGustman,
   IsoNavisStorage,
 } from "./navis/isoNavis";
-import { MoveNpc, MoveNpcVX, MoveNpcVY } from "./navis/moveNpc";
+import { MoveNpcVX, MoveNpcVY } from "./navis/moveNpc";
 import { PlayerIso } from "./isoPlayer";
 
 export class FloorRoad {

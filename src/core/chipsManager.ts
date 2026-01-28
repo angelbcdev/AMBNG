@@ -11,6 +11,20 @@ const chipInGame = allChipsA
 //chip.title
 //BattleShip.title.addlinePanel
 
+DIALOGUE_MANAGER.addCharacter("megaman", "folderFull", [
+  [
+    "Folder is full",
+    `You have 25 chips`,
+    "remove a chip from the folder",
+    "first!!!",
+  ],
+  [
+    `we have 25 chips`,
+    "in our folder we must have",
+    "between 20 and 25 chips",
+    "",
+  ],
+]);
 export class ChipManager {
   static instance: ChipManager | null = null;
   chipsSack: BattleShip[] = chipInGame;
@@ -46,18 +60,12 @@ export class ChipManager {
     return ChipManager.instance;
   }
   refreshFolder() {
-    // this.chipsFolder = chipInGame.filter((chip) => chip.isInFolder);
+    this.chipsFolder = chipInGame.filter((chip) => chip.isInFolder);
   }
 
   addChipToFolder(id: string) {
     if (this.chipsFolder.length >= this.maxChipFolder) {
-      DIALOGUE_MANAGER.addCharacter("lan", "folderFull", [
-        ["Folder is full"],
-        ["You have", `${this.chipsFolder.length} chips`],
-        ["remove a chip from the folder"],
-      ]);
-
-      const msj = DIALOGUE_MANAGER.getRandomLine("lan", "folderFull");
+      const msj = DIALOGUE_MANAGER.getRandomLine("megaman", "folderFull");
 
       BATTLE_MANAGER.dialogue.showMessage(msj);
       return;
@@ -70,6 +78,8 @@ export class ChipManager {
   }
   removeChipFromFolder(id: string) {
     const chip = this.chipsFolder.find((c) => c.id === id);
+    console.log("chip", chip);
+
     if (chip) {
       chip.removeInFolder();
     }

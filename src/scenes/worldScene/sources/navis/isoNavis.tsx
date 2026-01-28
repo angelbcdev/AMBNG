@@ -2,7 +2,7 @@ import { BATTLE_MANAGER } from "@/core/battleManager";
 import { mySquare, Wall } from "../isoEntitys";
 import { getTimebetweenSeconds } from "../utils";
 
-import { GAME_IS_DEV } from "@/core/gameState";
+import { GAME_IS_DEV, GAME_IS_PAUSE } from "@/core/gameState";
 import { character, DIALOGUE_MANAGER } from "../isoLanDialogue";
 import { PlayerIso } from "../isoPlayer";
 
@@ -90,6 +90,7 @@ export class NavyNPC extends mySquare {
     this.idleAnimation(16.666666666666668);
   }
   idleAnimation(deltaTime: number) {
+    if (!document.hasFocus() || GAME_IS_PAUSE()) return;
     if (this.isIdle) {
       this.currentTimeMove += deltaTime;
       if (this.currentTimeMove >= this.newMove) {

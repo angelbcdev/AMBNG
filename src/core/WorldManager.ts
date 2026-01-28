@@ -380,6 +380,7 @@ export class WorldManager {
   out() {}
 
   updateMoveNPC() {
+    if (!document.hasFocus() || GAME_IS_PAUSE()) return;
     this.moveNPC.forEach((NPC) => {
       NPC.update();
       NPC.moveCurrentNavi(this.player, this.wall);
