@@ -1,4 +1,4 @@
-import { DIALOGUE_MANAGER } from "@/scenes/worldScene/sources/isoLanDialogue";
+import { DIALOGUE_MANAGER } from "@/core/dialogueManager";
 import { BattleShip, IChips } from "../data/chips/battleChip";
 import { allChipsA } from "../data/chips/chipData";
 import { BATTLE_MANAGER } from "./battleManager";

@@ -1,5 +1,5 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+// import { StrictMode } from "react";
+// import { createRoot } from "react-dom/client";
 import "./index.css";
 // import { Joystick } from "@/components/joystick";
 
@@ -180,12 +180,12 @@ const drawLoading = (loaded: number, total: number) => {
   // requestAnimationFrame(animateDev);
 })();
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    {/* <main className="bg-blue-200 w-[430px] "><DevFucntions /></main> */}
-    {/* <CanvasJoystick /> */}
-  </StrictMode>,
-);
+// createRoot(document.getElementById("root")!).render(
+//   <StrictMode>
+//     {/* <main className="bg-blue-200 w-[430px] "><DevFucntions /></main> */}
+//     {/* <CanvasJoystick /> */}
+//   </StrictMode>,
+// );
 
 // //**--------------------------- */
 

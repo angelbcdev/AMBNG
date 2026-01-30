@@ -3,7 +3,7 @@ import { mySquare, Wall } from "../isoEntitys";
 import { getTimebetweenSeconds } from "../utils";
 
 import { GAME_IS_DEV, GAME_IS_PAUSE } from "@/core/gameState";
-import { character, DIALOGUE_MANAGER } from "../isoLanDialogue";
+import { character, DIALOGUE_MANAGER } from "@/core/dialogueManager";
 import { PlayerIso } from "../isoPlayer";
 
 type TDirection = "leftDown" | "leftUp" | "rightDown" | "rightUp";
@@ -58,7 +58,7 @@ export class NavyNPC extends mySquare {
   drawIsoImageAreaPlayer(
     c: CanvasRenderingContext2D,
     cam?: { x: number; y: number },
-    z?: number,
+    z?: number
   ) {
     const x = this.left / 2 - this.top / 2 - cam.x;
     const y = this.left / 4 + this.top / 4 - z - cam.y;
@@ -85,7 +85,7 @@ export class NavyNPC extends mySquare {
       x - this.moveImage.x,
       y - this.moveImage.y,
       this.widthDraw,
-      this.heightDraw,
+      this.heightDraw
     );
     this.idleAnimation(16.666666666666668);
   }
@@ -115,7 +115,7 @@ export class NavyNPC extends mySquare {
       ] as TDirection;
     } else {
       return validDirection.filter(
-        (direction) => direction !== this.currentDirection,
+        (direction) => direction !== this.currentDirection
       )[Math.floor(Math.random() * 3)] as TDirection;
     }
   }
@@ -195,7 +195,7 @@ export class IsoNavis extends Wall {
     y: number,
     width: number,
     height: number,
-    createFromTopLeft?: boolean,
+    createFromTopLeft?: boolean
   ) {
     super(x - 3, y - 3, width + 12, height + 12, createFromTopLeft);
 
@@ -212,7 +212,7 @@ export class IsoNavisStorage extends IsoNavis {
     y: number,
     width: number,
     height: number,
-    createFromTopLeft?: boolean,
+    createFromTopLeft?: boolean
   ) {
     super(x, y, width, height, createFromTopLeft);
     this.navi = new NavyNPCStore(x, y);
@@ -225,7 +225,7 @@ export class IsoNavisBattle extends IsoNavis {
     y: number,
     width: number,
     height: number,
-    createFromTopLeft?: boolean,
+    createFromTopLeft?: boolean
   ) {
     super(x, y, width, height, createFromTopLeft);
     this.navi = new NavyNPCBattle(x, y);
@@ -238,7 +238,7 @@ export class IsoNavisGustman extends IsoNavis {
     y: number,
     width: number,
     height: number,
-    createFromTopLeft?: boolean,
+    createFromTopLeft?: boolean
   ) {
     super(x, y, width, height, createFromTopLeft);
     // 14. 30

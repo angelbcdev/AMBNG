@@ -1,4 +1,4 @@
-import data from "@/utils/test/001.json";
+import data from "@/utils/test/ss.json";
 import { Wall, Path, EnemyZone, EnemyBoss } from "./isoEntitys";
 import {
   IsoNavisBattle,
@@ -43,6 +43,8 @@ export const getRandomeID = () => {
 export const testWorld = {
   DefaultPath: Path,
   maps: data.layers,
+  bgImage: 4,
+  isMultiLevels: data.layers.length > 1,
   blocks: {
     1: PlayerIso,
     0: "",

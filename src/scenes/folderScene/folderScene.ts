@@ -8,7 +8,7 @@ import { keyBindings } from "@/config/keyBindings";
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 import { GreenArrow } from "@/UI/greenArrow";
 import { BATTLE_MANAGER } from "@/core/battleManager";
-import { DIALOGUE_MANAGER } from "../worldScene/sources/isoLanDialogue";
+import { DIALOGUE_MANAGER } from "@/core/dialogueManager";
 
 DIALOGUE_MANAGER.addCharacter("megaman", "askMoreChips", [
   [
@@ -75,7 +75,7 @@ export class FolderScene extends SceneRoot {
             } else {
               const msj = DIALOGUE_MANAGER.getRandomLine(
                 "megaman",
-                "askMoreChips",
+                "askMoreChips"
               );
               BATTLE_MANAGER.dialogue.showMessage(msj);
             }
@@ -111,12 +111,12 @@ export class FolderScene extends SceneRoot {
     if (this.viewSack) {
       this.globalSackIndex = Math.min(
         CHIPS_MANAGER.chipsSack.length - 1,
-        this.globalSackIndex + 1,
+        this.globalSackIndex + 1
       );
     } else {
       this.globalFolderIndex = Math.min(
         CHIPS_MANAGER.chipsFolder.length - 1,
-        this.globalFolderIndex + 1,
+        this.globalFolderIndex + 1
       );
     }
   };
@@ -138,7 +138,7 @@ export class FolderScene extends SceneRoot {
         if (this.globalFolderIndex >= CHIPS_MANAGER.chipsFolder.length) {
           this.globalFolderIndex = Math.max(
             0,
-            CHIPS_MANAGER.chipsFolder.length - 1,
+            CHIPS_MANAGER.chipsFolder.length - 1
           );
         }
       }
@@ -194,7 +194,7 @@ export class FolderScene extends SceneRoot {
       0,
       0,
       430 * 2,
-      430,
+      430
     );
 
     c.fillText(`${CHIPS_MANAGER.chipsFolder.length}`, 320, 30);
@@ -202,16 +202,16 @@ export class FolderScene extends SceneRoot {
     // Calcular slices e índices visuales dinámicamente
     const folderSlice = this.getViewSlice(
       this.globalFolderIndex,
-      CHIPS_MANAGER.chipsFolder.length,
+      CHIPS_MANAGER.chipsFolder.length
     );
     const folderViewIndex = this.getViewIndex(
       this.globalFolderIndex,
-      folderSlice,
+      folderSlice
     );
 
     const sackSlice = this.getViewSlice(
       this.globalSackIndex,
-      CHIPS_MANAGER.chipsSack.length,
+      CHIPS_MANAGER.chipsSack.length
     );
     const sackViewIndex = this.getViewIndex(this.globalSackIndex, sackSlice);
 
@@ -289,7 +289,7 @@ export class FolderScene extends SceneRoot {
         this.greenArrow.draw(
           c,
           { x: xGreenArronws + 5, y: 85 + index * 44 },
-          deltaTime,
+          deltaTime
         );
       }
 

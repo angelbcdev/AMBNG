@@ -2,7 +2,7 @@ import { keyBindings } from "@/config/keyBindings";
 import { INPUT_MANAGER, inputStateKeys } from "@/input/inputManager";
 import { ASSET_MANAGER } from "@/core/assetManager";
 import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
-import { character } from "@/scenes/worldScene/sources/isoLanDialogue";
+import { character } from "@/core/dialogueManager";
 import { WORLD_MANAGER } from "@/core/WorldManager";
 
 export class Dialogue {
@@ -205,7 +205,7 @@ export class Dialogue {
       c.fillText(
         line,
         this.position.x + 170,
-        this.position.y + 38 + index * 28,
+        this.position.y + 38 + index * 28
       );
     });
   }
@@ -220,7 +220,7 @@ export class Dialogue {
       this.position.x + 20,
       this.position.y + 20,
       120,
-      120,
+      120
     );
   }
 

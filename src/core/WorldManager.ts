@@ -16,7 +16,7 @@ import {
 } from "@/scenes/worldScene/sources/isoEntitys";
 import { keyBindings } from "@/config/keyBindings";
 import { BATTLE_MANAGER } from "./battleManager";
-import { DIALOGUE_MANAGER } from "@/scenes/worldScene/sources/isoLanDialogue";
+import { DIALOGUE_MANAGER } from "@/core/dialogueManager";
 import { Camera } from "@/scenes/worldScene/sources/camera";
 import { IsoNavis } from "@/scenes/worldScene/sources/navis/isoNavis";
 import { MoveNpc } from "@/scenes/worldScene/sources/navis/moveNpc";
@@ -41,6 +41,7 @@ export class WorldManager {
   data_world_blocks = testWorld.blocks;
   data_world_maps = testWorld.maps;
   data_world_DefaultPath = testWorld.DefaultPath;
+  data_world_isMultiLevels = testWorld.isMultiLevels;
   wall = [];
   enemyZone = [];
   moveNPC = [];
@@ -52,6 +53,18 @@ export class WorldManager {
   // menuScreen = new PauseMenu();
 
   constructor() {
+    if (this.data_world_isMultiLevels) {
+      this.data_world_maps.forEach((l, floor) => {
+        this.setMap(l, floor);
+      });
+    }
+    // else {
+    //   //* Single world
+    // this.setMap(this.data_world_maps[this.currentMap]);
+    this.bg = new BackGround(testWorld.bgImage);
+
+    // this.bg.updateBackGround
+    // }
     this.init();
   }
 
@@ -106,7 +119,7 @@ export class WorldManager {
     this.worldHeight = 0;
     this.elapsed = 0;
     this.cam = null;
-    this.bg = new BackGround(1);
+
     // player = null;
 
     this.currentMap = 0;
@@ -114,8 +127,18 @@ export class WorldManager {
 
     this.worldWidth = canvas.width;
     this.worldHeight = canvas.height;
-    this.setMap(this.data_world_maps[this.currentMap]);
-    this.player = this.player || new PlayerIso(104, 204, 16, 16);
+
+    // if (this.data_world_isMultiLevels) {
+    //   this.data_world_maps.forEach((l, floor) => {
+    //     this.setMap(l, floor);
+    //   });
+    // }
+    // else {
+    //   //* Single world
+    // this.setMap(this.data_world_maps[this.currentMap]);
+    // }
+
+    // this.player = this.player || new PlayerIso(104, 204, 16, 16);
   }
 
   update(deltaTime: number) {
@@ -130,26 +153,26 @@ export class WorldManager {
       this.updateMoveNPC();
       // GameOver Reset
 
-      //* Out Screen
-      if (this.player.x > this.worldWidth) {
-        this.currentMap += 1;
-        if (this.currentMap > this.data_world_maps.length - 1) {
-          this.currentMap = 0;
-        }
-        this.setMap(this.data_world_maps[this.currentMap]);
-        this.player.x = 0;
-      } else if (this.player.y > this.worldHeight) {
-        this.player.y = 0;
-      } else if (this.player.x < 0) {
-        this.currentMap -= 1;
-        if (this.currentMap < 0) {
-          this.currentMap = this.data_world_maps.length - 1;
-        }
-        this.setMap(this.data_world_maps[this.currentMap]);
-        this.player.x = this.worldWidth;
-      } else if (this.player.y < 0) {
-        this.player.y = this.worldHeight;
-      }
+      // //* Out Screen
+      // if (this.player.x > this.worldWidth) {
+      //   this.currentMap += 1;
+      //   if (this.currentMap > this.data_world_maps.length - 1) {
+      //     this.currentMap = 0;
+      //   }
+      //   this.setMap(this.data_world_maps[this.currentMap]);
+      //   this.player.x = 0;
+      // } else if (this.player.y > this.worldHeight) {
+      //   this.player.y = 0;
+      // } else if (this.player.x < 0) {
+      //   this.currentMap -= 1;
+      //   if (this.currentMap < 0) {
+      //     this.currentMap = this.data_world_maps.length - 1;
+      //   }
+      //   this.setMap(this.data_world_maps[this.currentMap]);
+      //   this.player.x = this.worldWidth;
+      // } else if (this.player.y < 0) {
+      //   this.player.y = this.worldHeight;
+      // }
 
       this.checkEnemyZone();
 
@@ -230,26 +253,32 @@ export class WorldManager {
       return enemyZonePositions.has(key);
     });
   }
-  setMap(map: {
-    data: number[];
-    height: number;
-    id: number;
-    name: string;
-    opacity: number;
-    type: string;
-    visible: boolean;
-    width: number;
-    x: number;
-    y: number;
-  }) {
+  setMap(
+    map: {
+      data: number[];
+      height: number;
+      id: number;
+      name: string;
+      opacity: number;
+      type: string;
+      visible: boolean;
+      width: number;
+      x: number;
+      y: number;
+    },
+    hight = 0,
+  ) {
     const blockSize = 16;
+    console.log(hight);
 
     // Clean arrays
-    this.walkPath = [];
-    this.wall = [];
-    this.enemyZone = [];
-    this.moveNPC = [];
-    this.isoNavis = [];
+    // if (this.data_world_isMultiLevels) {
+    // this.enemyZone = [];
+    // this.moveNPC = [];
+    // this.isoNavis = [];
+    // this.walkPath = [];
+    // this.wall = [];
+    // }
 
     // Set temporal para rastrear enemyZones (se limpia cada vez que se llama setMap)
     const enemyZonePositions = new Set<string>();
@@ -283,7 +312,8 @@ export class WorldManager {
           );
 
           if (block instanceof PlayerIso) {
-            this.player = block;
+            console.log(block);
+            this.player = !this.player && block;
             const defaultPath = new this.data_world_DefaultPath(
               col * blockSize,
               row * blockSize,
@@ -311,9 +341,9 @@ export class WorldManager {
       }
     }
 
-    const bgForBattle = [1, 3, 4];
+    // const bgForBattle = [1, 3, 4];
 
-    this.bg.updateBackGround(bgForBattle[this.currentMap]);
+    // this.bg.updateBackGround(bgForBattle[this.currentMap]);
 
     this.worldWidth = columns * blockSize;
     this.worldHeight = rows * blockSize;

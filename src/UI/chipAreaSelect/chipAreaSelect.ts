@@ -16,7 +16,7 @@ import {
 import { BATTLE_MANAGER } from "../../core/battleManager";
 import { GAME_SET_PAUSE, GAME_SET_UNPAUSE } from "../../core/gameState";
 import { CHIPS_MANAGER } from "@/core/chipsManager";
-import { DIALOGUE_MANAGER } from "@/scenes/worldScene/sources/isoLanDialogue";
+import { DIALOGUE_MANAGER } from "@/core/dialogueManager";
 
 DIALOGUE_MANAGER.addCharacter("lan", "addNewChip", [
   ["Hey MEGAMAN!   ", "let me way for", "more chips ", "I HAVE AN IDEA!!"],
@@ -129,7 +129,7 @@ export class ShowChipAreaWithChip {
       c,
       this.position.x - 20,
       this.position.y,
-      this.logoImageFrameX,
+      this.logoImageFrameX
     );
   }
 
@@ -225,7 +225,7 @@ export class ShowChipAreaWithChip {
         c,
         this.position.x + 208,
         this.position.y + 300,
-        this.chipSelectorFrameX,
+        this.chipSelectorFrameX
       );
     }
 
@@ -234,7 +234,7 @@ export class ShowChipAreaWithChip {
         c,
         this.position.x + 208,
         this.position.y + 300 + 50,
-        this.chipSelectorFrameX,
+        this.chipSelectorFrameX
       );
     }
   }
