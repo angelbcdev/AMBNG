@@ -1,5 +1,5 @@
 import { BATTLE_MANAGER } from "@/core/battleManager";
-import { mySquare, Wall } from "../isoEntitys";
+import { ICreateSquare, mySquare, Wall } from "../isoEntitys";
 import { getTimebetweenSeconds } from "../utils";
 
 import { GAME_IS_DEV, GAME_IS_PAUSE } from "@/core/gameState";
@@ -48,8 +48,23 @@ export class NavyNPC extends mySquare {
     x: this.widthDraw / 2,
     y: this.heightDraw - 13,
   };
-  constructor(x: number, y: number, width = 36, height = 36) {
-    super(x - 10, y - 10, width, height);
+  constructor(data: ICreateSquare) {
+    // const newData = {
+    //   ...data,
+    //   x:data.x - 10,
+    //   y:data.x - 10,
+
+    // }
+    //* change chat's size name
+    const newData = {
+      ...data,
+      x: data.x - 6,
+      y: data.y - 6,
+      width: data.width + 16,
+      height: data.height + 16
+    }
+   
+    super(newData);
     this.currentDirection = this.searchValidDirection(true);
     // this.imageKey = "isonavi:npc"
     this.imageDialogue = "naviSore";
@@ -60,13 +75,19 @@ export class NavyNPC extends mySquare {
     cam?: { x: number; y: number },
     z?: number
   ) {
+    
+    super.drawIsoImageArea(c, cam, z);
+    
+    //* add view chat box
+ 
+  }
+  draw(c: CanvasRenderingContext2D, cam?: { x: number; y: number }, z?: number) {
     const x = this.left / 2 - this.top / 2 - cam.x;
     const y = this.left / 4 + this.top / 4 - z - cam.y;
-    //* add view chat box
-    if (GAME_IS_DEV()) {
+       if (GAME_IS_DEV()) {
       const TILE_W = this.width;
       const TILE_H = this.height / 2;
-      c.fillStyle = this.color + 90;
+      c.fillStyle = this.color +80;
       c.beginPath();
       c.moveTo(x, y);
       c.lineTo(x + TILE_W / 2, y + TILE_H / 2);
@@ -74,8 +95,10 @@ export class NavyNPC extends mySquare {
       c.lineTo(x - TILE_W / 2, y + TILE_H / 2);
       c.closePath();
       c.fill();
-    }
-
+       }
+    
+   
+ 
     c.drawImage(
       this.image,
       this.imageDirection[this.currentDirection].x * this.widthFrame,
@@ -147,22 +170,22 @@ export class NavyNPC extends mySquare {
 }
 
 export class NavyNPCStatic extends NavyNPC {
-  constructor(x: number, y: number) {
-    super(x, y);
+  constructor(data: ICreateSquare) {
+    super(data);
     this.isIdle = true;
   }
 }
 
 class NavyNPCStore extends NavyNPCStatic {
-  constructor(x: number, y: number) {
-    super(x, y);
+  constructor(data: ICreateSquare) {
+    super(data);
     this.imageDialogue = "naviSore";
     this.image.src = "./assects/navis/navibase.png";
   }
 }
 class NavyNPCBattle extends NavyNPCStatic {
-  constructor(x: number, y: number) {
-    super(x, y);
+ constructor(data: ICreateSquare) {
+    super(data);
     this.imageDialogue = "naviBattle";
     this.image.src = "./assects/navis/navibase1.png";
   }
@@ -178,28 +201,35 @@ class NavyNPCGustman extends NavyNPCStatic {
     y: 16,
   };
 
-  constructor(x: number, y: number) {
-    super(x, y);
+  constructor(data:ICreateSquare) {
+    super(data);
     this.imageDialogue = "gustman";
     this.image.src = "./assects/navis/gust/gustworld.png";
   }
 }
 
 export class IsoNavis extends Wall {
-  color: string = "#401fd0";
+  color: string = "#401f";
   ratio: number = 0.8;
 
   navi: NavyNPC;
-  constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    createFromTopLeft?: boolean
-  ) {
-    super(x - 3, y - 3, width + 12, height + 12, createFromTopLeft);
+  constructor(data: ICreateSquare) {
+    // data.x = data.x  - 3
+    // data.y = data.y - 3
+    // data.width = data.width + 12
+    // data.height = data.height + 12
+//* change area's size navi
+    const  newData = {
+      ...data,
+      x: data.x - 2,
+      y: data.y - 2,
+      width: data.width + 10,
+      height: data.height + 10
+    }
+    super(newData);
+    
 
-    this.navi = new NavyNPC(x, y);
+    this.navi = new NavyNPC(newData);
   }
   playerMove(face: string) {
     console.log("face", face);
@@ -208,41 +238,25 @@ export class IsoNavis extends Wall {
 
 export class IsoNavisStorage extends IsoNavis {
   constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    createFromTopLeft?: boolean
+    data: ICreateSquare,
   ) {
-    super(x, y, width, height, createFromTopLeft);
-    this.navi = new NavyNPCStore(x, y);
+    super(data);
+    this.navi = new NavyNPCStore(data);
   }
 }
 
 export class IsoNavisBattle extends IsoNavis {
-  constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    createFromTopLeft?: boolean
-  ) {
-    super(x, y, width, height, createFromTopLeft);
-    this.navi = new NavyNPCBattle(x, y);
+  constructor(data: ICreateSquare) {
+    super(data);
+    this.navi = new NavyNPCBattle(data);
   }
 }
 
 export class IsoNavisGustman extends IsoNavis {
-  constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    createFromTopLeft?: boolean
-  ) {
-    super(x, y, width, height, createFromTopLeft);
+  constructor(data: ICreateSquare) {
+    super(data);
     // 14. 30
 
-    this.navi = new NavyNPCGustman(x, y);
+    this.navi = new NavyNPCGustman(data);
   }
 }

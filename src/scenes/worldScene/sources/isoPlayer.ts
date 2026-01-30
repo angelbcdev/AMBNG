@@ -6,7 +6,7 @@ import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
 import { NavyNPC } from "./navis/isoNavis";
 
 export class PlayerIso extends mySquare {
-  color: string = "#fff000";
+  color: string = "#0000";
   speed: number = 1.5;
   isMove: boolean = false;
   pressKey: string[] = [];
@@ -16,8 +16,8 @@ export class PlayerIso extends mySquare {
   frameInterval = 1000 / 12;
   frameX = 0;
 
-  moveFrameX = 8.5;
-  moveFrameY = 16;
+  moveFrameX = 10;
+  moveFrameY = 14;
   frameWidth = 33;
   frameHeight = 42;
   maxFrame = 5;
@@ -153,7 +153,7 @@ export class PlayerIso extends mySquare {
     if (GAME_IS_DEV()) {
       const TILE_W = 16;
       const TILE_H = 8;
-      c.fillStyle = this.color + "50";
+      c.fillStyle = this.color + "80";
       c.beginPath();
       c.moveTo(x, y);
       c.lineTo(x + TILE_W / 2, y + TILE_H / 2);

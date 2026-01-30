@@ -1,6 +1,15 @@
 import { GAME_IS_DEV } from "@/core/gameState";
 import { getRandomeID } from "./utils";
 
+export interface ICreateSquare {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  hightLevel: number;
+  createFromTopLeft?: boolean;
+}
+
 export class mySquare {
   left: number = 0;
   top: number = 0;
@@ -14,16 +23,14 @@ export class mySquare {
   isEnemyZone: boolean = false;
   colorOpacity: string = "50";
   local = { x: 0, y: 0, gap: 3 };
+  hightLevel: number;
   id: string = "";
-  constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    createFromTopLeft?: boolean,
-  ) {
+  constructor(data: ICreateSquare) {
+    const { x, y, width, height, hightLevel, createFromTopLeft } = data;
+
     this.width = width;
     this.height = height;
+    this.hightLevel = hightLevel;
     if (createFromTopLeft) {
       this.left = x;
       this.top = y;
@@ -84,54 +91,64 @@ export class mySquare {
     cam?: { x: number; y: number },
     z?: number,
   ): void {
-    if (ctx !== undefined) {
-      z = z === undefined ? 0 : z;
-      if (cam !== undefined) {
-        const x = this.left / 2 - this.top / 2 - cam.x;
-        const y = this.left / 4 + this.top / 4 - z - cam.y;
-        const TILE_W_img = 16;
-        const TILE_H_img = 16 / 2;
-        const TILE_W = this.width;
-        const TILE_H = this.height / 2;
-        this.local.x = x;
-        this.local.y = y;
+    if (!ctx || !cam) return;
+    ctx.save();
+    // ctx.translate(this.hightLevel * -8, this.hightLevel * -32);
+    this.draw(ctx, cam, z);
+    ctx.restore();
+    // chose level of view
+  }
+  draw(
+    ctx: CanvasRenderingContext2D,
+    cam: { x: number; y: number },
+    z: number,
+  ) {
+    z = z === undefined ? 0 : z;
+    if (cam !== undefined) {
+      const x = this.left / 2 - this.top / 2 - cam.x;
+      const y = this.left / 4 + this.top / 4 - z - cam.y;
+      const TILE_W_img = 16;
+      const TILE_H_img = 16 / 2;
+      const TILE_W = this.width;
+      const TILE_H = this.height / 2;
+      this.local.x = x;
+      this.local.y = y;
 
-        // Offset para centrar la imagen en la zona de colisión ampliada
-        const offsetX = (this.width - 16) / 4; // Compensación en coordenadas isométricas
-        const offsetY = (this.height - 16) / 8;
+      // Offset para centrar la imagen en la zona de colisión ampliada
+      const offsetX = (this.width - 16) / 4; // Compensación en coordenadas isométricas
+      const offsetY = (this.height - 16) / 8;
 
-        if (this.image) {
-          ctx.drawImage(
-            this.image,
-            x - 8.2 + offsetX,
-            y + 0.2 + offsetY,
-            TILE_W_img,
-            TILE_H_img + 3,
-          );
-        }
+      if (this.image) {
+        ctx.drawImage(
+          this.image,
+          x - 8.2 + offsetX,
+          y + 0.2 + offsetY,
+          TILE_W_img,
+          TILE_H_img + 3,
+        );
+      }
 
-        // TODO: ELIMINAR
-        if (this.isEnemyZone && GAME_IS_DEV()) {
-          ctx.fillStyle = this.color + this.colorOpacity;
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(x + TILE_W_img / 2, y + TILE_H_img / 2);
-          ctx.lineTo(x, y + TILE_H_img);
-          ctx.lineTo(x - TILE_W_img / 2, y + TILE_H_img / 2);
-          ctx.closePath();
-          ctx.fill();
-        }
+      // TODO: ELIMINAR
+      if (this.isEnemyZone && GAME_IS_DEV()) {
+        ctx.fillStyle = this.color + this.colorOpacity;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + TILE_W_img / 2, y + TILE_H_img / 2);
+        ctx.lineTo(x, y + TILE_H_img);
+        ctx.lineTo(x - TILE_W_img / 2, y + TILE_H_img / 2);
+        ctx.closePath();
+        ctx.fill();
+      }
 
-        if (GAME_IS_DEV()) {
-          ctx.fillStyle = this.color + this.colorOpacity;
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(x + TILE_W / 2, y + TILE_H / 2);
-          ctx.lineTo(x, y + TILE_H);
-          ctx.lineTo(x - TILE_W / 2, y + TILE_H / 2);
-          ctx.closePath();
-          ctx.fill();
-        }
+      if (GAME_IS_DEV()) {
+        ctx.fillStyle = this.color + this.colorOpacity;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + TILE_W / 2, y + TILE_H / 2);
+        ctx.lineTo(x, y + TILE_H);
+        ctx.lineTo(x - TILE_W / 2, y + TILE_H / 2);
+        ctx.closePath();
+        ctx.fill();
       }
     }
   }
@@ -142,14 +159,8 @@ export class EnemyBoss extends mySquare {
   colorOpacity: string = "99";
   ratio: number = 0.9;
 
-  constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    createFromTopLeft?: boolean,
-  ) {
-    super(x, y, width, height, createFromTopLeft);
+  constructor(data: ICreateSquare) {
+    super(data);
     this.image.src = "/assects/isoFloorTest.png";
 
     // Expandir la zona de contacto manteniendo el centro
@@ -213,28 +224,16 @@ export class Path extends mySquare {
   image = new Image();
   colorOpacity: string = "00";
   color: string = "#ffffff";
-  constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    createFromTopLeft?: boolean,
-  ) {
-    super(x, y, width, height, createFromTopLeft);
+  constructor(data: ICreateSquare) {
+    super(data);
     this.image.src = "/assects/isoFloorTest.png";
   }
 }
 export class Wall extends mySquare {
   color: string = "#000000";
 
-  constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    createFromTopLeft?: boolean,
-  ) {
-    super(x, y, width, height, createFromTopLeft);
+  constructor(data: ICreateSquare) {
+    super(data);
     this.image = null;
   }
 }
@@ -243,14 +242,8 @@ export class EnemyZone extends mySquare {
   color: string = "#dd0000";
 
   ratio: number = 0.8;
-  constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    createFromTopLeft?: boolean,
-  ) {
-    super(x, y, width, height, createFromTopLeft);
+  constructor(data: ICreateSquare) {
+    super(data);
     this.image.src = "/assects/isoFloorTest.png";
   }
 }

@@ -266,10 +266,10 @@ export class WorldManager {
       x: number;
       y: number;
     },
-    hight = 0,
+    hightLevel: number,
   ) {
     const blockSize = 16;
-    console.log(hight);
+    console.log(hightLevel);
 
     // Clean arrays
     // if (this.data_world_isMultiLevels) {
@@ -303,24 +303,19 @@ export class WorldManager {
         const element = arrayChunks[row][col];
 
         if (this.data_world_blocks[element]) {
-          const block = new this.data_world_blocks[element](
-            col * blockSize,
-            row * blockSize,
-            blockSize,
-            blockSize,
-            true,
-          );
+          const data = {
+            x: col * blockSize,
+            y: row * blockSize,
+            width: blockSize,
+            height: blockSize,
+            hightLevel,
+          };
+
+          const block = new this.data_world_blocks[element](data);
 
           if (block instanceof PlayerIso) {
-            console.log(block);
             this.player = !this.player && block;
-            const defaultPath = new this.data_world_DefaultPath(
-              col * blockSize,
-              row * blockSize,
-              blockSize,
-              blockSize,
-              true,
-            );
+            const defaultPath = new this.data_world_DefaultPath(data);
             this.walkPath.push(defaultPath);
             continue;
           }
@@ -328,13 +323,7 @@ export class WorldManager {
 
           // ---- Navi out word ----
           if (block instanceof IsoNavis || block instanceof MoveNpc) {
-            const defaultPath = new this.data_world_DefaultPath(
-              col * blockSize,
-              row * blockSize,
-              blockSize,
-              blockSize,
-              true,
-            );
+            const defaultPath = new this.data_world_DefaultPath(data);
             this.walkPath.push(defaultPath);
           }
         }

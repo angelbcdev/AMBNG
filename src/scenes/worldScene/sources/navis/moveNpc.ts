@@ -1,4 +1,5 @@
 // import { GAME_IS_PAUSE } from "@/core/gameState";
+import { ICreateSquare } from "../isoEntitys";
 import { PlayerIso } from "../isoPlayer";
 import { IsoNavis, NavyNPC } from "./isoNavis";
 
@@ -33,8 +34,8 @@ export class NavyNPCMove extends NavyNPC {
   vx: number = 0;
   vy: number = 0;
   isTalking = false;
-  constructor(x: number, y: number) {
-    super(x, y);
+  constructor(data: ICreateSquare) {
+    super(data);
     this.imageDialogue = "chatBot";
     this.currentDirection = "leftUp";
     this.isIdle = false;
@@ -81,16 +82,10 @@ export class MoveNpc extends IsoNavis {
   speed: number = 0.25;
   limitSpeed = this.speed;
 
-  constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    createFromTopLeft?: boolean,
-  ) {
-    super(x, y, width, height, createFromTopLeft);
+  constructor(data: ICreateSquare) {
+    super(data);
 
-    this.navi = new NavyNPCMove(x, y);
+    this.navi = new NavyNPCMove(data);
     // this.changeFaceNPC();
   }
   update(deltaTime: number = 10) {
@@ -202,25 +197,13 @@ export class MoveNpc extends IsoNavis {
 }
 export class MoveNpcVX extends MoveNpc {
   vx: number = 6;
-  constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    createFromTopLeft?: boolean,
-  ) {
-    super(x, y, width, height, createFromTopLeft);
+  constructor(data: ICreateSquare) {
+    super(data);
   }
 }
 export class MoveNpcVY extends MoveNpc {
   vy: number = 6;
-  constructor(
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    createFromTopLeft?: boolean,
-  ) {
-    super(x, y, width, height, createFromTopLeft);
+  constructor(data: ICreateSquare) {
+    super(data);
   }
 }
