@@ -18,13 +18,16 @@ import { FLOOR_MANAGER } from "./core/floorManager";
 import { ENTITY_MANAGER } from "./core/entityManager";
 // import { BATTLE_MANAGER } from "./core/battleManager";
 // import { BATTLE_MANAGER } from "./core/battleManager";
-const zoon = 1;
+const zoon = 1.5;
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
 canvas.width = 430 * zoon;
 canvas.height = 430 * zoon;
 
 let lastTime = 0;
+
+
+// GAME.changeScene(GAME.statesKeys.worldScene);
 
 const animage = (timeStap: number) => {
   const deltaTime = timeStap - lastTime;

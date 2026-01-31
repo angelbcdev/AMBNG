@@ -1,10 +1,10 @@
 export const character = {
-  lan: 0,
-  megaman: 5,
-  naviSore: 1,
-  naviBattle: 2,
-  gustman: 3,
-  chatBot: 4,
+  lan: 1,
+  megaman: 0,
+  naviSore: 3,
+  naviBattle: 4,
+  gustman: 20,
+  chatBot: 18,
 };
 export type TDialogueScene =
   | "isoWorld"
@@ -26,7 +26,7 @@ export class CharacterDialogue {
   addCharacter(
     characterImage: keyof typeof character,
     scene: TDialogueScene = "isoWorld",
-    lines: string[][]
+    lines: string[][],
   ) {
     this.characters[`${characterImage}:${scene}`] = {
       image: character[characterImage],
@@ -37,7 +37,7 @@ export class CharacterDialogue {
   }
   getRandomLine(
     characterImage: keyof typeof character,
-    scene: TDialogueScene = "isoWorld"
+    scene: TDialogueScene = "isoWorld",
   ) {
     const key = `${characterImage}:${scene}`;
     const data = {

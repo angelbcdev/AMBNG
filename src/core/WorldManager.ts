@@ -53,14 +53,14 @@ export class WorldManager {
   // menuScreen = new PauseMenu();
 
   constructor() {
-    if (this.data_world_isMultiLevels) {
-      this.data_world_maps.forEach((l, floor) => {
-        this.setMap(l, floor);
-      });
-    }
+    // if (this.data_world_isMultiLevels) {
+    //   this.data_world_maps.forEach((l, floor) => {
+    //     this.setMap(l, floor);
+    //   });
+    // }
     // else {
     //   //* Single world
-    // this.setMap(this.data_world_maps[this.currentMap]);
+    this.setMap(this.data_world_maps[this.currentMap], 0);
     this.bg = new BackGround(testWorld.bgImage);
 
     // this.bg.updateBackGround

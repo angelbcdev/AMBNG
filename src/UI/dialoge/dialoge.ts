@@ -16,8 +16,8 @@ export class Dialogue {
   imagen = new Image();
   frameX = 0;
 
-  frameWidth = 126;
-  frameHeight = 145;
+  frameWidth = 42;
+  frameHeight = 50;
   frameTime = 0;
 
   isHidden = true;
@@ -205,7 +205,7 @@ export class Dialogue {
       c.fillText(
         line,
         this.position.x + 170,
-        this.position.y + 38 + index * 28
+        this.position.y + 38 + index * 28,
       );
     });
   }
@@ -220,7 +220,7 @@ export class Dialogue {
       this.position.x + 20,
       this.position.y + 20,
       120,
-      120
+      120,
     );
   }
 
