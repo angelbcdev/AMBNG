@@ -31,7 +31,7 @@ export class WorldManager {
 
   diferentFloor = {
     x: -3,
-    y: -6,
+    y: -2,
   };
   pause = GAME_IS_PAUSE();
 
@@ -322,6 +322,10 @@ export class WorldManager {
 
           const block = new this.data_world_blocks[element](data);
 
+          if (block instanceof Path) {
+            block.coords = { x: col, y: row };
+          }
+
           if (block instanceof PlayerIso) {
             this.player = !this.player && block;
             const defaultPath = new this.data_world_DefaultPath(data);
@@ -366,13 +370,14 @@ export class WorldManager {
     if (block instanceof Path) {
       const showShadow = this.walkPath.some(
         (p) =>
-          p.hightLevel > block.hightLevel && p.x === block.x && p.y === block.y,
+          p.hightLevel > block.hightLevel &&
+          p.coords?.x === block.coords?.x &&
+          p.coords?.y === block.coords?.y,
       );
-      console.log("showShadow", showShadow);
 
       block.showShadow = showShadow;
-
       this.walkPath.push(block);
+
       return;
     }
 

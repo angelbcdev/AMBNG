@@ -7,6 +7,7 @@ export interface ICreateSquare {
   width: number;
   height: number;
   hightLevel: number;
+
   createFromTopLeft?: boolean;
 }
 
@@ -186,6 +187,7 @@ export class Path extends mySquare {
   image = new Image();
   colorOpacity: string = "00";
   color: string = "#ffffff";
+  coords: { x: number; y: number };
   constructor(data: ICreateSquare) {
     super(data);
     this.drawInDebug = false;
