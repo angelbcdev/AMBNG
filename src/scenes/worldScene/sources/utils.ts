@@ -1,5 +1,12 @@
 import data from "@/utils/test/ss.json";
-import { Wall, Path, EnemyZone, EnemyBoss } from "./isoEntitys";
+import {
+  Wall,
+  Path,
+  EnemyZone,
+  EnemyBoss,
+  PathUp,
+  PathDown,
+} from "./isoEntitys";
 import {
   IsoNavisBattle,
   IsoNavisGustman,
@@ -56,6 +63,8 @@ export const testWorld = {
     8: IsoNavisGustman,
     9: MoveNpcVX,
     10: MoveNpcVY,
+    11: PathUp,
+    12: PathDown,
     13: EnemyZone,
     4: EnemyZone,
   },

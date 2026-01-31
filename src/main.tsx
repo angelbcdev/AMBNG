@@ -18,7 +18,7 @@ import { FLOOR_MANAGER } from "./core/floorManager";
 import { ENTITY_MANAGER } from "./core/entityManager";
 // import { BATTLE_MANAGER } from "./core/battleManager";
 // import { BATTLE_MANAGER } from "./core/battleManager";
-const zoon = 1.5;
+const zoon = 1.25;
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const c = canvas.getContext("2d")!;
 canvas.width = 430 * zoon;

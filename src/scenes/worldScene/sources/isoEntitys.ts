@@ -25,6 +25,8 @@ export class mySquare {
   local = { x: 0, y: 0, gap: 3 };
   hightLevel: number;
   id: string = "";
+  showShadow: boolean = false;
+  drawInDebug: boolean = false;
   constructor(data: ICreateSquare) {
     const { x, y, width, height, hightLevel, createFromTopLeft } = data;
 
@@ -79,7 +81,8 @@ export class mySquare {
         this.left < rect.right &&
         this.right > rect.left &&
         this.top < rect.bottom &&
-        this.bottom > rect.top
+        this.bottom > rect.top &&
+        this.hightLevel === rect.hightLevel
       );
     }
     return false;
@@ -92,11 +95,41 @@ export class mySquare {
     z?: number,
   ): void {
     if (!ctx || !cam) return;
-    ctx.save();
-    // ctx.translate(this.hightLevel * -8, this.hightLevel * -32);
+    const x = this.left / 2 - this.top / 2 - cam.x;
+    const y = this.left / 4 + this.top / 4 - z - cam.y;
+
+    const TILE_W = this.width;
+    const TILE_H = this.height / 2;
+
+    // ctx.translate(0, this.hightLevel * -32);
     this.draw(ctx, cam, z);
-    ctx.restore();
+    this.drawTypeSquare(ctx, x, y, TILE_W, TILE_H);
+
+    if (this.showShadow) {
+      // ctx.save();
+      // ctx.translate(-14, this.hightLevel * -4);
+      this.drawShadow(ctx, x, y, TILE_W, TILE_H);
+      // ctx.restore();
+    }
+
     // chose level of view
+  }
+
+  drawShadow(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    TILE_W: number,
+    TILE_H: number,
+  ) {
+    ctx.fillStyle = "#00000070";
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + TILE_W / 2, y + TILE_H / 2);
+    ctx.lineTo(x, y + TILE_H);
+    ctx.lineTo(x - TILE_W / 2, y + TILE_H / 2);
+    ctx.closePath();
+    ctx.fill();
   }
   draw(
     ctx: CanvasRenderingContext2D,
@@ -109,8 +142,7 @@ export class mySquare {
       const y = this.left / 4 + this.top / 4 - z - cam.y;
       const TILE_W_img = 16;
       const TILE_H_img = 16 / 2;
-      const TILE_W = this.width;
-      const TILE_H = this.height / 2;
+
       this.local.x = x;
       this.local.y = y;
 
@@ -127,30 +159,57 @@ export class mySquare {
           TILE_H_img + 3,
         );
       }
-
-      // TODO: ELIMINAR
-      if (this.isEnemyZone && GAME_IS_DEV()) {
-        ctx.fillStyle = this.color + this.colorOpacity;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + TILE_W_img / 2, y + TILE_H_img / 2);
-        ctx.lineTo(x, y + TILE_H_img);
-        ctx.lineTo(x - TILE_W_img / 2, y + TILE_H_img / 2);
-        ctx.closePath();
-        ctx.fill();
-      }
-
-      if (GAME_IS_DEV()) {
-        ctx.fillStyle = this.color + this.colorOpacity;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + TILE_W / 2, y + TILE_H / 2);
-        ctx.lineTo(x, y + TILE_H);
-        ctx.lineTo(x - TILE_W / 2, y + TILE_H / 2);
-        ctx.closePath();
-        ctx.fill();
-      }
     }
+  }
+  drawTypeSquare(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    TILE_W: number,
+    TILE_H: number,
+  ) {
+    // TODO: ELIMINAR
+    if (GAME_IS_DEV() && this.drawInDebug) {
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + TILE_W / 2, y + TILE_H / 2);
+      ctx.lineTo(x, y + TILE_H);
+      ctx.lineTo(x - TILE_W / 2, y + TILE_H / 2);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+}
+
+export class Path extends mySquare {
+  image = new Image();
+  colorOpacity: string = "00";
+  color: string = "#ffffff";
+  constructor(data: ICreateSquare) {
+    super(data);
+    this.drawInDebug = false;
+    this.image.src = "/assects/isoFloorTest.png";
+  }
+}
+export class Wall extends mySquare {
+  color: string = "#00000040";
+
+  constructor(data: ICreateSquare) {
+    super(data);
+    this.image = null;
+    this.drawInDebug = true;
+  }
+}
+
+export class EnemyZone extends mySquare {
+  color: string = "#dd0000";
+
+  ratio: number = 0.8;
+  constructor(data: ICreateSquare) {
+    super(data);
+    this.drawInDebug = true;
+    this.image.src = "/assects/isoFloorTest.png";
   }
 }
 
@@ -220,44 +279,25 @@ export class EnemyBoss extends mySquare {
   }
 }
 
-export class Path extends mySquare {
-  image = new Image();
-  colorOpacity: string = "00";
-  color: string = "#ffffff";
+export class PathUp extends Wall {
+  color: string = "#FF43fa";
+  image: HTMLImageElement = new Image();
+  nextLevel: number = 1;
+
   constructor(data: ICreateSquare) {
     super(data);
+    this.drawInDebug = true;
     this.image.src = "/assects/isoFloorTest.png";
   }
 }
-export class Wall extends mySquare {
-  color: string = "#000000";
+export class PathDown extends Wall {
+  color: string = "#261313";
+  image: HTMLImageElement = new Image();
+  nextLevel: number = 0;
 
   constructor(data: ICreateSquare) {
     super(data);
-    this.image = null;
-  }
-}
-
-export class EnemyZone extends mySquare {
-  color: string = "#dd0000";
-
-  ratio: number = 0.8;
-  constructor(data: ICreateSquare) {
-    super(data);
+    this.drawInDebug = true;
     this.image.src = "/assects/isoFloorTest.png";
   }
 }
-
-// console.log("this", {
-//   left: this.left,
-//   top: this.top,
-//   right: this.right,
-//   bottom: this.bottom,
-// });
-
-// console.log("navi", {
-//   left: navi.left,
-//   top: navi.top,
-//   right: navi.right,
-//   bottom: navi.bottom,
-// });

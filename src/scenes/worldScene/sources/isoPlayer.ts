@@ -1,5 +1,5 @@
 import { keyBindings } from "@/config/keyBindings";
-import { mySquare } from "./isoEntitys";
+import { ICreateSquare, mySquare, PathDown, PathUp } from "./isoEntitys";
 import { GAME_IS_DEV } from "@/core/gameState";
 import { ASSET_MANAGER } from "@/core/assetManager";
 import { ASSET_SOURCES } from "@/core/assetshandler/assetSources";
@@ -49,8 +49,15 @@ export class PlayerIso extends mySquare {
   };
   frameY = this.allAnimations.idle_down;
 
-  constructor(x: number, y: number, width: number, height: number) {
-    super(x, y, width / 3, height / 3);
+  constructor(data: ICreateSquare) {
+    const newData = {
+      ...data,
+      x: data.x,
+      y: data.y,
+      width: data.width,
+      height: data.height,
+    };
+    super(newData);
     // Resolve world/iso player sprite via AssetManager, fallback to manifest URL
     const key = "player:worldSprite";
     if (ASSET_MANAGER.has(key)) {
@@ -176,12 +183,23 @@ export class PlayerIso extends mySquare {
     );
   }
 
+  validateMovePath(wall: mySquare) {
+    if (wall instanceof PathUp || wall instanceof PathDown) {
+      this.hightLevel = wall.nextLevel;
+      console.log("this.hightLevel", this.hightLevel);
+    }
+
+    // this.x -= WORLD_MANAGER.diferentFloor.x * 16;
+    // this.y -= WORLD_MANAGER.diferentFloor.y * 16;
+  }
+
   moveUp(wall: mySquare[]) {
     this.isMove = true;
 
     this.y -= this.speed;
     for (let i = 0, l = wall.length; i < l; i += 1) {
       if (this.intersects(wall[i])) {
+        this.validateMovePath(wall[i]);
         this.top = wall[i].bottom;
       }
     }
@@ -193,6 +211,7 @@ export class PlayerIso extends mySquare {
     this.x += this.speed;
     for (let i = 0, l = wall.length; i < l; i += 1) {
       if (this.intersects(wall[i])) {
+        this.validateMovePath(wall[i]);
         this.right = wall[i].left;
       }
     }
@@ -203,6 +222,7 @@ export class PlayerIso extends mySquare {
     this.y += this.speed;
     for (let i = 0, l = wall.length; i < l; i += 1) {
       if (this.intersects(wall[i])) {
+        this.validateMovePath(wall[i]);
         this.bottom = wall[i].top;
       }
     }
@@ -213,6 +233,7 @@ export class PlayerIso extends mySquare {
     this.x -= this.speed;
     for (let i = 0, l = wall.length; i < l; i += 1) {
       if (this.intersects(wall[i])) {
+        this.validateMovePath(wall[i]);
         this.left = wall[i].right;
       }
     }

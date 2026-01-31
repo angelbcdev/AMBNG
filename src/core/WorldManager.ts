@@ -28,6 +28,11 @@ const canvas = {
 
 export class WorldManager {
   static instance: WorldManager | null = null;
+
+  diferentFloor = {
+    x: -3,
+    y: -6,
+  };
   pause = GAME_IS_PAUSE();
 
   worldWidth = 0;
@@ -50,21 +55,21 @@ export class WorldManager {
   spritesheet = false;
   player: PlayerIso;
   sortedElements: mySquare[] = [];
+  maxFloor = testWorld.maps.length;
   // menuScreen = new PauseMenu();
 
   constructor() {
-    // if (this.data_world_isMultiLevels) {
-    //   this.data_world_maps.forEach((l, floor) => {
-    //     this.setMap(l, floor);
-    //   });
-    // }
-    // else {
-    //   //* Single world
-    this.setMap(this.data_world_maps[this.currentMap], 0);
-    this.bg = new BackGround(testWorld.bgImage);
+    if (this.data_world_isMultiLevels) {
+      for (let l = this.maxFloor - 1; l >= 0; l--) {
+        this.setMap(this.data_world_maps[l], l);
+      }
+    } else {
+      //   //* Single world
+      this.setMap(this.data_world_maps[this.currentMap], 0);
 
-    // this.bg.updateBackGround
-    // }
+      // this.bg.updateBackGround
+    }
+    this.bg = new BackGround(testWorld.bgImage);
     this.init();
   }
 
@@ -127,18 +132,6 @@ export class WorldManager {
 
     this.worldWidth = canvas.width;
     this.worldHeight = canvas.height;
-
-    // if (this.data_world_isMultiLevels) {
-    //   this.data_world_maps.forEach((l, floor) => {
-    //     this.setMap(l, floor);
-    //   });
-    // }
-    // else {
-    //   //* Single world
-    // this.setMap(this.data_world_maps[this.currentMap]);
-    // }
-
-    // this.player = this.player || new PlayerIso(104, 204, 16, 16);
   }
 
   update(deltaTime: number) {
@@ -206,23 +199,31 @@ export class WorldManager {
   }
   draw(ctx: CanvasRenderingContext2D) {
     // Draw walk path
-    this.drawWalkPath(ctx);
 
     // Draw map
     // this.fillIsoMap(ctx);
 
     // draw player
 
+    for (let i = 0; i < this.maxFloor; i++) {
+      this.drawWalkPath(ctx, i);
+      this.drawPlayerNPC(ctx, i);
+    }
+  }
+  drawPlayerNPC(ctx: CanvasRenderingContext2D, floor: number) {
     [this.player, ...this.isoNavis, ...this.moveNPC.map((e) => e.navi)]
       .sort((a, b) => a.x + a.y - (b.x + b.y))
+      .filter((navy) => navy.hightLevel == floor)
       .forEach((navy) => {
         navy.drawIsoImageAreaPlayer(ctx, this.cam, 8);
       });
   }
-  drawWalkPath(ctx: CanvasRenderingContext2D) {
-    this.sortedElements.forEach((element) => {
-      element.drawIsoImageArea(ctx, this.cam, 8);
-    });
+  drawWalkPath(ctx: CanvasRenderingContext2D, floor: number) {
+    this.sortedElements
+      .filter((element) => element.hightLevel == floor)
+      .forEach((element) => {
+        element.drawIsoImageArea(ctx, this.cam, 8);
+      });
   }
   updateSortedElements() {
     this.sortedElements = [
@@ -303,9 +304,17 @@ export class WorldManager {
         const element = arrayChunks[row][col];
 
         if (this.data_world_blocks[element]) {
+          const nwX =
+            hightLevel > 0
+              ? col * blockSize + this.diferentFloor.x * blockSize
+              : col * blockSize;
+          const nwY =
+            hightLevel > 0
+              ? row * blockSize + this.diferentFloor.y * blockSize
+              : row * blockSize;
           const data = {
-            x: col * blockSize,
-            y: row * blockSize,
+            x: nwX,
+            y: nwY,
             width: blockSize,
             height: blockSize,
             hightLevel,
@@ -355,6 +364,14 @@ export class WorldManager {
     }
 
     if (block instanceof Path) {
+      const showShadow = this.walkPath.some(
+        (p) =>
+          p.hightLevel > block.hightLevel && p.x === block.x && p.y === block.y,
+      );
+      console.log("showShadow", showShadow);
+
+      block.showShadow = showShadow;
+
       this.walkPath.push(block);
       return;
     }
