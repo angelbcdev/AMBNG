@@ -23,17 +23,22 @@ export class NavyNPCMove extends NavyNPC {
     },
   };
   maxFrame = 2;
-  frameInterval = 2000 / 10;
+  frameInterval = 1500 / 10;
   frameX = 0;
   frameTime = 0;
 
   widthFrame = 58;
   heightFrame = 128;
-  widthDraw = 12;
-  heightDraw = 24;
+  widthDraw = 14;
+  heightDraw = 28;
   vx: number = 0;
   vy: number = 0;
   isTalking = false;
+
+  moveImage = {
+    x: this.widthDraw - 6,
+    y: this.heightDraw - 14,
+  };
   constructor(data: ICreateSquare) {
     super(data);
     this.imageDialogue = "chatBot";
@@ -83,7 +88,14 @@ export class MoveNpc extends IsoNavis {
   limitSpeed = this.speed;
 
   constructor(data: ICreateSquare) {
-    super(data);
+    const newData = {
+      ...data,
+      x: data.x - 2,
+      y: data.y - 2,
+      width: data.width / 2,
+      height: data.height / 2,
+    };
+    super(newData);
 
     this.navi = new NavyNPCMove(data);
     // this.changeFaceNPC();
@@ -113,6 +125,7 @@ export class MoveNpc extends IsoNavis {
 
   moveCurrentNavi(player: PlayerIso, wall: MoveNpc[]) {
     if (this.navi.isTalking) return;
+
     //leftUp
     if (this.vx < 0) {
       this.x -= this.speed;

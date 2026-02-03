@@ -269,7 +269,7 @@ export class WorldManager {
     },
     hightLevel: number,
   ) {
-    const blockSize = 16;
+    const blockSize = 32;
     console.log(hightLevel);
 
     // Clean arrays
@@ -339,13 +339,14 @@ export class WorldManager {
             const defaultPath = new this.data_world_DefaultPath(data);
             this.walkPath.push(defaultPath);
           }
+          if (block instanceof EnemyZone) {
+            const defaultPath = new this.data_world_DefaultPath(data);
+            defaultPath.isEnemyZone = true;
+            this.walkPath.push(defaultPath);
+          }
         }
       }
     }
-
-    // const bgForBattle = [1, 3, 4];
-
-    // this.bg.updateBackGround(bgForBattle[this.currentMap]);
 
     this.worldWidth = columns * blockSize;
     this.worldHeight = rows * blockSize;

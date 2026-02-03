@@ -1,4 +1,4 @@
-import data from "@/utils/test/ss.json";
+import data from "@/utils/test/iso.json";
 import {
   Wall,
   Path,
@@ -14,27 +14,6 @@ import {
 } from "./navis/isoNavis";
 import { MoveNpcVX, MoveNpcVY } from "./navis/moveNpc";
 import { PlayerIso } from "./isoPlayer";
-
-export class FloorRoad {
-  width = 32;
-  height = 32;
-  x: number;
-  y: number;
-  isDelete = false;
-
-  color = "green";
-
-  isCollision = true;
-
-  constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-  }
-  draw(c: CanvasRenderingContext2D) {
-    c.fillStyle = this.color;
-    c.fillRect(this.x, this.y, this.width, this.height);
-  }
-}
 
 export const getRandomeID = () => {
   const charactes =

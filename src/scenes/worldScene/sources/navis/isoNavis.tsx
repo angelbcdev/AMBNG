@@ -45,8 +45,14 @@ export class NavyNPC extends mySquare {
   currentDirection: TDirection = "rightUp";
 
   moveImage = {
-    x: this.widthDraw / 2,
-    y: this.heightDraw - 13,
+    x: this.widthDraw - 3,
+    y: this.heightDraw - 8,
+  };
+
+  
+  sizeSprite = {
+    width: 24,
+    height: 32,
   };
   constructor(data: ICreateSquare) {
     // const newData = {
@@ -58,8 +64,8 @@ export class NavyNPC extends mySquare {
     //* change chat's size name
     const newData = {
       ...data,
-      x: data.x - 6,
-      y: data.y - 6,
+      x: data.x - 8,
+      y: data.y - 8,
       width: data.width + 16,
       height: data.height + 16
     }
@@ -107,8 +113,8 @@ export class NavyNPC extends mySquare {
       this.heightFrame,
       x - this.moveImage.x,
       y - this.moveImage.y,
-      this.widthDraw,
-      this.heightDraw
+      this.sizeSprite.width,
+      this.sizeSprite.height
     );
     this.idleAnimation(16.666666666666668);
   }
@@ -196,9 +202,13 @@ class NavyNPCGustman extends NavyNPCStatic {
   widthDraw = 30;
   heightDraw = 30;
 
-  moveImage = {
-    x: 18,
-    y: 16,
+  sizeSprite = {
+    width: 36,
+    height: 42,
+  };
+   moveImage = {
+    x: this.widthDraw - 12,
+    y: this.heightDraw - 8,
   };
 
   constructor(data:ICreateSquare) {
@@ -223,8 +233,8 @@ export class IsoNavis extends Wall {
       ...data,
       x: data.x - 2,
       y: data.y - 2,
-      width: data.width + 10,
-      height: data.height + 10
+      width: data.width ,
+      height: data.height 
     }
     super(newData);
     

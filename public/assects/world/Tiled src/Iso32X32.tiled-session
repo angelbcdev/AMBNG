@@ -1,0 +1,21 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+    },
+    "last.exportedFilePath": "/Users/angelalbertobernechea/Desktop/games/ambng/src/utils/test",
+    "last.imagePath": "/Users/angelalbertobernechea/Desktop",
+    "map.lastUsedExportFilter": "All Files (*)",
+    "map.orientation": "2",
+    "openFiles": [
+    ],
+    "project": "Iso32X32.tiled-project",
+    "recentFiles": [
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}

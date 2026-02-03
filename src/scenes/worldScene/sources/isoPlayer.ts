@@ -16,13 +16,17 @@ export class PlayerIso extends mySquare {
   frameInterval = 1000 / 12;
   frameX = 0;
 
-  moveFrameX = 10;
-  moveFrameY = 14;
   frameWidth = 33;
   frameHeight = 42;
   maxFrame = 5;
   fps = 12;
   image = new Image();
+  moveFrameX = 14;
+  moveFrameY = 22;
+  sizeSprite = {
+    width: 28,
+    height: 28,
+  };
 
   c: any;
   allAnimations = {
@@ -54,8 +58,8 @@ export class PlayerIso extends mySquare {
       ...data,
       x: data.x,
       y: data.y,
-      width: data.width,
-      height: data.height,
+      width: data.width / 2,
+      height: data.height / 2,
     };
     super(newData);
     // Resolve world/iso player sprite via AssetManager, fallback to manifest URL
@@ -158,8 +162,8 @@ export class PlayerIso extends mySquare {
     const y = this.left / 4 + this.top / 4 - z - cam.y;
 
     if (GAME_IS_DEV()) {
-      const TILE_W = 16;
-      const TILE_H = 8;
+      const TILE_W = this.width;
+      const TILE_H = this.height / 2;
       c.fillStyle = this.color + "80";
       c.beginPath();
       c.moveTo(x, y);
@@ -178,8 +182,8 @@ export class PlayerIso extends mySquare {
       this.frameHeight,
       x - this.moveFrameX,
       y - this.moveFrameY,
-      20,
-      20,
+      this.sizeSprite.width,
+      this.sizeSprite.height,
     );
   }
 
